@@ -1,7 +1,5 @@
-react-fabric
+react-canvas
 ============
-
-React renderer for fabric.js
 
 Write React code to render shapes and images to a HTML `<canvas>` element.
 
@@ -10,14 +8,14 @@ Write React code to render shapes and images to a HTML `<canvas>` element.
 ```tsx
 // App.tsx
 import React from 'react';
-import { Canvas, Rect, Text } from '@tootallnate/react-fabric';
+import { Rect, Text } from '@tootallnate/react-canvas';
 
 export function App() {
     return (
-        <Canvas>
+        <>
             <Rect width={42} height={10} fill="red" />
             <Text fontSize={30} fill="blue">Hello world!</Text>
-        </Canvas>
+        </>
     );
 }
 ```
@@ -26,21 +24,19 @@ export function App() {
 
 ```tsx
 import React from 'react';
-import { fabric } from 'fabric';
-import { render } from '@tootallnate/react-fabric/render';
+import { render } from '@tootallnate/react-canvas/render';
 import { App } from './App';
 
-render(<App />, document.getElementById('canvas'), fabric);
+render(<App />, document.getElementById('canvas'));
 ```
 
 #### In Node.js
 
 ```tsx
 import React from 'react';
-import { fabric } from 'fabric';
 import { render } from '@tootallnate/react-fabric/render';
 import { createCanvas } from '@napi-rs/canvas';
 import { App } from './App';
 
-render(<App />, createCanvas(300, 320), fabric);
+render(<App />, createCanvas(300, 320));
 ```

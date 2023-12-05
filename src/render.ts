@@ -1,15 +1,23 @@
 import ReactReconciler from 'react-reconciler';
 import { Root } from './root';
+import { Arc } from './arc';
 import { Group } from './group';
 import { Rect } from './rect';
-import type * as C from '.';
+import { Path } from './path';
+import { Image } from './image';
+import { Text } from './text';
+import type * as C from './index';
 import type { Entity } from './entity';
 
 type CanvasRoot = { getContext: (type: '2d') => any };
 
 type Components = {
+	Arc: C.ArcProps;
 	Group: C.GroupProps;
+	Image: C.ImageProps;
+	Path: C.PathProps;
 	Rect: C.RectProps;
+	Text: C.TextProps;
 	//Line: C.LineProps;
 	//Circle: C.CircleProps;
 	//Triangle: C.TriangleProps;
@@ -79,8 +87,16 @@ const reconciler = ReactReconciler<
 		//console.log('createInstance', t);
 		if (is('Group', t)) {
 			return new Group(t.props);
+		} else if (is('Arc', t)) {
+			return new Arc(t.props);
+		} else if (is('Image', t)) {
+			return new Image(t.props);
+		} else if (is('Path', t)) {
+			return new Path(t.props);
 		} else if (is('Rect', t)) {
 			return new Rect(t.props);
+		} else if (is('Text', t)) {
+			return new Text(t.props);
 		}
 		throw new Error(`Unsupported type: ${type}`);
 	},

@@ -3,6 +3,10 @@ import type { PercentageString } from './types';
 
 export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
 	src: string;
+	sx?: number;
+	sy?: number;
+	sw?: number;
+	sh?: number;
 	width?: number | PercentageString;
 	height?: number | PercentageString;
 }
@@ -10,6 +14,10 @@ export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
 export class Image extends Entity {
 	#src: string;
 	image?: HTMLImageElement;
+	sx?: number;
+	sy?: number;
+	sw?: number;
+	sh?: number;
 
 	constructor(opts: ImageProps) {
 		super({
@@ -18,6 +26,10 @@ export class Image extends Entity {
 			...opts,
 		});
 		this.#src = opts.src;
+		this.sx = opts.sx;
+		this.sy = opts.sy;
+		this.sw = opts.sw;
+		this.sh = opts.sh;
 	}
 
 	get src() {
@@ -41,13 +53,17 @@ export class Image extends Entity {
 		}
 		if (!image) {
 			image = this.image = root.createImage();
-			image.src = this.src;
 			image.onload = this.#onload.bind(this);
+			image.src = this.src;
 		}
 		root.ctx.drawImage(
 			image,
-			this.offsetX,
-			this.offsetY,
+			this.sx ?? 0,
+			this.sy ?? 0,
+			this.sw ?? image.naturalWidth,
+			this.sh ?? image.naturalHeight,
+			0,
+			0,
 			this.calculatedWidth,
 			this.calculatedHeight,
 		);
@@ -56,7 +72,12 @@ export class Image extends Entity {
 	#onload() {
 		const { image } = this;
 		if (!image) return;
-		this.width = image.naturalWidth;
-		this.height = image.naturalHeight;
+		if (this.width === 0) {
+			this.width = image.naturalWidth;
+		}
+		if (this.height === 0) {
+			this.height = image.naturalHeight;
+		}
+		this.root?.queueRender();
 	}
 }

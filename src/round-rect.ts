@@ -1,8 +1,8 @@
 import { Shape, type ShapeProps } from './shape';
 
-export interface RoundRectProps extends ShapeProps {
+export type RoundRectProps = ShapeProps & {
 	radii?: number | DOMPointInit | (number | DOMPointInit)[];
-}
+};
 
 export class RoundRect extends Shape {
 	radii?: number | DOMPointInit | (number | DOMPointInit)[];
@@ -12,11 +12,10 @@ export class RoundRect extends Shape {
 		this.radii = opts.radii;
 	}
 
-	renderShape(ctx: CanvasRenderingContext2D): void {
-		ctx.beginPath();
+	renderShape(ctx: CanvasRenderingContext2D): undefined {
 		ctx.roundRect(
-			this.offsetX,
-			this.offsetY,
+			0,
+			0,
 			this.calculatedWidth,
 			this.calculatedHeight,
 			this.radii,

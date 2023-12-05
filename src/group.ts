@@ -21,8 +21,8 @@ export class Group extends Entity {
 		this.subroot.render();
 		this.root?.ctx.drawImage(
 			this.subcanvas,
-			this.offsetX,
-			this.offsetY,
+			0,
+			0,
 			this.calculatedWidth,
 			this.calculatedHeight,
 		);

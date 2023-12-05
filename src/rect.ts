@@ -1,15 +1,9 @@
 import { Shape, type ShapeProps } from './shape';
 
-export interface RectProps extends ShapeProps {}
+export type RectProps = ShapeProps;
 
 export class Rect extends Shape {
-	renderShape(ctx: CanvasRenderingContext2D): void {
-		ctx.beginPath();
-		ctx.rect(
-			this.offsetX,
-			this.offsetY,
-			this.calculatedWidth,
-			this.calculatedHeight,
-		);
+	renderShape(ctx: CanvasRenderingContext2D): undefined {
+		ctx.rect(0, 0, this.calculatedWidth, this.calculatedHeight);
 	}
 }

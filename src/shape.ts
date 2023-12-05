@@ -1,9 +1,8 @@
 import { Entity, type EntityProps } from './entity';
 import { Context } from './root';
 
-export interface ShapeProps extends EntityProps {
-	fill?: string;
-	stroke?: string;
+export interface CommonShapeProps extends EntityProps {
+	fillRule?: CanvasFillRule;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
@@ -17,8 +16,21 @@ export interface ShapeProps extends EntityProps {
 	miterLimit?: number;
 }
 
-export abstract class Shape extends Entity implements ShapeProps {
+export interface ClipShapeProps extends CommonShapeProps {
+	clip?: boolean;
+}
+
+export interface FillShapeProps extends CommonShapeProps {
 	fill?: string;
+	stroke?: string;
+}
+
+export type ShapeProps = ClipShapeProps | FillShapeProps;
+
+export abstract class Shape extends Entity {
+	clip?: boolean;
+	fill?: string;
+	fillRule?: CanvasFillRule;
 	stroke?: string;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
@@ -34,27 +46,65 @@ export abstract class Shape extends Entity implements ShapeProps {
 
 	constructor(opts: ShapeProps) {
 		super(opts);
-		this.fill = opts.fill;
-		this.stroke = opts.stroke;
+		this.clip = (opts as ClipShapeProps).clip;
+		this.fill = (opts as FillShapeProps).fill;
+		this.stroke = (opts as FillShapeProps).stroke;
+		this.lineCap = opts.lineCap;
+		this.lineDash = opts.lineDash;
+		this.lineDashOffset = opts.lineDashOffset;
+		this.lineJoin = opts.lineJoin;
 		this.lineWidth = opts.lineWidth;
+		this.miterLimit = opts.miterLimit;
 	}
 
 	render(): void {
 		super.render();
-		const ctx = this.root?.ctx!;
-		if (typeof this.lineWidth === 'number') {
-			ctx.lineWidth = this.lineWidth;
+		const {
+			root,
+			fill,
+			fillRule,
+			stroke,
+			lineWidth,
+			lineDash,
+			lineDashOffset,
+			lineCap,
+			lineJoin,
+			miterLimit,
+		} = this;
+		const ctx = root!.ctx;
+		if (typeof lineWidth === 'number') {
+			ctx.lineWidth = lineWidth;
 		}
-		this.renderShape(ctx);
-		if (typeof this.fill === 'string') {
-			ctx.fillStyle = this.fill;
-			ctx.fill();
+		if (lineDash) {
+			ctx.setLineDash(lineDash);
 		}
-		if (typeof this.stroke === 'string') {
-			ctx.strokeStyle = this.stroke;
-			ctx.stroke();
+		if (typeof lineDashOffset === 'number') {
+			ctx.lineDashOffset = lineDashOffset;
+		}
+		if (lineCap) {
+			ctx.lineCap = lineCap;
+		}
+		if (lineJoin) {
+			ctx.lineJoin = lineJoin;
+		}
+		if (typeof miterLimit === 'number') {
+			ctx.miterLimit = miterLimit;
+		}
+		ctx.beginPath();
+		const shape = this.renderShape(ctx);
+		if (this.clip) {
+			shape ? ctx.clip(shape, fillRule) : ctx.clip(fillRule);
+		} else {
+			if (fill) {
+				ctx.fillStyle = fill;
+				shape ? ctx.fill(shape, fillRule) : ctx.fill(fillRule);
+			}
+			if (stroke) {
+				ctx.strokeStyle = stroke;
+				shape ? ctx.stroke(shape) : ctx.stroke();
+			}
 		}
 	}
 
-	abstract renderShape(ctx: Context): void;
+	abstract renderShape(ctx: Context): Path2D | undefined;
 }

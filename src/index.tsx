@@ -1,4 +1,4 @@
-import {
+import React, {
 	createElement,
 	createContext,
 	useContext,
@@ -7,6 +7,10 @@ import {
 } from 'react';
 import { Group as _Group, type GroupProps as _GroupProps } from './group';
 import { Rect as _Rect, type RectProps } from './rect';
+import { Arc as _Arc, type ArcProps } from './arc';
+import { Path as _Path, type PathProps } from './path';
+import { Image as _Image, type ImageProps } from './image';
+import { Text as _Text, type TextProps } from './text';
 
 type MaybeArray<T> = T | T[];
 
@@ -16,10 +20,23 @@ const factory = <Ref, Props>(type: string) =>
 	);
 
 export type GroupProps = PropsWithChildren<_GroupProps>;
-export const Group = factory<_Group, GroupProps>('Group');
+export { ArcProps, RectProps, PathProps, ImageProps, TextProps };
 
-export { RectProps };
+export const Arc = factory<_Arc, ArcProps>('Arc');
+export const Group = factory<_Group, GroupProps>('Group');
+export const Image = factory<_Image, ImageProps>('Image');
+export const Path = factory<_Path, PathProps>('Path');
 export const Rect = factory<_Rect, RectProps>('Rect');
+export const Text = factory<_Text, TextProps>('Text');
+
+export type CircleProps = Omit<
+	ArcProps,
+	'startAngle' | 'endAngle' | 'counterclockwise'
+>;
+
+export const Circle = forwardRef<_Arc, CircleProps>((props, ref) => {
+	return <Arc {...props} ref={ref} startAngle={0} endAngle={2 * Math.PI} />;
+});
 
 //export type ImageProps = fabric.IImageOptions & {
 //	src: any;

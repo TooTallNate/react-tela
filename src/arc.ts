@@ -1,11 +1,11 @@
 import { Shape, type ShapeProps } from './shape';
 
-export interface ArcProps extends Omit<ShapeProps, 'width' | 'height'> {
+export type ArcProps = Omit<ShapeProps, 'width' | 'height'> & {
 	startAngle: number;
 	endAngle: number;
 	radius: number;
 	counterclockwise?: boolean;
-}
+};
 
 export class Arc extends Shape {
 	startAngle: number;
@@ -35,13 +35,10 @@ export class Arc extends Shape {
 		this.#radius = opts.radius;
 	}
 
-	renderShape(ctx: CanvasRenderingContext2D): void {
-		ctx.beginPath();
-		const x = this.offsetX + this.#radius;
-		const y = this.offsetY + this.#radius;
+	renderShape(ctx: CanvasRenderingContext2D): undefined {
 		ctx.arc(
-			x,
-			y,
+			this.#radius,
+			this.#radius,
 			this.radius,
 			this.startAngle,
 			this.endAngle,
