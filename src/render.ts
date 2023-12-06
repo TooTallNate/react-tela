@@ -96,14 +96,13 @@ const reconciler = ReactReconciler<
 		} else if (is('Rect', t)) {
 			return new Rect(t.props);
 		} else if (is('Text', t)) {
-			return new Text(t.props);
+			return new Text({ ...t.props, value: t.props.children ?? '' });
 		}
 		throw new Error(`Unsupported type: ${type}`);
 	},
 	createTextInstance(text, root) {
-		//console.log("createTextInstance", { text });
+		console.log('createTextInstance', { text, root });
 		throw new Error('createTextInstance');
-		//return { fabric, instance: new fabric.Text(text) };
 	},
 	appendInitialChild(parentInstance, child) {
 		//console.log("appendInitialChild", { parentInstance, child });
@@ -202,7 +201,7 @@ const reconciler = ReactReconciler<
 	},
 	shouldSetTextContent(type, props) {
 		//console.log("shouldSetTextContent", { type, props });
-		return false;
+		return type === 'Text';
 	},
 	resetTextContent(instance) {
 		console.log('resetTextContent', { instance });

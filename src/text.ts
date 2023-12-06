@@ -6,7 +6,7 @@ export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	fontSize?: number;
 	fill?: string;
 	stroke?: string;
-    lineWidth?: number;
+	lineWidth?: number;
 }
 
 export class Text extends Entity {
@@ -36,11 +36,19 @@ export class Text extends Entity {
 		this.fontSize = opts.fontSize;
 		this.fill = opts.fill;
 		this.stroke = opts.stroke;
-        this.lineWidth = opts.lineWidth;
+		this.lineWidth = opts.lineWidth;
 	}
 
 	render(): void {
-		let { value, fontFamily = 'sans-serif', fontSize = 24, lineWidth, fill, stroke, root } = this;
+		let {
+			value,
+			fontFamily = 'sans-serif',
+			fontSize = 24,
+			lineWidth,
+			fill,
+			stroke,
+			root,
+		} = this;
 		if (!root) {
 			throw new Error(
 				`${this.constructor.name} instance has not been added to a root context`,
@@ -53,17 +61,17 @@ export class Text extends Entity {
 		this.height = fontSize;
 		super.render();
 		ctx.textBaseline = 'top';
-		console.log(bounds);
-        if (typeof lineWidth === 'number') {
-            ctx.lineWidth = lineWidth;
-        }
-        if (fill) {
-            ctx.fillStyle = fill;
-		    ctx.fillText(value, 0, 0);
-        }
-        if (stroke) {
-            ctx.strokeStyle = stroke;
-            ctx.strokeText(value, 0, 0);
-        }
+		//console.log(bounds);
+		if (typeof lineWidth === 'number') {
+			ctx.lineWidth = lineWidth;
+		}
+		if (fill) {
+			ctx.fillStyle = fill;
+			ctx.fillText(value, 0, 0);
+		}
+		if (stroke) {
+			ctx.strokeStyle = stroke;
+			ctx.strokeText(value, 0, 0);
+		}
 	}
 }

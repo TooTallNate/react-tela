@@ -1,8 +1,12 @@
 import { Entity, type EntityProps } from './entity';
 import { Context } from './root';
 
-export interface CommonShapeProps extends EntityProps {
+export interface ShapeProps extends EntityProps {
+	clip?: boolean;
+	clipRule?: CanvasFillRule;
+	fill?: string;
 	fillRule?: CanvasFillRule;
+	stroke?: string;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
@@ -16,19 +20,9 @@ export interface CommonShapeProps extends EntityProps {
 	miterLimit?: number;
 }
 
-export interface ClipShapeProps extends CommonShapeProps {
-	clip?: boolean;
-}
-
-export interface FillShapeProps extends CommonShapeProps {
-	fill?: string;
-	stroke?: string;
-}
-
-export type ShapeProps = ClipShapeProps | FillShapeProps;
-
 export abstract class Shape extends Entity {
 	clip?: boolean;
+	clipRule?: CanvasFillRule;
 	fill?: string;
 	fillRule?: CanvasFillRule;
 	stroke?: string;
@@ -46,9 +40,10 @@ export abstract class Shape extends Entity {
 
 	constructor(opts: ShapeProps) {
 		super(opts);
-		this.clip = (opts as ClipShapeProps).clip;
-		this.fill = (opts as FillShapeProps).fill;
-		this.stroke = (opts as FillShapeProps).stroke;
+		this.clip = opts.clip;
+		this.clipRule = opts.clipRule;
+		this.fill = opts.fill;
+		this.stroke = opts.stroke;
 		this.lineCap = opts.lineCap;
 		this.lineDash = opts.lineDash;
 		this.lineDashOffset = opts.lineDashOffset;
@@ -60,6 +55,8 @@ export abstract class Shape extends Entity {
 	render(): void {
 		super.render();
 		const {
+			clip,
+			clipRule,
 			root,
 			fill,
 			fillRule,
@@ -92,17 +89,16 @@ export abstract class Shape extends Entity {
 		}
 		ctx.beginPath();
 		const shape = this.renderShape(ctx);
-		if (this.clip) {
-			shape ? ctx.clip(shape, fillRule) : ctx.clip(fillRule);
-		} else {
-			if (fill) {
-				ctx.fillStyle = fill;
-				shape ? ctx.fill(shape, fillRule) : ctx.fill(fillRule);
-			}
-			if (stroke) {
-				ctx.strokeStyle = stroke;
-				shape ? ctx.stroke(shape) : ctx.stroke();
-			}
+		if (clip || clipRule) {
+			shape ? ctx.clip(shape, clipRule) : ctx.clip(clipRule);
+		}
+		if (fill) {
+			ctx.fillStyle = fill;
+			shape ? ctx.fill(shape, fillRule) : ctx.fill(fillRule);
+		}
+		if (stroke) {
+			ctx.strokeStyle = stroke;
+			shape ? ctx.stroke(shape) : ctx.stroke();
 		}
 	}
 

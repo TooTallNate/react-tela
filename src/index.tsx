@@ -10,7 +10,7 @@ import { Rect as _Rect, type RectProps } from './rect';
 import { Arc as _Arc, type ArcProps } from './arc';
 import { Path as _Path, type PathProps } from './path';
 import { Image as _Image, type ImageProps } from './image';
-import { Text as _Text, type TextProps } from './text';
+import { Text as _Text, type TextProps as _TextProps } from './text';
 
 type MaybeArray<T> = T | T[];
 
@@ -20,13 +20,17 @@ const factory = <Ref, Props>(type: string) =>
 	);
 
 export type GroupProps = PropsWithChildren<_GroupProps>;
-export { ArcProps, RectProps, PathProps, ImageProps, TextProps };
+export { ArcProps, RectProps, PathProps, ImageProps };
 
 export const Arc = factory<_Arc, ArcProps>('Arc');
 export const Group = factory<_Group, GroupProps>('Group');
 export const Image = factory<_Image, ImageProps>('Image');
 export const Path = factory<_Path, PathProps>('Path');
 export const Rect = factory<_Rect, RectProps>('Rect');
+
+export type TextProps = Omit<_TextProps, 'value'> & {
+	children?: string;
+};
 export const Text = factory<_Text, TextProps>('Text');
 
 export type CircleProps = Omit<
