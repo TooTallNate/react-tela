@@ -64,6 +64,11 @@ function assertIsGroup(v: any): asserts v is Group {
 	}
 }
 
+const getText = ({ children: c }: C.TextProps) => {
+	if (c === null || typeof c === 'undefined') return '';
+	return Array.isArray(c) ? c.map(String).join('') : String(c);
+};
+
 const reconciler = ReactReconciler<
 	Type,
 	Props,
@@ -96,13 +101,13 @@ const reconciler = ReactReconciler<
 		} else if (is('Rect', t)) {
 			return new Rect(t.props);
 		} else if (is('Text', t)) {
-			return new Text({ ...t.props, value: t.props.children ?? '' });
+			return new Text({ ...t.props, value: getText(t.props) });
 		}
 		throw new Error(`Unsupported type: ${type}`);
 	},
 	createTextInstance(text, root) {
-		console.log('createTextInstance', { text, root });
-		throw new Error('createTextInstance');
+		//console.log('createTextInstance', { text, root });
+		throw new Error('Text must be placed inside of a <Text> component');
 	},
 	appendInitialChild(parentInstance, child) {
 		//console.log("appendInitialChild", { parentInstance, child });
@@ -173,6 +178,14 @@ const reconciler = ReactReconciler<
 				payload[k] = newProps[k];
 			}
 		}
+		if (type === 'Text') {
+			const newValue = getText(newProps as C.TextProps);
+			if ((instance as Text).value !== newValue) {
+				if (!payload) payload = {};
+				// @ts-expect-error
+				payload.value = newValue;
+			}
+		}
 		//	if (is("Text", t)) {
 		//		const oldText = getText(t.props);
 		//		const newText = getText(t.newProps);
@@ -188,7 +201,9 @@ const reconciler = ReactReconciler<
 	commitUpdate(instance, payload) {
 		//console.log("commitUpdate", { instance, payload });
 		Object.assign(instance, payload);
-		instance.root?.queueRender();
+		if (instance.root) {
+			instance.root.queueRender();
+		}
 	},
 	commitTextUpdate(instance, oldText, newText) {
 		console.log('commitTextUpdate', { instance, oldText, newText });
@@ -268,6 +283,7 @@ const reconciler = ReactReconciler<
 export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	const ctx = canvas.getContext('2d');
 	const root = new Root(ctx);
+	(window as any).root = root;
 	// @ts-expect-error I don't know that's supposed to be passed here…
 	const container = reconciler.createContainer(root, false, false);
 	reconciler.updateContainer(

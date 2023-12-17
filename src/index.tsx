@@ -29,7 +29,7 @@ export const Path = factory<_Path, PathProps>('Path');
 export const Rect = factory<_Rect, RectProps>('Rect');
 
 export type TextProps = Omit<_TextProps, 'value'> & {
-	children?: string;
+	children?: MaybeArray<string | number>;
 };
 export const Text = factory<_Text, TextProps>('Text');
 

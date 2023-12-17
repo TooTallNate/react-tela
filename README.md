@@ -1,5 +1,5 @@
-react-canvas
-============
+react-tela
+==========
 
 Write React code to render shapes and images to a HTML `<canvas>` element.
 
@@ -8,7 +8,7 @@ Write React code to render shapes and images to a HTML `<canvas>` element.
 ```tsx
 // App.tsx
 import React from 'react';
-import { Rect, Text } from '@tootallnate/react-canvas';
+import { Rect, Text } from 'react-tela';
 
 export function App() {
     return (
@@ -24,7 +24,7 @@ export function App() {
 
 ```tsx
 import React from 'react';
-import { render } from '@tootallnate/react-canvas/render';
+import { render } from 'react-tela/render';
 import { App } from './App';
 
 render(<App />, document.getElementById('canvas'));

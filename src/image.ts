@@ -70,7 +70,7 @@ export class Image extends Entity {
 	}
 
 	#onload() {
-		const { image } = this;
+		const { image, root } = this;
 		if (!image) return;
 		if (this.width === 0) {
 			this.width = image.naturalWidth;
@@ -78,6 +78,8 @@ export class Image extends Entity {
 		if (this.height === 0) {
 			this.height = image.naturalHeight;
 		}
-		this.root?.queueRender();
+		if (root) {
+			root.queueRender();
+		}
 	}
 }

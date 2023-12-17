@@ -1,5 +1,5 @@
 {
-  "name": "@tootallnate/react-canvas",
+  "name": "react-tela",
   "version": "0.0.0",
   "description": "React renderer for Canvas",
   "type": "module",
@@ -32,10 +32,10 @@
     "esbuild": "^0.19.4",
     "prettier": "^3.0.3",
     "react": "^18.2.0",
+    "react-fps": "^1.0.6",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "@types/react": "18",
     "react": "18"
   }
 }

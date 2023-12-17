@@ -1,5 +1,5 @@
 import { Entity, EntityProps } from './entity';
-import { Root } from './root';
+import { type Context, Root } from './root';
 
 export interface GroupProps extends EntityProps {}
 
@@ -13,7 +13,7 @@ export class Group extends Entity {
 			this.calculatedWidth,
 			this.calculatedHeight,
 		);
-		this.subroot = new Root(this.subcanvas.getContext('2d')!);
+		this.subroot = new GroupRoot(this.subcanvas.getContext('2d')!, this);
 	}
 
 	render(): void {
@@ -26,5 +26,19 @@ export class Group extends Entity {
 			this.calculatedWidth,
 			this.calculatedHeight,
 		);
+	}
+}
+
+class GroupRoot extends Root {
+	#group: Group;
+
+	constructor(ctx: Context, group: Group) {
+		super(ctx);
+		this.#group = group;
+	}
+
+	queueRender(): void {
+		this.dirty = true;
+		this.#group.root?.queueRender();
 	}
 }
