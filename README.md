@@ -91,4 +91,4 @@ A few other React renderes for `<canvas>` alreay exist, so why another?
     -   Has not been updated in years, and is not currently maintained.
 -   [`react-konva`](https://www.npmjs.com/package/react-konva)
     -   Awesome and very mature. Would love to have just been able to use this.
-    -   It relies on `react-dom`, which is pretty large, and
+    -   It relies on `react-dom`, which is pretty large, and makes the assumption that a DOM is actually available.
