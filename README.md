@@ -21,7 +21,7 @@
 ```tsx
 // App.jsx
 import React from "react";
-import { Rect, Text } from "react-tela";
+import { Group, Rect, Text } from "react-tela";
 
 export function App() {
 	return (
