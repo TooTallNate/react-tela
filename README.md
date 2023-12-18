@@ -25,12 +25,12 @@ import { Rect, Text } from "react-tela";
 
 export function App() {
 	return (
-		<>
-			<Rect width={42} height={10} fill="red" />
-			<Text fontSize={30} fill="blue">
+		<Group x={5} y={15} width={180} height={30} rotate={0.1}>
+			<Rect width="100%" height="100%" fill="purple" alpha={0.5} />
+			<Text fontSize={32} fontFamily="Geist" fill="white">
 				Hello world!
 			</Text>
-		</>
+		</Group>
 	);
 }
 ```
