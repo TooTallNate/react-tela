@@ -77,6 +77,8 @@ The word "tela" is the Portuguese word for "canvas" or "screen".
 > 1. (_de pintar_) canvas
 > 2. (_cinema_, _telecommunications_) screen
 
+Since the name `react-canvas` was already taken, using `react-tela` was a fun alternative.
+
 ## Prior Art
 
 A few other React renderes for `<canvas>` alreay exist, so why another?
