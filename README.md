@@ -1,10 +1,9 @@
-react-tela
-==========
+# react-tela
+## Use React to render images, shapes and text to `<canavs>`.
 
 > [!WARNING]
 > This package is currently under development. Expect breaking changes.
 
-Write React code to render images, shapes and text to a HTML `<canvas>` element.
 
 ### Example
 
