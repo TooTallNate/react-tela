@@ -6,8 +6,15 @@
 > This package is currently under development. Expect breaking changes.
 
 `react-tela` is a React renderer that draws components to a `<canvas>` node.
-It is designed to be low-level and unopinionated so that more high-level React
-components can be written on top.
+
+### Features
+
+-   **Low-level**
+    -   The base components expose only the main Canvas primitives (images, shapes and text)
+    -   Leverage the power of React to create high-level abstractions over the base components
+-   **Unopinionated about runtime environment**
+    -   Works in web browsers, Node.js, but was specifically created for [nx.js](https://github.com/TooTallNate/nx.js)
+    -   Never makes assumptions about anything "outside" of the provided canvas node
 
 ## Example
 
@@ -42,11 +49,21 @@ render(<App />, document.getElementById("canvas"));
 
 ```tsx
 import React from "react";
-import { render } from "@tootallnate/react-fabric/render";
+import { render } from "react-tela/render";
 import { createCanvas } from "@napi-rs/canvas";
 import { App } from "./App";
 
-render(<App />, createCanvas(300, 320));
+render(<App />, createCanvas(300, 150));
+```
+
+### In nx.js
+
+```tsx
+import React from "react";
+import { render } from "react-tela/render";
+import { App } from "./App";
+
+render(<App />, screen);
 ```
 
 ## What is "tela"?
