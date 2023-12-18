@@ -72,7 +72,7 @@ render(<App />, screen);
 
 The word "tela" is the Portuguese word for "canvas" or "screen".
 
-> **tela** > [ˈtɛla ] > **feminine noun**
+> **tela** > [ˈtɛla] (feminine noun)
 >
 > 1. (_de pintar_) canvas
 > 2. (_cinema_, _telecommunications_) screen
