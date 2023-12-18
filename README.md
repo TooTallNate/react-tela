@@ -1,12 +1,15 @@
 react-tela
 ==========
 
-Write React code to render shapes and images to a HTML `<canvas>` element.
+> [!WARNING]
+> This package is currently under development. Expect breaking changes.
+
+Write React code to render images, shapes and text to a HTML `<canvas>` element.
 
 ### Example
 
 ```tsx
-// App.tsx
+// App.jsx
 import React from 'react';
 import { Rect, Text } from 'react-tela';
 
