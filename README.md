@@ -35,6 +35,8 @@ export function App() {
 }
 ```
 
+![](./assets/example.png)
+
 ### In web browser
 
 ```tsx
@@ -66,7 +68,7 @@ import { App } from "./App";
 render(<App />, screen);
 ```
 
-## What is "tela"?
+## What is "tela"? 🇧🇷
 
 The word "tela" is the Portuguese word for "canvas" or "screen".
 
