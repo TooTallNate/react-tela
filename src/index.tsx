@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { Group as _Group, type GroupProps as _GroupProps } from './group';
 import { Rect as _Rect, type RectProps } from './rect';
+import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect';
 import { Arc as _Arc, type ArcProps } from './arc';
 import { Path as _Path, type PathProps } from './path';
 import { Image as _Image, type ImageProps } from './image';
@@ -20,13 +21,14 @@ const factory = <Ref, Props>(type: string) =>
 	);
 
 export type GroupProps = PropsWithChildren<_GroupProps>;
-export { ArcProps, RectProps, PathProps, ImageProps };
+export { ArcProps, RectProps, RoundRectProps, PathProps, ImageProps };
 
 export const Arc = factory<_Arc, ArcProps>('Arc');
 export const Group = factory<_Group, GroupProps>('Group');
 export const Image = factory<_Image, ImageProps>('Image');
 export const Path = factory<_Path, PathProps>('Path');
 export const Rect = factory<_Rect, RectProps>('Rect');
+export const RoundRect = factory<_RoundRect, RoundRectProps>('RoundRect');
 
 export type TextProps = Omit<_TextProps, 'value'> & {
 	children?: MaybeArray<string | number>;

@@ -3,6 +3,7 @@ import { Root } from './root';
 import { Arc } from './arc';
 import { Group } from './group';
 import { Rect } from './rect';
+import { RoundRect } from './round-rect';
 import { Path } from './path';
 import { Image } from './image';
 import { Text } from './text';
@@ -17,6 +18,7 @@ type Components = {
 	Image: C.ImageProps;
 	Path: C.PathProps;
 	Rect: C.RectProps;
+	RoundRect: C.RoundRectProps;
 	Text: C.TextProps;
 	//Line: C.LineProps;
 	//Circle: C.CircleProps;
@@ -100,6 +102,8 @@ const reconciler = ReactReconciler<
 			return new Path(t.props);
 		} else if (is('Rect', t)) {
 			return new Rect(t.props);
+		} else if (is('RoundRect', t)) {
+			return new RoundRect(t.props);
 		} else if (is('Text', t)) {
 			return new Text({ ...t.props, value: getText(t.props) });
 		}
