@@ -68,7 +68,7 @@ export abstract class Shape extends Entity {
 			lineJoin,
 			miterLimit,
 		} = this;
-		const ctx = root!.ctx;
+		const { ctx } = root;
 		if (typeof lineWidth === 'number') {
 			ctx.lineWidth = lineWidth;
 		}

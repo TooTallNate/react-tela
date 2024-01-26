@@ -1,4 +1,5 @@
 import type { Entity } from './entity';
+import { TelaEventTarget } from './event-target';
 
 export type Context = Omit<
 	CanvasRenderingContext2D,
@@ -7,7 +8,7 @@ export type Context = Omit<
 	canvas: { width: number; height: number };
 };
 
-export class Root {
+export class Root extends TelaEventTarget {
 	ctx: Context;
 	dirty: boolean;
 	entities: Entity[];
@@ -15,6 +16,7 @@ export class Root {
 	#rerenderId?: ReturnType<typeof requestAnimationFrame>;
 
 	constructor(ctx: Context) {
+		super();
 		this.ctx = ctx;
 		this.dirty = false;
 		this.entities = [];
@@ -24,15 +26,15 @@ export class Root {
 
 	clear() {
 		for (const e of this.entities) {
-			e.root = undefined;
+			e._root = undefined;
 		}
 		this.entities.length === 0;
 		this.queueRender();
 	}
 
 	add(entity: Entity) {
-		if (entity.root) entity.root.remove(entity);
-		entity.root = this;
+		if (entity._root) entity.root.remove(entity);
+		entity._root = this;
 		this.entities.push(entity);
 		this.queueRender();
 	}
@@ -40,7 +42,7 @@ export class Root {
 	remove(entity: Entity) {
 		const i = this.entities.indexOf(entity);
 		if (i !== -1) {
-			entity.root = undefined;
+			entity._root = undefined;
 			this.entities.splice(i, 1);
 			this.queueRender();
 		}
@@ -53,8 +55,8 @@ export class Root {
 				'Entity to insert before is not a child of this Root',
 			);
 		}
-		if (child.root) child.root.remove(child);
-		child.root = this;
+		if (child._root) child._root.remove(child);
+		child._root = this;
 		this.entities.splice(i, 0, child);
 		this.queueRender();
 	}

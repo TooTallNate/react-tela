@@ -1,19 +1,58 @@
+import { TelaEventTarget } from './event-target';
+import { STOP_PROPAGATION, parsePercent } from './util';
 import type { Root } from './root';
 import type { PercentageString } from './types';
-import { parsePercent } from './util';
 
 export type EntityProps = {
+	/**
+	 * The x (horizontal) coordinate of the entity from the top-left corner of the context.
+	 */
 	x?: number | PercentageString;
+	/**
+	 * The y (vertical) coordinate of the entity from the top-left corner of the context.
+	 */
 	y?: number | PercentageString;
+	/**
+	 * The height of the entity in pixels.
+	 */
 	width?: number | PercentageString;
+	/**
+	 * The height of the entity in pixels.
+	 */
 	height?: number | PercentageString;
+	/**
+	 * The alpha transparency value of the entity. The value `0` is fully transparent. The value `1` is fully opaque.
+	 *
+	 * @default 1.0
+	 */
 	alpha?: number;
+	/**
+	 * The rotation of the entity in degrees.
+	 *
+	 * @default 0
+	 */
 	rotate?: number;
+	/**
+	 * Scale of the entity along the x-axis.
+	 *
+	 * @default 1.0
+	 */
 	scaleX?: number;
+	/**
+	 * Scale of the entity along the y-axis.
+	 *
+	 * @default 1.0
+	 */
 	scaleY?: number;
+	/**
+	 * Fires when the user clicks the left mouse button on the entity.
+	 *
+	 * @param ev The mouse event.
+	 */
+	onClick?: (ev: MouseEvent) => any;
 };
 
-export class Entity {
+export class Entity extends TelaEventTarget {
 	x: number | PercentageString;
 	y: number | PercentageString;
 	width: number | PercentageString;
@@ -22,9 +61,12 @@ export class Entity {
 	rotate: number;
 	scaleX?: number;
 	scaleY?: number;
-	root?: Root;
+	_root?: Root;
+
+	onclick: ((ev: MouseEvent) => any) | null;
 
 	constructor(opts: EntityProps = {}) {
+		super();
 		this.x = opts.x ?? 0;
 		this.y = opts.y ?? 0;
 		this.width = opts.width ?? 0;
@@ -33,14 +75,28 @@ export class Entity {
 		this.rotate = opts.rotate ?? 0;
 		this.scaleX = opts.scaleX;
 		this.scaleY = opts.scaleY;
+		this.onclick = opts.onClick ?? null;
+	}
+
+	dispatchEvent(event: Event): boolean {
+		const r = super.dispatchEvent(event);
+		if (this._root && !(event as any)[STOP_PROPAGATION]) {
+			return this._root.dispatchEvent(event);
+		}
+		return r;
+	}
+
+	get root() {
+		const r = this._root;
+		if (!r) {
+			throw new Error(`Entity has not been added to a \`Root\` context`);
+		}
+		return r;
 	}
 
 	get calculatedX() {
 		let { x } = this;
 		if (typeof x !== 'number') {
-			if (!this.root) {
-				throw new Error('No "root"');
-			}
 			x = this.root.ctx.canvas.width * parsePercent(x);
 		}
 		return x + this.calculatedWidth / 2;
@@ -49,9 +105,6 @@ export class Entity {
 	get calculatedY() {
 		let { y } = this;
 		if (typeof y !== 'number') {
-			if (!this.root) {
-				throw new Error('No "root"');
-			}
 			y = this.root.ctx.canvas.height * parsePercent(y);
 		}
 		return y + this.calculatedHeight / 2;
@@ -61,18 +114,12 @@ export class Entity {
 		if (typeof this.width === 'number') {
 			return this.width;
 		}
-		if (!this.root) {
-			throw new Error('No "root"');
-		}
 		return this.root.ctx.canvas.width * parsePercent(this.width);
 	}
 
 	get calculatedHeight() {
 		if (typeof this.height === 'number') {
 			return this.height;
-		}
-		if (!this.root) {
-			throw new Error('No "root"');
 		}
 		return this.root.ctx.canvas.height * parsePercent(this.height);
 	}
@@ -85,6 +132,34 @@ export class Entity {
 		return -this.calculatedHeight / 2;
 	}
 
+	get matrix() {
+		const m = new DOMMatrix();
+		m.translateSelf(this.calculatedX, this.calculatedY);
+		if (typeof this.rotate === 'number') {
+			m.rotateSelf(this.rotate);
+		}
+		if (this.scaleX || this.scaleY) {
+			m.scaleSelf(this.scaleX ?? 1, this.scaleY ?? 1);
+		}
+		m.translateSelf(this.offsetX, this.offsetY);
+		return m;
+	}
+
+	isPointInPath(x: number, y: number) {
+		const { ctx } = this.root;
+		const prevMatrix = ctx.getTransform();
+		ctx.setTransform(this.matrix);
+		const result = ctx.isPointInPath(this.path, x, y);
+		ctx.setTransform(prevMatrix);
+		return result;
+	}
+
+	get path() {
+		const p = new Path2D();
+		p.rect(0, 0, this.calculatedWidth, this.calculatedHeight);
+		return p;
+	}
+
 	render() {
 		if (!this.root) {
 			throw new Error(
@@ -93,13 +168,6 @@ export class Entity {
 		}
 		const { ctx } = this.root;
 		ctx.globalAlpha = this.alpha;
-		ctx.translate(this.calculatedX, this.calculatedY);
-		if (typeof this.rotate === 'number') {
-			ctx.rotate(this.rotate);
-		}
-		if (this.scaleX || this.scaleY) {
-			ctx.scale(this.scaleX ?? 1, this.scaleY ?? 1);
-		}
-		ctx.translate(this.offsetX, this.offsetY);
+		ctx.setTransform(this.matrix);
 	}
 }

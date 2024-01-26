@@ -9,8 +9,15 @@ import { Image } from './image';
 import { Text } from './text';
 import type * as C from './index';
 import type { Entity } from './entity';
+import { STOP_PROPAGATION } from './util';
 
-type CanvasRoot = { getContext: (type: '2d') => any };
+type CanvasRoot = Partial<EventTarget> & {
+	width: number;
+	height: number;
+	clientWidth: number;
+	clientHeight: number;
+	getContext: (type: '2d') => any;
+};
 
 type Components = {
 	Arc: C.ArcProps;
@@ -178,8 +185,9 @@ const reconciler = ReactReconciler<
 			// @ts-expect-error
 			if (oldProps[k] !== newProps[k]) {
 				if (!payload) payload = {};
+				const prop = /^on[A-Z]/.test(k) ? k.toLowerCase() : k;
 				// @ts-expect-error
-				payload[k] = newProps[k];
+				payload[prop] = newProps[k];
 			}
 		}
 		if (type === 'Text') {
@@ -284,10 +292,101 @@ const reconciler = ReactReconciler<
 	},
 });
 
+function scaledCoordinates(canvas: CanvasRoot, x: number, y: number) {
+	// Get CSS size
+	const cssWidth = canvas.clientWidth;
+	const cssHeight = canvas.clientHeight;
+
+	// Get drawing buffer size
+	const bufferWidth = canvas.width;
+	const bufferHeight = canvas.height;
+
+	// Calculate the ratio
+	const widthRatio = bufferWidth / cssWidth;
+	const heightRatio = bufferHeight / cssHeight;
+
+	return { x: x * widthRatio, y: y * heightRatio };
+}
+
+function findTarget(root: Root, x: number, y: number) {
+	let target: EventTarget = root;
+	for (let i = root.entities.length - 1; i >= 0; i--) {
+		const entity = root.entities[i];
+		if (entity.isPointInPath(x, y)) {
+			target = entity;
+			break;
+		}
+	}
+	return target;
+}
+
 export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	const ctx = canvas.getContext('2d');
 	const root = new Root(ctx);
+
+	// TODO: remove
 	(window as any).root = root;
+
+	canvas.addEventListener?.('touchstart', (_event) => {
+		console.log(_event);
+		_event.preventDefault();
+		const { x, y } = scaledCoordinates(
+			canvas,
+			_event.offsetX,
+			_event.offsetY,
+		);
+		let target: EventTarget = root;
+		for (let i = root.entities.length - 1; i >= 0; i--) {
+			const entity = root.entities[i];
+			if (entity.isPointInPath(x, y)) {
+				target = entity;
+				break;
+			}
+		}
+	});
+
+	canvas.addEventListener?.('click', (_event) => {
+		const event = _event as MouseEvent;
+		const { x, y } = scaledCoordinates(
+			canvas,
+			event.offsetX,
+			event.offsetY,
+		);
+		const target = findTarget(root, x, y);
+		const ev = new MouseEvent(event.type, {
+			...event,
+			bubbles: event.bubbles,
+			cancelable: event.cancelable,
+			button: event.button,
+			buttons: event.buttons,
+			composed: event.composed,
+			ctrlKey: event.ctrlKey,
+			metaKey: event.metaKey,
+			shiftKey: event.shiftKey,
+			detail: event.detail,
+			which: event.which,
+			view: event.view,
+			clientX: x,
+			clientY: y,
+		});
+		Object.defineProperties(ev, {
+			offsetX: { value: x },
+			offsetY: { value: y },
+			stopPropagation: {
+				value: function stopPropagation() {
+					(ev as any)[STOP_PROPAGATION] = true;
+				},
+			},
+		});
+		target.dispatchEvent(ev);
+		if (ev.defaultPrevented) {
+			event.preventDefault();
+		}
+		if ((ev as any)[STOP_PROPAGATION]) {
+			event.stopPropagation();
+		}
+	});
+
 	// @ts-expect-error I don't know that's supposed to be passed here…
 	const container = reconciler.createContainer(root, false, false);
 	reconciler.updateContainer(
