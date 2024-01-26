@@ -1,5 +1,5 @@
 import { TelaEventTarget } from './event-target';
-import { STOP_PROPAGATION, parsePercent } from './util';
+import { parsePercent } from './util';
 import type { Root } from './root';
 import type { PercentageString } from './types';
 
@@ -61,12 +61,13 @@ export class Entity extends TelaEventTarget {
 	rotate: number;
 	scaleX?: number;
 	scaleY?: number;
-	_root?: Root;
+	_root: Root | null;
 
 	onclick: ((ev: MouseEvent) => any) | null;
 
 	constructor(opts: EntityProps = {}) {
 		super();
+		this._root = null;
 		this.x = opts.x ?? 0;
 		this.y = opts.y ?? 0;
 		this.width = opts.width ?? 0;
@@ -78,12 +79,8 @@ export class Entity extends TelaEventTarget {
 		this.onclick = opts.onClick ?? null;
 	}
 
-	dispatchEvent(event: Event): boolean {
-		const r = super.dispatchEvent(event);
-		if (this._root && !(event as any)[STOP_PROPAGATION]) {
-			return this._root.dispatchEvent(event);
-		}
-		return r;
+	get parentNode() {
+		return this._root;
 	}
 
 	get root() {

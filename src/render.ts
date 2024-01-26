@@ -9,7 +9,6 @@ import { Image } from './image';
 import { Text } from './text';
 import type * as C from './index';
 import type { Entity } from './entity';
-import { STOP_PROPAGATION } from './util';
 
 type CanvasRoot = Partial<EventTarget> & {
 	width: number;
@@ -327,23 +326,23 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	// TODO: remove
 	(window as any).root = root;
 
-	canvas.addEventListener?.('touchstart', (_event) => {
-		console.log(_event);
-		_event.preventDefault();
-		const { x, y } = scaledCoordinates(
-			canvas,
-			_event.offsetX,
-			_event.offsetY,
-		);
-		let target: EventTarget = root;
-		for (let i = root.entities.length - 1; i >= 0; i--) {
-			const entity = root.entities[i];
-			if (entity.isPointInPath(x, y)) {
-				target = entity;
-				break;
-			}
-		}
-	});
+	//canvas.addEventListener?.('touchstart', (_event) => {
+	//	console.log(_event);
+	//	_event.preventDefault();
+	//	const { x, y } = scaledCoordinates(
+	//		canvas,
+	//		_event.offsetX,
+	//		_event.offsetY,
+	//	);
+	//	let target: EventTarget = root;
+	//	for (let i = root.entities.length - 1; i >= 0; i--) {
+	//		const entity = root.entities[i];
+	//		if (entity.isPointInPath(x, y)) {
+	//			target = entity;
+	//			break;
+	//		}
+	//	}
+	//});
 
 	canvas.addEventListener?.('click', (_event) => {
 		const event = _event as MouseEvent;
@@ -372,17 +371,12 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 		Object.defineProperties(ev, {
 			offsetX: { value: x },
 			offsetY: { value: y },
-			stopPropagation: {
-				value: function stopPropagation() {
-					(ev as any)[STOP_PROPAGATION] = true;
-				},
-			},
 		});
 		target.dispatchEvent(ev);
 		if (ev.defaultPrevented) {
 			event.preventDefault();
 		}
-		if ((ev as any)[STOP_PROPAGATION]) {
+		if (ev.cancelBubble) {
 			event.stopPropagation();
 		}
 	});

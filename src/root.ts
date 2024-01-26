@@ -26,7 +26,7 @@ export class Root extends TelaEventTarget {
 
 	clear() {
 		for (const e of this.entities) {
-			e._root = undefined;
+			e._root = null;
 		}
 		this.entities.length === 0;
 		this.queueRender();
@@ -42,7 +42,7 @@ export class Root extends TelaEventTarget {
 	remove(entity: Entity) {
 		const i = this.entities.indexOf(entity);
 		if (i !== -1) {
-			entity._root = undefined;
+			entity._root = null;
 			this.entities.splice(i, 1);
 			this.queueRender();
 		}

@@ -1,7 +1,25 @@
+const PATCHED_EVENT = new WeakSet<Event>();
 const STOP_PROPAGATION = new WeakSet<Event>();
 
 export class TelaEventTarget extends EventTarget {
+	get parentNode(): EventTarget | null {
+		return null;
+	}
+
 	dispatchEvent(event: Event): boolean {
+		if (!PATCHED_EVENT.has(event)) {
+			// There is no standardized way to tell if an event
+			// `stopPropagation()` function was called, so define our own
+			Object.defineProperty(event, 'stopPropagation', {
+				configurable: true,
+				value: function stopPropagation() {
+					STOP_PROPAGATION.add(event);
+				},
+			});
+			PATCHED_EVENT.add(event);
+		}
+
+		// If there's an `on${type}` prop set, invoke that handler
 		const prop = `on${event.type}`;
 		const fn = (this as any)[prop];
 		if (typeof fn === 'function') {
@@ -9,6 +27,21 @@ export class TelaEventTarget extends EventTarget {
 				event.preventDefault();
 			}
 		}
-		return super.dispatchEvent(event);
+
+		const rtn = super.dispatchEvent(event);
+
+		// Ensure `cancelBubble` is set to true if `stopPropagation()` was called
+		if (!event.cancelBubble && STOP_PROPAGATION.has(event)) {
+			Object.defineProperty(event, 'cancelBubble', {
+				configurable: true,
+				value: true,
+			});
+		}
+
+		if (this.parentNode && !event.cancelBubble) {
+			return this.parentNode.dispatchEvent(event);
+		}
+
+		return rtn;
 	}
 }

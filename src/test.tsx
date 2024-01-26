@@ -21,7 +21,7 @@ function App() {
 				width={100}
 				height={100}
 				rotate={45}
-				alpha={0.5}
+				//alpha={0.5}
 				onClick={(e) => {
 					e.stopPropagation();
 					const color = `#${((Math.random() * 256) | 0)
