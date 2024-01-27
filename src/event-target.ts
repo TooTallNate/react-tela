@@ -38,7 +38,7 @@ export class TelaEventTarget extends EventTarget {
 			});
 		}
 
-		if (this.parentNode && !event.cancelBubble) {
+		if (this.parentNode && event.bubbles && !event.cancelBubble) {
 			return this.parentNode.dispatchEvent(event);
 		}
 

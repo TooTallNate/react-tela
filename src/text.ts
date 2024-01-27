@@ -57,11 +57,6 @@ export class Text extends Entity {
 			stroke,
 			root,
 		} = this;
-		if (!root) {
-			throw new Error(
-				`${this.constructor.name} instance has not been added to a root context`,
-			);
-		}
 		const { ctx } = root;
 		ctx.font = `${fontSize}px "${fontFamily}"`;
 		const bounds = ctx.measureText(value);
@@ -70,7 +65,6 @@ export class Text extends Entity {
 		super.render();
 		ctx.textAlign = textAlign;
 		ctx.textBaseline = textBaseline;
-		//console.log(bounds);
 		if (typeof lineWidth === 'number') {
 			ctx.lineWidth = lineWidth;
 		}

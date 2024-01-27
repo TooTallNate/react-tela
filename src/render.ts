@@ -9,6 +9,7 @@ import { Image } from './image';
 import { Text } from './text';
 import type * as C from './index';
 import type { Entity } from './entity';
+import { cloneMouseEvent } from './util';
 
 type CanvasRoot = Partial<EventTarget> & {
 	width: number;
@@ -326,6 +327,8 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	// TODO: remove
 	(window as any).root = root;
 
+	let mouseCurrentlyOver: EventTarget | null = null;
+
 	//canvas.addEventListener?.('touchstart', (_event) => {
 	//	console.log(_event);
 	//	_event.preventDefault();
@@ -343,8 +346,7 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	//		}
 	//	}
 	//});
-
-	canvas.addEventListener?.('click', (_event) => {
+	function doMouseEvent(_event: Event) {
 		const event = _event as MouseEvent;
 		const { x, y } = scaledCoordinates(
 			canvas,
@@ -352,26 +354,7 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 			event.offsetY,
 		);
 		const target = findTarget(root, x, y);
-		const ev = new MouseEvent(event.type, {
-			...event,
-			bubbles: event.bubbles,
-			cancelable: event.cancelable,
-			button: event.button,
-			buttons: event.buttons,
-			composed: event.composed,
-			ctrlKey: event.ctrlKey,
-			metaKey: event.metaKey,
-			shiftKey: event.shiftKey,
-			detail: event.detail,
-			which: event.which,
-			view: event.view,
-			clientX: x,
-			clientY: y,
-		});
-		Object.defineProperties(ev, {
-			offsetX: { value: x },
-			offsetY: { value: y },
-		});
+		const ev = cloneMouseEvent(event, x, y);
 		target.dispatchEvent(ev);
 		if (ev.defaultPrevented) {
 			event.preventDefault();
@@ -379,6 +362,60 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 		if (ev.cancelBubble) {
 			event.stopPropagation();
 		}
+		return target;
+	}
+	canvas.addEventListener?.('click', doMouseEvent);
+	canvas.addEventListener?.('mousemove', (e) => {
+		const event = e as MouseEvent;
+		const { x, y } = scaledCoordinates(
+			canvas,
+			event.offsetX,
+			event.offsetY,
+		);
+		const target = findTarget(root, x, y);
+
+		if (target !== mouseCurrentlyOver) {
+			if (mouseCurrentlyOver) {
+				// do "mouseleave" event
+				mouseCurrentlyOver.dispatchEvent(
+					cloneMouseEvent(event, x, y, 'mouseleave', {
+						bubbles: false,
+						cancelable: false,
+					}),
+				);
+			}
+
+			mouseCurrentlyOver = target;
+
+			// do "mouseenter" event
+			target.dispatchEvent(
+				cloneMouseEvent(event, x, y, 'mouseenter', {
+					bubbles: false,
+					cancelable: false,
+				}),
+			);
+		}
+
+		const ev = cloneMouseEvent(event, x, y);
+		target.dispatchEvent(ev);
+		if (ev.defaultPrevented) {
+			event.preventDefault();
+		}
+		if (ev.cancelBubble) {
+			event.stopPropagation();
+		}
+		return target;
+	});
+	canvas.addEventListener?.('mouseleave', (_e) => {
+		mouseCurrentlyOver = null;
+		const event = _e as MouseEvent;
+		const { x, y } = scaledCoordinates(
+			canvas,
+			event.offsetX,
+			event.offsetY,
+		);
+		const ev = cloneMouseEvent(_e as MouseEvent, x, y);
+		root.dispatchEvent(ev);
 	});
 
 	// @ts-expect-error I don't know that's supposed to be passed here…

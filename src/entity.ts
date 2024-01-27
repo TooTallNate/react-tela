@@ -50,6 +50,9 @@ export type EntityProps = {
 	 * @param ev The mouse event.
 	 */
 	onClick?: (ev: MouseEvent) => any;
+	onMouseMove?: (ev: MouseEvent) => any;
+	onMouseEnter?: (ev: MouseEvent) => any;
+	onMouseLeave?: (ev: MouseEvent) => any;
 };
 
 export class Entity extends TelaEventTarget {
@@ -64,6 +67,9 @@ export class Entity extends TelaEventTarget {
 	_root: Root | null;
 
 	onclick: ((ev: MouseEvent) => any) | null;
+	onmousemove: ((ev: MouseEvent) => any) | null;
+	onmouseenter: ((ev: MouseEvent) => any) | null;
+	onmouseleave: ((ev: MouseEvent) => any) | null;
 
 	constructor(opts: EntityProps = {}) {
 		super();
@@ -77,6 +83,9 @@ export class Entity extends TelaEventTarget {
 		this.scaleX = opts.scaleX;
 		this.scaleY = opts.scaleY;
 		this.onclick = opts.onClick ?? null;
+		this.onmousemove = opts.onMouseMove ?? null;
+		this.onmouseenter = opts.onMouseEnter ?? null;
+		this.onmouseleave = opts.onMouseLeave ?? null;
 	}
 
 	get parentNode() {
