@@ -139,6 +139,7 @@ export class Entity extends TelaEventTarget {
 	}
 
 	get matrix() {
+		// TODO: add caching
 		const m = new DOMMatrix();
 		m.translateSelf(this.calculatedX, this.calculatedY);
 		if (typeof this.rotate === 'number') {
@@ -149,6 +150,11 @@ export class Entity extends TelaEventTarget {
 		}
 		m.translateSelf(this.offsetX, this.offsetY);
 		return m;
+	}
+
+	get inverseMatrix() {
+		// TODO: add caching
+		return this.matrix.inverse();
 	}
 
 	isPointInPath(x: number, y: number) {

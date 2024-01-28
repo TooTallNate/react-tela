@@ -9,7 +9,7 @@ import { Image } from './image';
 import { Text } from './text';
 import type * as C from './index';
 import type { Entity } from './entity';
-import { cloneMouseEvent } from './util';
+import { type Point, cloneMouseEvent } from './util';
 
 type CanvasRoot = Partial<EventTarget> & {
 	width: number;
@@ -292,7 +292,7 @@ const reconciler = ReactReconciler<
 	},
 });
 
-function scaledCoordinates(canvas: CanvasRoot, x: number, y: number) {
+function scaledCoordinates(canvas: CanvasRoot, x: number, y: number): Point {
 	// Get CSS size
 	const cssWidth = canvas.clientWidth;
 	const cssHeight = canvas.clientHeight;
@@ -308,7 +308,7 @@ function scaledCoordinates(canvas: CanvasRoot, x: number, y: number) {
 	return { x: x * widthRatio, y: y * heightRatio };
 }
 
-function findTarget(root: Root, x: number, y: number) {
+function findTarget(root: Root, { x, y }: Point) {
 	let target: EventTarget = root;
 	for (let i = root.entities.length - 1; i >= 0; i--) {
 		const entity = root.entities[i];
@@ -348,13 +348,9 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	//});
 	function doMouseEvent(_event: Event) {
 		const event = _event as MouseEvent;
-		const { x, y } = scaledCoordinates(
-			canvas,
-			event.offsetX,
-			event.offsetY,
-		);
-		const target = findTarget(root, x, y);
-		const ev = cloneMouseEvent(event, x, y);
+		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
+		const target = findTarget(root, point);
+		const ev = cloneMouseEvent(event, point);
 		target.dispatchEvent(ev);
 		if (ev.defaultPrevented) {
 			event.preventDefault();
@@ -367,18 +363,14 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	canvas.addEventListener?.('click', doMouseEvent);
 	canvas.addEventListener?.('mousemove', (e) => {
 		const event = e as MouseEvent;
-		const { x, y } = scaledCoordinates(
-			canvas,
-			event.offsetX,
-			event.offsetY,
-		);
-		const target = findTarget(root, x, y);
+		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
+		const target = findTarget(root, point);
 
 		if (target !== mouseCurrentlyOver) {
 			if (mouseCurrentlyOver) {
 				// do "mouseleave" event
 				mouseCurrentlyOver.dispatchEvent(
-					cloneMouseEvent(event, x, y, 'mouseleave', {
+					cloneMouseEvent(event, point, 'mouseleave', {
 						bubbles: false,
 						cancelable: false,
 					}),
@@ -389,14 +381,14 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 
 			// do "mouseenter" event
 			target.dispatchEvent(
-				cloneMouseEvent(event, x, y, 'mouseenter', {
+				cloneMouseEvent(event, point, 'mouseenter', {
 					bubbles: false,
 					cancelable: false,
 				}),
 			);
 		}
 
-		const ev = cloneMouseEvent(event, x, y);
+		const ev = cloneMouseEvent(event, point);
 		target.dispatchEvent(ev);
 		if (ev.defaultPrevented) {
 			event.preventDefault();
@@ -409,12 +401,8 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 	canvas.addEventListener?.('mouseleave', (_e) => {
 		mouseCurrentlyOver = null;
 		const event = _e as MouseEvent;
-		const { x, y } = scaledCoordinates(
-			canvas,
-			event.offsetX,
-			event.offsetY,
-		);
-		const ev = cloneMouseEvent(_e as MouseEvent, x, y);
+		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
+		const ev = cloneMouseEvent(_e as MouseEvent, point);
 		root.dispatchEvent(ev);
 	});
 

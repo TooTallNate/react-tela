@@ -15,10 +15,13 @@ import { Text as _Text, type TextProps as _TextProps } from './text';
 
 type MaybeArray<T> = T | T[];
 
-const factory = <Ref, Props>(type: string) =>
-	forwardRef<Ref, Props>((props, ref) =>
+const factory = <Ref, Props>(type: string) => {
+	const c = forwardRef<Ref, Props>((props, ref) =>
 		createElement(type, { ...props, ref }),
 	);
+	c.displayName = type;
+	return c;
+};
 
 export type GroupProps = PropsWithChildren<_GroupProps>;
 export { ArcProps, RectProps, RoundRectProps, PathProps, ImageProps };
@@ -41,8 +44,9 @@ export type CircleProps = Omit<
 >;
 
 export const Circle = forwardRef<_Arc, CircleProps>((props, ref) => {
-	return <Arc {...props} ref={ref} startAngle={0} endAngle={2 * Math.PI} />;
+	return <Arc {...props} ref={ref} startAngle={0} endAngle={360} />;
 });
+Circle.displayName = 'Circle';
 
 //export type ImageProps = fabric.IImageOptions & {
 //	src: any;

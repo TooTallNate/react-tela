@@ -1,4 +1,5 @@
 import { Shape, type ShapeProps } from './shape';
+import { degreesToRadians } from './util';
 
 export type ArcProps = Omit<ShapeProps, 'width' | 'height'> & {
 	startAngle: number;
@@ -35,14 +36,20 @@ export class Arc extends Shape {
 		this.#radius = opts.radius;
 	}
 
-	renderShape(ctx: CanvasRenderingContext2D): undefined {
-		ctx.arc(
+	get path() {
+		const p = new Path2D();
+		p.arc(
 			this.#radius,
 			this.#radius,
 			this.radius,
-			this.startAngle,
-			this.endAngle,
+			degreesToRadians(this.startAngle),
+			degreesToRadians(this.endAngle),
 			this.counterclockwise,
 		);
+		return p;
+	}
+
+	renderShape() {
+		return this.path;
 	}
 }

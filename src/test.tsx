@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { render } from './render';
-import { Circle, Rect, Image } from './index';
+import { Circle, Rect, Image, Arc, Text } from './index';
 const c = document.getElementById('c') as HTMLCanvasElement;
 
 const randomColor = () =>
