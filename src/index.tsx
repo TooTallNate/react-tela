@@ -48,21 +48,4 @@ export const Circle = forwardRef<_Arc, CircleProps>((props, ref) => {
 });
 Circle.displayName = 'Circle';
 
-//export type ImageProps = fabric.IImageOptions & {
-//	src: any;
-//};
-//export const Image = factory<fabric.Image, ImageProps>('Image');
-
-//export type TextProps = fabric.ITextOptions & {
-//	children?: MaybeArray<string | number>;
-//};
-//export const Text = factory<fabric.Text, TextProps>('Text');
-
-//export type PathProps = fabric.IPathOptions & { d: string };
-//export const Path = factory<fabric.Path, PathProps>('Path');
-
-//export const FabricContext = createContext<typeof fabric | null>(null);
-//
-//export function useFabric() {
-//	return useContext(FabricContext)!;
-//}
+export { useRoot } from './hooks/use-root';

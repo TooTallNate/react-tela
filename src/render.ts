@@ -1,3 +1,4 @@
+import { createElement } from 'react';
 import ReactReconciler from 'react-reconciler';
 import { Root } from './root';
 import { Arc } from './arc';
@@ -402,14 +403,14 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 		mouseCurrentlyOver = null;
 		const event = _e as MouseEvent;
 		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
-		const ev = cloneMouseEvent(_e as MouseEvent, point);
+		const ev = cloneMouseEvent(_e as MouseEvent, point, point);
 		root.dispatchEvent(ev);
 	});
 
 	// @ts-expect-error I don't know that's supposed to be passed here…
 	const container = reconciler.createContainer(root, false, false);
 	reconciler.updateContainer(
-		app /*createElement(FabricContext.Provider, { value: fabric }, app) */,
+		createElement(RootContext.Provider, { value: root }, app),
 		container,
 		null,
 		null,
