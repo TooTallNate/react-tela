@@ -1,5 +1,4 @@
 import React from 'react';
-import { fabric } from 'fabric';
 import { createCanvas } from 'canvas';
 import { render } from '../src/render';
 import { StaticCanvas, Text, Rect } from '../src';

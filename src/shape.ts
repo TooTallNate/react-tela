@@ -88,19 +88,17 @@ export abstract class Shape extends Entity {
 			ctx.miterLimit = miterLimit;
 		}
 		ctx.beginPath();
-		const shape = this.renderShape(ctx);
+		const path = this.path;
 		if (clip || clipRule) {
-			shape ? ctx.clip(shape, clipRule) : ctx.clip(clipRule);
+			ctx.clip(path, clipRule);
 		}
 		if (fill) {
 			ctx.fillStyle = fill;
-			shape ? ctx.fill(shape, fillRule) : ctx.fill(fillRule);
+			ctx.fill(path, fillRule);
 		}
 		if (stroke) {
 			ctx.strokeStyle = stroke;
-			shape ? ctx.stroke(shape) : ctx.stroke();
+			ctx.stroke(path);
 		}
 	}
-
-	abstract renderShape(ctx: Context): Path2D | undefined;
 }

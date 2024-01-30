@@ -1,7 +1,7 @@
 import { TelaEventTarget } from './event-target';
 import { parsePercent } from './util';
 import type { Root } from './root';
-import type { PercentageString } from './types';
+import type { PercentageString, TelaMouseEvent } from './types';
 
 export type EntityProps = {
 	/**
@@ -49,10 +49,12 @@ export type EntityProps = {
 	 *
 	 * @param ev The mouse event.
 	 */
-	onClick?: (ev: MouseEvent) => any;
-	onMouseMove?: (ev: MouseEvent) => any;
-	onMouseEnter?: (ev: MouseEvent) => any;
-	onMouseLeave?: (ev: MouseEvent) => any;
+	onClick?: (ev: TelaMouseEvent) => any;
+	onMouseDown?: (ev: TelaMouseEvent) => any;
+	onMouseUp?: (ev: TelaMouseEvent) => any;
+	onMouseMove?: (ev: TelaMouseEvent) => any;
+	onMouseEnter?: (ev: TelaMouseEvent) => any;
+	onMouseLeave?: (ev: TelaMouseEvent) => any;
 };
 
 export class Entity extends TelaEventTarget {
@@ -66,10 +68,12 @@ export class Entity extends TelaEventTarget {
 	scaleY?: number;
 	_root: Root | null;
 
-	onclick: ((ev: MouseEvent) => any) | null;
-	onmousemove: ((ev: MouseEvent) => any) | null;
-	onmouseenter: ((ev: MouseEvent) => any) | null;
-	onmouseleave: ((ev: MouseEvent) => any) | null;
+	onclick: ((ev: TelaMouseEvent) => any) | null;
+	onmousedown: ((ev: TelaMouseEvent) => any) | null;
+	onmouseup: ((ev: TelaMouseEvent) => any) | null;
+	onmousemove: ((ev: TelaMouseEvent) => any) | null;
+	onmouseenter: ((ev: TelaMouseEvent) => any) | null;
+	onmouseleave: ((ev: TelaMouseEvent) => any) | null;
 
 	constructor(opts: EntityProps = {}) {
 		super();
@@ -86,6 +90,8 @@ export class Entity extends TelaEventTarget {
 		this.onmousemove = opts.onMouseMove ?? null;
 		this.onmouseenter = opts.onMouseEnter ?? null;
 		this.onmouseleave = opts.onMouseLeave ?? null;
+		this.onmousedown = opts.onMouseDown ?? null;
+		this.onmouseup = opts.onMouseUp ?? null;
 	}
 
 	get parentNode() {

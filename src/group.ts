@@ -19,7 +19,7 @@ export class Group extends Entity {
 	render(): void {
 		super.render();
 		this.subroot.render();
-		this.root?.ctx.drawImage(
+		this.root.ctx.drawImage(
 			this.subcanvas,
 			0,
 			0,
@@ -39,6 +39,6 @@ class GroupRoot extends Root {
 
 	queueRender(): void {
 		this.dirty = true;
-		this.#group.root?.queueRender();
+		this.#group._root?.queueRender();
 	}
 }

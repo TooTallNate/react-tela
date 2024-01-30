@@ -10,6 +10,11 @@ export class Path extends Shape {
 	#d!: string;
 	#path!: Path2D;
 
+	constructor(opts: PathProps) {
+		super(opts);
+		this.d = opts.d;
+	}
+
 	get d() {
 		return this.#d;
 	}
@@ -25,12 +30,7 @@ export class Path extends Shape {
 		this.#path = new Path2D(modified);
 	}
 
-	constructor(opts: PathProps) {
-		super(opts);
-		this.d = opts.d;
-	}
-
-	renderShape(): Path2D {
+	get path() {
 		return this.#path;
 	}
 }

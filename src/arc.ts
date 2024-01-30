@@ -48,8 +48,4 @@ export class Arc extends Shape {
 		);
 		return p;
 	}
-
-	renderShape() {
-		return this.path;
-	}
 }

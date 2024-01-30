@@ -1,9 +1,4 @@
-import type { PercentageString } from './types';
-
-export interface Point {
-	x: number;
-	y: number;
-}
+import type { PercentageString, Point } from './types';
 
 export function parsePercent(str: PercentageString) {
 	return parseFloat(str.slice(0, -1)) / 100;
@@ -11,9 +6,10 @@ export function parsePercent(str: PercentageString) {
 
 export function cloneMouseEvent(
 	e: MouseEvent,
-	{ x, y }: Point,
+	client: Point,
+	layer: Point,
 	type = e.type,
-	extra?: MouseEventInit,
+	init?: MouseEventInit,
 ) {
 	const clone = new MouseEvent(type, {
 		...e,
@@ -28,16 +24,16 @@ export function cloneMouseEvent(
 		detail: e.detail,
 		which: e.which,
 		view: e.view,
-		...extra,
-		clientX: x,
-		clientY: y,
+		...init,
+		clientX: client.x,
+		clientY: client.y,
 	});
-	if (extra) {
-		Object.defineProperties(clone, {
-			offsetX: { value: x, configurable: true },
-			offsetY: { value: y, configurable: true },
-		});
-	}
+	Object.defineProperties(clone, {
+		offsetX: { value: client.x, configurable: true },
+		offsetY: { value: client.y, configurable: true },
+		layerX: { value: layer.x, configurable: true },
+		layerY: { value: layer.y, configurable: true },
+	});
 	return clone;
 }
 

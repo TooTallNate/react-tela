@@ -33,7 +33,7 @@ export class Root extends TelaEventTarget {
 	}
 
 	add(entity: Entity) {
-		if (entity._root) entity.root.remove(entity);
+		if (entity._root) entity._root.remove(entity);
 		entity._root = this;
 		this.entities.push(entity);
 		this.queueRender();
@@ -81,6 +81,8 @@ export class Root extends TelaEventTarget {
 	queueRender() {
 		if (!this.#rerenderId) {
 			this.dirty = true;
+			//queueMicrotask(this.render);
+			//this.#rerenderId = 1;
 			this.#rerenderId = requestAnimationFrame(this.render);
 		}
 	}

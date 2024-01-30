@@ -8,9 +8,11 @@ import { RoundRect } from './round-rect';
 import { Path } from './path';
 import { Image } from './image';
 import { Text } from './text';
+import { Entity } from './entity';
+import { cloneMouseEvent } from './util';
+import { RootContext } from './hooks/use-root';
 import type * as C from './index';
-import type { Entity } from './entity';
-import { type Point, cloneMouseEvent } from './util';
+import type { Point } from './types';
 
 type CanvasRoot = Partial<EventTarget> & {
 	width: number;
@@ -125,13 +127,13 @@ const reconciler = ReactReconciler<
 		//console.log("appendInitialChild", { parentInstance, child });
 		assertIsGroup(parentInstance);
 		parentInstance.subroot.add(child);
-		parentInstance.root?.queueRender();
+		parentInstance._root?.queueRender();
 	},
 	appendChild(parentInstance, child) {
 		//console.log('appendChild', { parentInstance, child });
 		assertIsGroup(parentInstance);
 		parentInstance.subroot.add(child);
-		parentInstance.root?.queueRender();
+		parentInstance._root?.queueRender();
 	},
 	appendChildToContainer(container, child) {
 		//console.log("appendChildToContainer", { child });
@@ -146,7 +148,7 @@ const reconciler = ReactReconciler<
 		//});
 		assertIsGroup(parentInstance);
 		parentInstance.subroot.insertBefore(child, beforeChild);
-		parentInstance.root?.queueRender();
+		parentInstance._root?.queueRender();
 	},
 	insertInContainerBefore(root, child, beforeChild) {
 		//console.log("insertInContainerBefore", { child, beforeChild });
@@ -214,9 +216,7 @@ const reconciler = ReactReconciler<
 	commitUpdate(instance, payload) {
 		//console.log("commitUpdate", { instance, payload });
 		Object.assign(instance, payload);
-		if (instance.root) {
-			instance.root.queueRender();
-		}
+		instance._root?.queueRender();
 	},
 	commitTextUpdate(instance, oldText, newText) {
 		console.log('commitTextUpdate', { instance, oldText, newText });
@@ -293,6 +293,12 @@ const reconciler = ReactReconciler<
 	},
 });
 
+reconciler.injectIntoDevTools({
+	bundleType: true ? 1 : 0,
+	rendererPackageName: 'react-tela',
+	version: '0.0.0',
+});
+
 function scaledCoordinates(canvas: CanvasRoot, x: number, y: number): Point {
 	// Get CSS size
 	const cssWidth = canvas.clientWidth;
@@ -310,7 +316,7 @@ function scaledCoordinates(canvas: CanvasRoot, x: number, y: number): Point {
 }
 
 function findTarget(root: Root, { x, y }: Point) {
-	let target: EventTarget = root;
+	let target: Root | Entity = root;
 	for (let i = root.entities.length - 1; i >= 0; i--) {
 		const entity = root.entities[i];
 		if (entity.isPointInPath(x, y)) {
@@ -319,6 +325,12 @@ function findTarget(root: Root, { x, y }: Point) {
 		}
 	}
 	return target;
+}
+
+function getLayer(target: Root | Entity, point: Point) {
+	return target instanceof Root
+		? point
+		: target.inverseMatrix.transformPoint(point);
 }
 
 export function render(app: React.JSX.Element, canvas: CanvasRoot) {
@@ -351,7 +363,8 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 		const event = _event as MouseEvent;
 		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
 		const target = findTarget(root, point);
-		const ev = cloneMouseEvent(event, point);
+		const layer = getLayer(target, point);
+		const ev = cloneMouseEvent(event, point, layer);
 		target.dispatchEvent(ev);
 		if (ev.defaultPrevented) {
 			event.preventDefault();
@@ -362,16 +375,19 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 		return target;
 	}
 	canvas.addEventListener?.('click', doMouseEvent);
+	canvas.addEventListener?.('mousedown', doMouseEvent);
+	canvas.addEventListener?.('mouseup', doMouseEvent);
 	canvas.addEventListener?.('mousemove', (e) => {
 		const event = e as MouseEvent;
 		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
 		const target = findTarget(root, point);
+		const layer = getLayer(target, point);
 
 		if (target !== mouseCurrentlyOver) {
 			if (mouseCurrentlyOver) {
 				// do "mouseleave" event
 				mouseCurrentlyOver.dispatchEvent(
-					cloneMouseEvent(event, point, 'mouseleave', {
+					cloneMouseEvent(event, point, layer, 'mouseleave', {
 						bubbles: false,
 						cancelable: false,
 					}),
@@ -382,14 +398,14 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 
 			// do "mouseenter" event
 			target.dispatchEvent(
-				cloneMouseEvent(event, point, 'mouseenter', {
+				cloneMouseEvent(event, point, layer, 'mouseenter', {
 					bubbles: false,
 					cancelable: false,
 				}),
 			);
 		}
 
-		const ev = cloneMouseEvent(event, point);
+		const ev = cloneMouseEvent(event, point, layer);
 		target.dispatchEvent(ev);
 		if (ev.defaultPrevented) {
 			event.preventDefault();

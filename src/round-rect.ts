@@ -12,13 +12,15 @@ export class RoundRect extends Shape {
 		this.radii = opts.radii;
 	}
 
-	renderShape(ctx: CanvasRenderingContext2D): undefined {
-		ctx.roundRect(
+	get path() {
+		const p = new Path2D();
+		p.roundRect(
 			0,
 			0,
 			this.calculatedWidth,
 			this.calculatedHeight,
 			this.radii,
 		);
+		return p;
 	}
 }
