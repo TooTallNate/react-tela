@@ -37,7 +37,7 @@ export class Arc extends Shape {
 	}
 
 	get path() {
-		const p = new Path2D();
+		const p = new this.root.Path2D();
 		p.arc(
 			this.#radius,
 			this.#radius,

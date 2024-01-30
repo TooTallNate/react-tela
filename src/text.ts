@@ -3,6 +3,7 @@ import { Entity, EntityProps } from './entity';
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	value: string;
 	fontFamily?: string;
+	fontWeight?: string;
 	fontSize?: number;
 	fill?: string;
 	stroke?: string;
@@ -13,6 +14,7 @@ export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 
 export class Text extends Entity {
 	fontFamily?: string;
+	fontWeight?: string;
 	fontSize?: number;
 	#value!: string;
 	fill?: string;
@@ -37,6 +39,7 @@ export class Text extends Entity {
 		});
 		this.value = opts.value;
 		this.fontFamily = opts.fontFamily;
+		this.fontWeight = opts.fontWeight;
 		this.fontSize = opts.fontSize;
 		this.fill = opts.fill;
 		this.stroke = opts.stroke;
@@ -49,6 +52,7 @@ export class Text extends Entity {
 		let {
 			value,
 			fontFamily = 'sans-serif',
+			fontWeight = '',
 			fontSize = 24,
 			lineWidth,
 			textAlign,
@@ -58,7 +62,7 @@ export class Text extends Entity {
 			root,
 		} = this;
 		const { ctx } = root;
-		ctx.font = `${fontSize}px "${fontFamily}"`;
+		ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
 		const bounds = ctx.measureText(value);
 		this.width = bounds.width;
 		this.height = fontSize;

@@ -146,6 +146,7 @@ export class Entity extends TelaEventTarget {
 
 	get matrix() {
 		// TODO: add caching
+		const { DOMMatrix } = this.root;
 		const m = new DOMMatrix();
 		m.translateSelf(this.calculatedX, this.calculatedY);
 		if (typeof this.rotate === 'number') {
@@ -173,7 +174,7 @@ export class Entity extends TelaEventTarget {
 	}
 
 	get path() {
-		const p = new Path2D();
+		const p = new this.root.Path2D();
 		p.rect(0, 0, this.calculatedWidth, this.calculatedHeight);
 		return p;
 	}

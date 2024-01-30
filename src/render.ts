@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import ReactReconciler from 'react-reconciler';
-import { Root } from './root';
+import { Root, type RootParams } from './root';
 import { Arc } from './arc';
 import { Group } from './group';
 import { Rect } from './rect';
@@ -12,15 +12,7 @@ import { Entity } from './entity';
 import { cloneMouseEvent } from './util';
 import { RootContext } from './hooks/use-root';
 import type * as C from './index';
-import type { Point } from './types';
-
-type CanvasRoot = Partial<EventTarget> & {
-	width: number;
-	height: number;
-	clientWidth: number;
-	clientHeight: number;
-	getContext: (type: '2d') => any;
-};
+import type { ICanvas, Point } from './types';
 
 type Components = {
 	Arc: C.ArcProps;
@@ -299,10 +291,10 @@ reconciler.injectIntoDevTools({
 	version: '0.0.0',
 });
 
-function scaledCoordinates(canvas: CanvasRoot, x: number, y: number): Point {
+function scaledCoordinates(canvas: ICanvas, x: number, y: number): Point {
 	// Get CSS size
-	const cssWidth = canvas.clientWidth;
-	const cssHeight = canvas.clientHeight;
+	const cssWidth = canvas.clientWidth ?? canvas.width;
+	const cssHeight = canvas.clientHeight ?? canvas.height;
 
 	// Get drawing buffer size
 	const bufferWidth = canvas.width;
@@ -333,12 +325,19 @@ function getLayer(target: Root | Entity, point: Point) {
 		: target.inverseMatrix.transformPoint(point);
 }
 
-export function render(app: React.JSX.Element, canvas: CanvasRoot) {
+export function render(
+	app: React.JSX.Element,
+	canvas: ICanvas,
+	opts?: RootParams,
+) {
 	const ctx = canvas.getContext('2d');
-	const root = new Root(ctx);
+	if (!ctx) {
+		throw new TypeError(`canvas.getContext('2d') returned: ${ctx}`);
+	}
+	const root = new Root(ctx, opts);
 
 	// TODO: remove
-	(window as any).root = root;
+	(globalThis as any).root = root;
 
 	let mouseCurrentlyOver: EventTarget | null = null;
 
@@ -431,4 +430,6 @@ export function render(app: React.JSX.Element, canvas: CanvasRoot) {
 		null,
 		null,
 	);
+
+	return root;
 }

@@ -1,5 +1,5 @@
 import { Entity, EntityProps } from './entity';
-import type { PercentageString } from './types';
+import type { IImage, PercentageString } from './types';
 
 export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
 	src: string;
@@ -13,7 +13,7 @@ export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
 
 export class Image extends Entity {
 	#src: string;
-	image?: HTMLImageElement;
+	image?: IImage;
 	sx?: number;
 	sy?: number;
 	sw?: number;
@@ -52,7 +52,7 @@ export class Image extends Entity {
 			);
 		}
 		if (!image) {
-			image = this.image = root.createImage();
+			image = this.image = new root.Image();
 			image.onload = this.#onload.bind(this);
 			image.src = this.src;
 		}

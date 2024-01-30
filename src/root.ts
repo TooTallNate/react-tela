@@ -1,27 +1,51 @@
-import type { Entity } from './entity';
 import { TelaEventTarget } from './event-target';
+import type { Entity } from './entity';
+import type {
+	IDOMMatrix,
+	ICanvas,
+	IImage,
+	IPath2D,
+	ICanvasRenderingContext2D,
+} from './types';
 
-export type Context = Omit<
-	CanvasRenderingContext2D,
-	'getContextAttributes' | 'drawFocusIfNeeded' | 'canvas'
-> & {
-	canvas: { width: number; height: number };
-};
+export interface RootParams {
+	createCanvas?: (w: number, h: number) => ICanvas;
+	DOMMatrix?: new (init?: string | number[] | undefined) => IDOMMatrix;
+	Image?: new () => IImage;
+	Path2D?: new (path?: string) => IPath2D;
+}
 
 export class Root extends TelaEventTarget {
-	ctx: Context;
+	ctx: ICanvasRenderingContext2D;
 	dirty: boolean;
 	entities: Entity[];
 	renderCount: number;
 	#rerenderId?: ReturnType<typeof requestAnimationFrame>;
+	DOMMatrix: new (init?: string | number[] | undefined) => IDOMMatrix;
+	Image: new () => IImage;
+	Path2D: new (path?: string) => IPath2D;
 
-	constructor(ctx: Context) {
+	constructor(ctx: ICanvasRenderingContext2D, opts: RootParams = {}) {
 		super();
 		this.ctx = ctx;
 		this.dirty = false;
 		this.entities = [];
 		this.render = this.render.bind(this);
 		this.renderCount = 0;
+		this.DOMMatrix = opts.DOMMatrix || DOMMatrix;
+		this.Path2D = opts.Path2D || Path2D;
+		this.Image = opts.Image || Image;
+		if (opts.createCanvas) this.createCanvas = opts.createCanvas;
+	}
+
+	then(r?: (value: Event) => void) {
+		if (r) {
+			this.addEventListener('render', r, { once: true });
+		}
+	}
+
+	createCanvas(width: number, height: number): ICanvas {
+		return new OffscreenCanvas(width, height);
 	}
 
 	clear() {
@@ -75,23 +99,16 @@ export class Root extends TelaEventTarget {
 			ctx.restore();
 		}
 		this.dirty = false;
+		this.dispatchEvent(new Event('render'));
 		//console.log(`${this.constructor.name} Render End`);
 	}
 
 	queueRender() {
 		if (!this.#rerenderId) {
 			this.dirty = true;
-			//queueMicrotask(this.render);
-			//this.#rerenderId = 1;
-			this.#rerenderId = requestAnimationFrame(this.render);
+			queueMicrotask(this.render);
+			this.#rerenderId = 1;
+			//this.#rerenderId = requestAnimationFrame(this.render);
 		}
-	}
-
-	createCanvas() {
-		return new OffscreenCanvas(0, 0);
-	}
-
-	createImage() {
-		return new Image();
 	}
 }

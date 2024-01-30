@@ -1,5 +1,4 @@
 import { Entity, type EntityProps } from './entity';
-import { Context } from './root';
 
 export interface ShapeProps extends EntityProps {
 	clip?: boolean;

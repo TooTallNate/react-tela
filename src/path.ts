@@ -1,6 +1,7 @@
 // @ts-expect-error No types for "parse-svg-path"
 import parseSvgPath from 'parse-svg-path';
 import { Shape, type ShapeProps } from './shape.js';
+import { IPath2D } from './types.js';
 
 export type PathProps = ShapeProps & {
 	d: string;
@@ -8,7 +9,7 @@ export type PathProps = ShapeProps & {
 
 export class Path extends Shape {
 	#d!: string;
-	#path!: Path2D;
+	#path!: IPath2D;
 
 	constructor(opts: PathProps) {
 		super(opts);
@@ -27,7 +28,7 @@ export class Path extends Shape {
 		// TODO: map absolute coordinates to relative
 		//console.log({ parsed, v, modified });
 		this.#d = modified;
-		this.#path = new Path2D(modified);
+		this.#path = new this.root.Path2D(modified);
 	}
 
 	get path() {

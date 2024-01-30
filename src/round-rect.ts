@@ -13,7 +13,7 @@ export class RoundRect extends Shape {
 	}
 
 	get path() {
-		const p = new Path2D();
+		const p = new this.root.Path2D();
 		p.roundRect(
 			0,
 			0,

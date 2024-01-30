@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { render } from './render';
 import { Circle, Group, Rect, Image, Arc, Text, useRoot, Path } from './index';
-const c = document.getElementById('c') as HTMLCanvasElement;
+const canvas = document.getElementById('c') as HTMLCanvasElement;
 
 const randomColor = () =>
 	`#${((Math.random() * 256) | 0).toString(16).padStart(2, '0')}${(
@@ -23,9 +23,11 @@ function App() {
 	const [stroke3, setStroke3] = useState<string | undefined>();
 	const [color, setColor] = useState('red');
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setRotation((r) => r + 1);
-		}, 15);
+		function frame() {
+			setRotation((r) => r + 10);
+			requestAnimationFrame(frame);
+		}
+		//frame();
 	}, []);
 	useEffect(() => {
 		root.addEventListener('mouseup', () => {
@@ -106,8 +108,8 @@ function App() {
         C22.602,0.567,25.338,0.567,26.285,2.486z"
 				fill="#ED8A19"
 				rotate={rotation}
-				scaleX={5}
-				scaleY={5}
+				scaleX={1}
+				scaleY={1}
 				stroke={stroke3}
 				lineWidth={1.5}
 				onMouseEnter={(e) => {
@@ -129,4 +131,4 @@ document.getElementById('parent')!.ontouchstart = (e) => {
 	console.log(e);
 };
 
-render(<App />, c);
+render(<App />, canvas);

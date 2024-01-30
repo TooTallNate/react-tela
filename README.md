@@ -47,17 +47,6 @@ import { App } from "./App";
 render(<App />, document.getElementById("canvas"));
 ```
 
-### In Node.js
-
-```tsx
-import React from "react";
-import { render } from "react-tela/render";
-import { createCanvas } from "@napi-rs/canvas";
-import { App } from "./App";
-
-render(<App />, createCanvas(300, 150));
-```
-
 ### In nx.js
 
 ```tsx
@@ -66,6 +55,25 @@ import { render } from "react-tela/render";
 import { App } from "./App";
 
 render(<App />, screen);
+```
+
+### In Node.js
+
+```tsx
+import React from "react";
+import { render } from "react-tela/render";
+import { DOMMatrix, Image, Path2D, createCanvas } from "@napi-rs/canvas";
+import { App } from "./App";
+
+const canvas = createCanvas(300, 150);
+await render(<App />, canvas, {
+	Image,
+	Path2D,
+	DOMMatrix,
+});
+
+const buffer = canvas.toBuffer("image/png");
+// … do something with PNG `buffer`
 ```
 
 ## What is "tela"? 🇧🇷

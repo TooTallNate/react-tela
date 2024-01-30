@@ -1,11 +1,12 @@
 import { Entity, EntityProps } from './entity';
-import { type Context, Root } from './root';
+import { Root } from './root';
+import type { ICanvas, ICanvasRenderingContext2D } from './types';
 
 export interface GroupProps extends EntityProps {}
 
 export class Group extends Entity {
 	subroot: Root;
-	subcanvas: OffscreenCanvas;
+	subcanvas: ICanvas;
 
 	constructor(opts: GroupProps) {
 		super(opts);
@@ -32,7 +33,7 @@ export class Group extends Entity {
 class GroupRoot extends Root {
 	#group: Group;
 
-	constructor(ctx: Context, group: Group) {
+	constructor(ctx: ICanvasRenderingContext2D, group: Group) {
 		super(ctx);
 		this.#group = group;
 	}
