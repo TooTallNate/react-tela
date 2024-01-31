@@ -46,11 +46,6 @@ export class Image extends Entity {
 	render(): void {
 		super.render();
 		let { image, root } = this;
-		if (!root) {
-			throw new Error(
-				`${this.constructor.name} instance has not been added to a root context`,
-			);
-		}
 		if (!image) {
 			image = this.image = new root.Image();
 			image.onload = this.#onload.bind(this);

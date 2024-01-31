@@ -19,6 +19,8 @@ export class TelaEventTarget extends EventTarget {
 			PATCHED_EVENT.add(event);
 		}
 
+		const rtn = super.dispatchEvent(event);
+
 		// If there's an `on${type}` prop set, invoke that handler
 		const prop = `on${event.type}`;
 		const fn = (this as any)[prop];
@@ -27,8 +29,6 @@ export class TelaEventTarget extends EventTarget {
 				event.preventDefault();
 			}
 		}
-
-		const rtn = super.dispatchEvent(event);
 
 		// Ensure `cancelBubble` is set to true if `stopPropagation()` was called
 		if (!event.cancelBubble && STOP_PROPAGATION.has(event)) {

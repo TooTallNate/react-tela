@@ -1,6 +1,8 @@
+import { Root, RootParams } from './root';
 import { Entity, EntityProps } from './entity';
-import { Root } from './root';
 import type { ICanvas, ICanvasRenderingContext2D } from './types';
+import { findTarget, getLayer } from './util';
+import { proxyEvents } from './events';
 
 export interface GroupProps extends EntityProps {}
 
@@ -8,13 +10,18 @@ export class Group extends Entity {
 	subroot: Root;
 	subcanvas: ICanvas;
 
-	constructor(opts: GroupProps) {
+	constructor(opts: GroupProps, root: Root) {
 		super(opts);
-		this.subcanvas = new OffscreenCanvas(
+		this.subcanvas = root.createCanvas(
 			this.calculatedWidth,
 			this.calculatedHeight,
 		);
-		this.subroot = new GroupRoot(this.subcanvas.getContext('2d')!, this);
+		const ctx = this.subcanvas.getContext('2d');
+		if (!ctx) {
+			throw new Error();
+		}
+		this.subroot = new GroupRoot(ctx, this, root);
+		proxyEvents(this, this.subroot, false);
 	}
 
 	render(): void {
@@ -33,8 +40,12 @@ export class Group extends Entity {
 class GroupRoot extends Root {
 	#group: Group;
 
-	constructor(ctx: ICanvasRenderingContext2D, group: Group) {
-		super(ctx);
+	constructor(
+		ctx: ICanvasRenderingContext2D,
+		group: Group,
+		opts: RootParams,
+	) {
+		super(ctx, opts);
 		this.#group = group;
 	}
 

@@ -9,10 +9,11 @@ import { Path } from './path';
 import { Image } from './image';
 import { Text } from './text';
 import { Entity } from './entity';
-import { cloneMouseEvent } from './util';
 import { RootContext } from './hooks/use-root';
+import { cloneMouseEvent, findTarget, getLayer } from './util';
 import type * as C from './index';
 import type { ICanvas, Point } from './types';
+import { proxyEvents } from './events';
 
 type Components = {
 	Arc: C.ArcProps;
@@ -93,9 +94,9 @@ const reconciler = ReactReconciler<
 	supportsPersistence: false,
 	createInstance(type, props, root) {
 		const t = { type, props };
-		//console.log('createInstance', t);
+		//console.log('createInstance', t, root);
 		if (is('Group', t)) {
-			return new Group(t.props);
+			return new Group(t.props, root);
 		} else if (is('Arc', t)) {
 			return new Arc(t.props);
 		} else if (is('Image', t)) {
@@ -291,40 +292,6 @@ reconciler.injectIntoDevTools({
 	version: '0.0.0',
 });
 
-function scaledCoordinates(canvas: ICanvas, x: number, y: number): Point {
-	// Get CSS size
-	const cssWidth = canvas.clientWidth ?? canvas.width;
-	const cssHeight = canvas.clientHeight ?? canvas.height;
-
-	// Get drawing buffer size
-	const bufferWidth = canvas.width;
-	const bufferHeight = canvas.height;
-
-	// Calculate the ratio
-	const widthRatio = bufferWidth / cssWidth;
-	const heightRatio = bufferHeight / cssHeight;
-
-	return { x: x * widthRatio, y: y * heightRatio };
-}
-
-function findTarget(root: Root, { x, y }: Point) {
-	let target: Root | Entity = root;
-	for (let i = root.entities.length - 1; i >= 0; i--) {
-		const entity = root.entities[i];
-		if (entity.isPointInPath(x, y)) {
-			target = entity;
-			break;
-		}
-	}
-	return target;
-}
-
-function getLayer(target: Root | Entity, point: Point) {
-	return target instanceof Root
-		? point
-		: target.inverseMatrix.transformPoint(point);
-}
-
 export function render(
 	app: React.JSX.Element,
 	canvas: ICanvas,
@@ -339,88 +306,9 @@ export function render(
 	// TODO: remove
 	(globalThis as any).root = root;
 
-	let mouseCurrentlyOver: EventTarget | null = null;
-
-	//canvas.addEventListener?.('touchstart', (_event) => {
-	//	console.log(_event);
-	//	_event.preventDefault();
-	//	const { x, y } = scaledCoordinates(
-	//		canvas,
-	//		_event.offsetX,
-	//		_event.offsetY,
-	//	);
-	//	let target: EventTarget = root;
-	//	for (let i = root.entities.length - 1; i >= 0; i--) {
-	//		const entity = root.entities[i];
-	//		if (entity.isPointInPath(x, y)) {
-	//			target = entity;
-	//			break;
-	//		}
-	//	}
-	//});
-	function doMouseEvent(_event: Event) {
-		const event = _event as MouseEvent;
-		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
-		const target = findTarget(root, point);
-		const layer = getLayer(target, point);
-		const ev = cloneMouseEvent(event, point, layer);
-		target.dispatchEvent(ev);
-		if (ev.defaultPrevented) {
-			event.preventDefault();
-		}
-		if (ev.cancelBubble) {
-			event.stopPropagation();
-		}
-		return target;
+	if (canvas.addEventListener) {
+		proxyEvents(canvas as EventTarget, root, true);
 	}
-	canvas.addEventListener?.('click', doMouseEvent);
-	canvas.addEventListener?.('mousedown', doMouseEvent);
-	canvas.addEventListener?.('mouseup', doMouseEvent);
-	canvas.addEventListener?.('mousemove', (e) => {
-		const event = e as MouseEvent;
-		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
-		const target = findTarget(root, point);
-		const layer = getLayer(target, point);
-
-		if (target !== mouseCurrentlyOver) {
-			if (mouseCurrentlyOver) {
-				// do "mouseleave" event
-				mouseCurrentlyOver.dispatchEvent(
-					cloneMouseEvent(event, point, layer, 'mouseleave', {
-						bubbles: false,
-						cancelable: false,
-					}),
-				);
-			}
-
-			mouseCurrentlyOver = target;
-
-			// do "mouseenter" event
-			target.dispatchEvent(
-				cloneMouseEvent(event, point, layer, 'mouseenter', {
-					bubbles: false,
-					cancelable: false,
-				}),
-			);
-		}
-
-		const ev = cloneMouseEvent(event, point, layer);
-		target.dispatchEvent(ev);
-		if (ev.defaultPrevented) {
-			event.preventDefault();
-		}
-		if (ev.cancelBubble) {
-			event.stopPropagation();
-		}
-		return target;
-	});
-	canvas.addEventListener?.('mouseleave', (_e) => {
-		mouseCurrentlyOver = null;
-		const event = _e as MouseEvent;
-		const point = scaledCoordinates(canvas, event.offsetX, event.offsetY);
-		const ev = cloneMouseEvent(_e as MouseEvent, point, point);
-		root.dispatchEvent(ev);
-	});
 
 	// @ts-expect-error I don't know that's supposed to be passed here…
 	const container = reconciler.createContainer(root, false, false);

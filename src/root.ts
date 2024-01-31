@@ -10,7 +10,7 @@ import type {
 
 export interface RootParams {
 	createCanvas?: (w: number, h: number) => ICanvas;
-	DOMMatrix?: new (init?: string | number[] | undefined) => IDOMMatrix;
+	DOMMatrix?: new (init?: string | number[]) => IDOMMatrix;
 	Image?: new () => IImage;
 	Path2D?: new (path?: string) => IPath2D;
 }
@@ -20,8 +20,8 @@ export class Root extends TelaEventTarget {
 	dirty: boolean;
 	entities: Entity[];
 	renderCount: number;
-	#rerenderId?: ReturnType<typeof requestAnimationFrame>;
-	DOMMatrix: new (init?: string | number[] | undefined) => IDOMMatrix;
+	renderQueued: boolean;
+	DOMMatrix: new (init?: string | number[]) => IDOMMatrix;
 	Image: new () => IImage;
 	Path2D: new (path?: string) => IPath2D;
 
@@ -32,6 +32,7 @@ export class Root extends TelaEventTarget {
 		this.entities = [];
 		this.render = this.render.bind(this);
 		this.renderCount = 0;
+		this.renderQueued = false;
 		this.DOMMatrix = opts.DOMMatrix || DOMMatrix;
 		this.Path2D = opts.Path2D || Path2D;
 		this.Image = opts.Image || Image;
@@ -86,10 +87,9 @@ export class Root extends TelaEventTarget {
 	}
 
 	render() {
-		this.#rerenderId = undefined;
+		this.renderQueued = false;
 		if (!this.dirty) return;
 		this.renderCount++;
-		//console.log(`${this.constructor.name} Render Start`);
 		const { ctx } = this;
 		const { canvas } = ctx;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -100,15 +100,12 @@ export class Root extends TelaEventTarget {
 		}
 		this.dirty = false;
 		this.dispatchEvent(new Event('render'));
-		//console.log(`${this.constructor.name} Render End`);
 	}
 
 	queueRender() {
-		if (!this.#rerenderId) {
-			this.dirty = true;
-			queueMicrotask(this.render);
-			this.#rerenderId = 1;
-			//this.#rerenderId = requestAnimationFrame(this.render);
-		}
+		if (this.renderQueued) return;
+		this.dirty = true;
+		this.renderQueued = true;
+		queueMicrotask(this.render);
 	}
 }

@@ -4,34 +4,30 @@ import { Shape, type ShapeProps } from './shape.js';
 import { IPath2D } from './types.js';
 
 export type PathProps = ShapeProps & {
+	width: number;
+	height: number;
 	d: string;
 };
 
 export class Path extends Shape {
-	#d!: string;
-	#path!: IPath2D;
+	d: string;
+	#path?: IPath2D;
 
 	constructor(opts: PathProps) {
 		super(opts);
 		this.d = opts.d;
 	}
 
-	get d() {
-		return this.#d;
-	}
-
-	set d(v: string) {
-		const parsed: [string, ...number[]][] = parseSvgPath(v);
-		let modified = parsed
-			.map((c) => `${c[0]}${c.slice(1).join(',')}`)
-			.join('');
-		// TODO: map absolute coordinates to relative
-		//console.log({ parsed, v, modified });
-		this.#d = modified;
-		this.#path = new this.root.Path2D(modified);
-	}
-
 	get path() {
+		if (!this.#path) {
+			const parsed: [string, ...number[]][] = parseSvgPath(this.d);
+			let modified = parsed
+				.map((c) => `${c[0]}${c.slice(1).join(',')}`)
+				.join('');
+			// TODO: map absolute coordinates to relative
+			//console.log({ parsed, v, modified });
+			this.#path = new this.root.Path2D(modified);
+		}
 		return this.#path;
 	}
 }

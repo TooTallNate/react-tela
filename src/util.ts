@@ -1,3 +1,5 @@
+import { Root } from './root';
+import type { Entity } from './entity';
 import type { PercentageString, Point } from './types';
 
 export function parsePercent(str: PercentageString) {
@@ -39,4 +41,22 @@ export function cloneMouseEvent(
 
 export function degreesToRadians(degrees: number) {
 	return degrees * (Math.PI / 180);
+}
+
+export function findTarget(root: Root, point: Point) {
+	let target: Root | Entity = root;
+	for (let i = root.entities.length - 1; i >= 0; i--) {
+		const entity = root.entities[i];
+		if (entity.isPointInPath(point.x, point.y)) {
+			target = entity;
+			break;
+		}
+	}
+	return target;
+}
+
+export function getLayer(target: Root | Entity, point: Point) {
+	return target instanceof Root
+		? point
+		: target.inverseMatrix.transformPoint(point);
 }
