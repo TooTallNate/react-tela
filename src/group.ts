@@ -12,7 +12,7 @@ export class Group extends Entity {
 
 	constructor(opts: GroupProps, root: Root) {
 		super(opts);
-		this.subcanvas = root.createCanvas(
+		this.subcanvas = new root.Canvas(
 			this.calculatedWidth,
 			this.calculatedHeight,
 		);

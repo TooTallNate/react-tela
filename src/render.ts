@@ -100,7 +100,7 @@ const reconciler = ReactReconciler<
 		} else if (is('Arc', t)) {
 			return new Arc(t.props);
 		} else if (is('Image', t)) {
-			return new Image(t.props);
+			return new Image(t.props, root);
 		} else if (is('Path', t)) {
 			return new Path(t.props);
 		} else if (is('Rect', t)) {

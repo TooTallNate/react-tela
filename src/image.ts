@@ -1,4 +1,5 @@
-import { Entity, EntityProps } from './entity';
+import { Entity, type EntityProps } from './entity';
+import type { Root } from './root';
 import type { IImage, PercentageString } from './types';
 
 export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
@@ -12,24 +13,27 @@ export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
 }
 
 export class Image extends Entity {
+	#root: Root;
 	#src: string;
-	image?: IImage;
+	#image?: IImage;
 	sx?: number;
 	sy?: number;
 	sw?: number;
 	sh?: number;
 
-	constructor(opts: ImageProps) {
+	constructor(opts: ImageProps, root: Root) {
 		super({
 			width: 0,
 			height: 0,
 			...opts,
 		});
-		this.#src = opts.src;
 		this.sx = opts.sx;
 		this.sy = opts.sy;
 		this.sw = opts.sw;
 		this.sh = opts.sh;
+		this.#root = root;
+		this.#src = opts.src;
+		this.loadImage();
 	}
 
 	get src() {
@@ -38,43 +42,36 @@ export class Image extends Entity {
 
 	set src(v: string) {
 		this.#src = v;
-		if (this.image) {
-			this.image.src = v;
+		this.loadImage();
+	}
+
+	async loadImage() {
+		const img = await this.#root.loadImage(this.#src);
+		this.#image = img;
+		if (this.width === 0) {
+			this.width = img.naturalWidth;
 		}
+		if (this.height === 0) {
+			this.height = img.naturalHeight;
+		}
+		this.root?.queueRender();
 	}
 
 	render(): void {
 		super.render();
-		let { image, root } = this;
-		if (!image) {
-			image = this.image = new root.Image();
-			image.onload = this.#onload.bind(this);
-			image.src = this.src;
-		}
+		let { root } = this;
+		const img = this.#image;
+		if (!img) return;
 		root.ctx.drawImage(
-			image,
+			img,
 			this.sx ?? 0,
 			this.sy ?? 0,
-			this.sw ?? image.naturalWidth,
-			this.sh ?? image.naturalHeight,
+			this.sw ?? img.naturalWidth,
+			this.sh ?? img.naturalHeight,
 			0,
 			0,
 			this.calculatedWidth,
 			this.calculatedHeight,
 		);
-	}
-
-	#onload() {
-		const { image, root } = this;
-		if (!image) return;
-		if (this.width === 0) {
-			this.width = image.naturalWidth;
-		}
-		if (this.height === 0) {
-			this.height = image.naturalHeight;
-		}
-		if (root) {
-			root.queueRender();
-		}
 	}
 }

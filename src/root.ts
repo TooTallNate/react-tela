@@ -9,10 +9,10 @@ import type {
 } from './types';
 
 export interface RootParams {
-	createCanvas?: (w: number, h: number) => ICanvas;
+	Canvas?: new (w: number, h: number) => ICanvas;
 	DOMMatrix?: new (init?: string | number[]) => IDOMMatrix;
-	Image?: new () => IImage;
 	Path2D?: new (path?: string) => IPath2D;
+	loadImage?: (src: string) => Promise<IImage>;
 }
 
 export class Root extends TelaEventTarget {
@@ -21,8 +21,8 @@ export class Root extends TelaEventTarget {
 	entities: Entity[];
 	renderCount: number;
 	renderQueued: boolean;
+	Canvas: new (w: number, h: number) => ICanvas;
 	DOMMatrix: new (init?: string | number[]) => IDOMMatrix;
-	Image: new () => IImage;
 	Path2D: new (path?: string) => IPath2D;
 
 	constructor(ctx: ICanvasRenderingContext2D, opts: RootParams = {}) {
@@ -33,20 +33,27 @@ export class Root extends TelaEventTarget {
 		this.render = this.render.bind(this);
 		this.renderCount = 0;
 		this.renderQueued = false;
+		this.Canvas = opts.Canvas || OffscreenCanvas;
 		this.DOMMatrix = opts.DOMMatrix || DOMMatrix;
 		this.Path2D = opts.Path2D || Path2D;
-		this.Image = opts.Image || Image;
-		if (opts.createCanvas) this.createCanvas = opts.createCanvas;
+		if (opts.loadImage) {
+			this.loadImage = opts.loadImage;
+		}
+	}
+
+	async loadImage(src: string): Promise<IImage> {
+		const img = new Image();
+		await new Promise(res => {
+			img.onload = res;
+			img.src = src;
+		});
+		return img;
 	}
 
 	then(r?: (value: Event) => void) {
 		if (r) {
 			this.addEventListener('render', r, { once: true });
 		}
-	}
-
-	createCanvas(width: number, height: number): ICanvas {
-		return new OffscreenCanvas(width, height);
 	}
 
 	clear() {

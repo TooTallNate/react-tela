@@ -62,15 +62,11 @@ render(<App />, screen);
 ```tsx
 import React from "react";
 import { render } from "react-tela/render";
-import { DOMMatrix, Image, Path2D, createCanvas } from "@napi-rs/canvas";
+import config, { Canvas } from "@napi-rs/canvas";
 import { App } from "./App";
 
-const canvas = createCanvas(300, 150);
-await render(<App />, canvas, {
-	Image,
-	Path2D,
-	DOMMatrix,
-});
+const canvas = new Canvas(300, 150);
+await render(<App />, canvas, config);
 
 const buffer = canvas.toBuffer("image/png");
 // … do something with PNG `buffer`
