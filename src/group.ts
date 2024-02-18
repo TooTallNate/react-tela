@@ -1,7 +1,6 @@
 import { Root, RootParams } from './root';
 import { Entity, EntityProps } from './entity';
 import type { ICanvas, ICanvasRenderingContext2D } from './types';
-import { findTarget, getLayer } from './util';
 import { proxyEvents } from './events';
 
 export interface GroupProps extends EntityProps {}
@@ -18,7 +17,7 @@ export class Group extends Entity {
 		);
 		const ctx = this.subcanvas.getContext('2d');
 		if (!ctx) {
-			throw new Error();
+			throw new TypeError(`canvas.getContext('2d') returned: ${ctx}`);
 		}
 		this.subroot = new GroupRoot(ctx, this, root);
 		proxyEvents(this, this.subroot, false);

@@ -89,12 +89,6 @@ function App() {
 			>
 				hello world
 			</Text>
-			<Group x={500} y={400} width={180} height={30} rotate={6}>
-				<Rect width="100%" height="100%" fill="purple" alpha={0.5} />
-				<Text fontSize={32} fontFamily="Geist" fill="white">
-					Hello world!
-				</Text>
-			</Group>
 			<Path
 				x={400}
 				y={400}
@@ -119,6 +113,39 @@ function App() {
 					setStroke3(undefined);
 				}}
 			/>
+			<Group
+				x={500}
+				y={130}
+				width={100}
+				height={100}
+				rotate={-60}
+				scaleX={4}
+				scaleY={4}
+				onMouseEnter={() => {
+					console.log('group mouseenter');
+				}}
+			>
+				<Rect width={40} height={40} fill="purple" />
+				<Rect
+					width={40}
+					height={40}
+					x={50}
+					fill="gold"
+					onMouseEnter={(e) =>
+						console.log('gold mouseenter', e.layerX, e.layerY)
+					}
+				/>
+				<Rect width={40} height={40} y={50} fill="yellow" />
+				<Rect width={40} height={40} x={50} y={50} fill="blue" />
+				<Rect
+					width={40}
+					height={40}
+					x={25}
+					y={25}
+					fill="red"
+					rotate={45}
+				/>
+			</Group>
 		</>
 	);
 }

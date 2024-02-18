@@ -43,8 +43,9 @@ export class Root extends TelaEventTarget {
 
 	async loadImage(src: string): Promise<IImage> {
 		const img = new Image();
-		await new Promise(res => {
+		await new Promise((res, rej) => {
 			img.onload = res;
+			img.onerror = rej;
 			img.src = src;
 		});
 		return img;

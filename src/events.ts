@@ -24,9 +24,14 @@ export function proxyEvents(
 	root: Root,
 	scaleCoordinates: boolean,
 ) {
+	if (!canvasOrGroup.addEventListener) {
+		// Probably Node.js, where there are not events, so skip
+		return;
+	}
+
 	let mouseCurrentlyOver: Root | Entity | null = null;
 
-	//canvasOrGroup.addEventListener?.('touchstart', (_event) => {
+	//canvasOrGroup.addEventListener('touchstart', (_event) => {
 	//	const event = _event as TouchEvent;
 	//	console.log(event);
 	//	_event.preventDefault();
@@ -64,10 +69,10 @@ export function proxyEvents(
 		}
 		return target;
 	}
-	canvasOrGroup.addEventListener?.('click', doMouseEvent);
-	canvasOrGroup.addEventListener?.('mousedown', doMouseEvent);
-	canvasOrGroup.addEventListener?.('mouseup', doMouseEvent);
-	canvasOrGroup.addEventListener?.('mousemove', (e) => {
+	canvasOrGroup.addEventListener('click', doMouseEvent);
+	canvasOrGroup.addEventListener('mousedown', doMouseEvent);
+	canvasOrGroup.addEventListener('mouseup', doMouseEvent);
+	canvasOrGroup.addEventListener('mousemove', (e) => {
 		const event = e as TelaMouseEvent;
 		const point = scaledCoordinates(
 			canvasOrGroup as ICanvas,
@@ -75,7 +80,6 @@ export function proxyEvents(
 			event.layerY,
 		);
 		const target = findTarget(root, point);
-		//console.log(point, target);
 		const layer = getLayer(target, point);
 
 		if (target !== mouseCurrentlyOver) {
@@ -96,7 +100,6 @@ export function proxyEvents(
 			}
 
 			mouseCurrentlyOver = target;
-			//console.log(target);
 
 			// do "mouseenter" event
 			target.dispatchEvent(
@@ -117,7 +120,7 @@ export function proxyEvents(
 		}
 		return target;
 	});
-	canvasOrGroup.addEventListener?.('mouseleave', (_e) => {
+	canvasOrGroup.addEventListener('mouseleave', (_e) => {
 		mouseCurrentlyOver = null;
 		const event = _e as TelaMouseEvent;
 		const point = scaledCoordinates(
