@@ -19,6 +19,7 @@ export interface ICanvasRenderingContext2D {
 		dh: number,
 	): void;
 	clearRect(x: number, y: number, w: number, h: number): void;
+	resetTransform(): void;
 	getTransform(): IDOMMatrix;
 	setTransform(
 		a: number,

@@ -106,6 +106,7 @@ export class Root extends TelaEventTarget {
 		this.renderCount++;
 		const { ctx } = this;
 		const { canvas } = ctx;
+		ctx.resetTransform();
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for (const entity of this.entities) {
 			ctx.save();
