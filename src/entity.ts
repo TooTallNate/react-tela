@@ -55,6 +55,9 @@ export type EntityProps = {
 	onMouseMove?: (ev: TelaMouseEvent) => any;
 	onMouseEnter?: (ev: TelaMouseEvent) => any;
 	onMouseLeave?: (ev: TelaMouseEvent) => any;
+	onTouchStart?: (ev: TouchEvent) => any;
+	onTouchMove?: (ev: TouchEvent) => any;
+	onTouchEnd?: (ev: TouchEvent) => any;
 };
 
 export class Entity extends TelaEventTarget {
@@ -74,6 +77,9 @@ export class Entity extends TelaEventTarget {
 	onmousemove: ((ev: TelaMouseEvent) => any) | null;
 	onmouseenter: ((ev: TelaMouseEvent) => any) | null;
 	onmouseleave: ((ev: TelaMouseEvent) => any) | null;
+	ontouchstart: ((ev: TouchEvent) => any) | null;
+	ontouchmove: ((ev: TouchEvent) => any) | null;
+	ontouchend: ((ev: TouchEvent) => any) | null;
 
 	constructor(opts: EntityProps = {}) {
 		super();
@@ -92,6 +98,9 @@ export class Entity extends TelaEventTarget {
 		this.onmouseleave = opts.onMouseLeave ?? null;
 		this.onmousedown = opts.onMouseDown ?? null;
 		this.onmouseup = opts.onMouseUp ?? null;
+		this.ontouchstart = opts.onTouchStart ?? null;
+		this.ontouchmove = opts.onTouchMove ?? null;
+		this.ontouchend = opts.onTouchEnd ?? null;
 	}
 
 	get parentNode() {
@@ -166,10 +175,10 @@ export class Entity extends TelaEventTarget {
 
 	isPointInPath(x: number, y: number) {
 		const { ctx } = this.root;
-		const prevMatrix = ctx.getTransform();
+		//const prevMatrix = ctx.getTransform();
 		ctx.setTransform(this.matrix);
 		const result = ctx.isPointInPath(this.path, x, y);
-		ctx.setTransform(prevMatrix);
+		//ctx.setTransform(prevMatrix);
 		return result;
 	}
 

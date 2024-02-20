@@ -33,7 +33,7 @@ export abstract class Shape extends Entity {
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineJoin) */
 	lineJoin?: CanvasLineJoin;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineWidth) */
-	lineWidth?: number;
+	lineWidth: number;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/miterLimit) */
 	miterLimit?: number;
 
@@ -47,8 +47,22 @@ export abstract class Shape extends Entity {
 		this.lineDash = opts.lineDash;
 		this.lineDashOffset = opts.lineDashOffset;
 		this.lineJoin = opts.lineJoin;
-		this.lineWidth = opts.lineWidth;
+		this.lineWidth = opts.lineWidth ?? 1;
 		this.miterLimit = opts.miterLimit;
+	}
+
+	isPointInPath(x: number, y: number): boolean {
+		const { ctx } = this.root;
+		const { lineWidth, stroke, fill, matrix, path } = this;
+		ctx.setTransform(matrix);
+		if (stroke) {
+			ctx.lineWidth = lineWidth;
+		}
+		const result =
+			(stroke && ctx.isPointInStroke(path, x, y)) ||
+			(fill && ctx.isPointInPath(path, x, y)) ||
+			false;
+		return result;
 	}
 
 	render(): void {

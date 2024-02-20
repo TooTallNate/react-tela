@@ -29,7 +29,6 @@ export interface ICanvasRenderingContext2D {
 		f: number,
 	): void;
 	setTransform(transform?: IDOMMatrix): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/arc) */
 	arc(
 		x: number,
 		y: number,
@@ -38,9 +37,7 @@ export interface ICanvasRenderingContext2D {
 		endAngle: number,
 		counterclockwise?: boolean,
 	): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/arcTo) */
 	arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/bezierCurveTo) */
 	bezierCurveTo(
 		cp1x: number,
 		cp1y: number,
@@ -49,9 +46,7 @@ export interface ICanvasRenderingContext2D {
 		x: number,
 		y: number,
 	): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/closePath) */
 	closePath(): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/ellipse) */
 	ellipse(
 		x: number,
 		y: number,
@@ -62,15 +57,10 @@ export interface ICanvasRenderingContext2D {
 		endAngle: number,
 		counterclockwise?: boolean,
 	): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineTo) */
 	lineTo(x: number, y: number): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/moveTo) */
 	moveTo(x: number, y: number): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/quadraticCurveTo) */
 	quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/rect) */
 	rect(x: number, y: number, w: number, h: number): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/roundRect) */
 	roundRect(
 		x: number,
 		y: number,
@@ -78,15 +68,11 @@ export interface ICanvasRenderingContext2D {
 		h: number,
 		radii?: number | DOMPointInit | (number | DOMPointInit)[],
 	): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/beginPath) */
 	beginPath(): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/clip) */
 	clip(fillRule?: CanvasFillRule): void;
 	clip(path: Path2D, fillRule?: CanvasFillRule): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/fill) */
 	fill(fillRule?: CanvasFillRule): void;
 	fill(path: Path2D, fillRule?: CanvasFillRule): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/isPointInPath) */
 	isPointInPath(x: number, y: number, fillRule?: CanvasFillRule): boolean;
 	isPointInPath(
 		path: Path2D,
@@ -94,48 +80,29 @@ export interface ICanvasRenderingContext2D {
 		y: number,
 		fillRule?: CanvasFillRule,
 	): boolean;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/isPointInStroke) */
 	isPointInStroke(x: number, y: number): boolean;
 	isPointInStroke(path: Path2D, x: number, y: number): boolean;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/stroke) */
 	stroke(): void;
 	stroke(path: Path2D): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap: CanvasLineCap;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineDashOffset) */
 	lineDashOffset: number;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineJoin) */
 	lineJoin: CanvasLineJoin;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineWidth) */
 	lineWidth: number;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/miterLimit) */
 	miterLimit: number;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/getLineDash) */
 	getLineDash(): number[];
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/setLineDash) */
 	setLineDash(segments: number[]): void;
 
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/fillText) */
 	fillText(text: string, x: number, y: number, maxWidth?: number): void;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/measureText) */
 	measureText(text: string): TextMetrics;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/strokeText) */
 	strokeText(text: string, x: number, y: number, maxWidth?: number): void;
 
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/direction) */
 	direction: CanvasDirection;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/font) */
 	font: string;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/fontKerning) */
 	fontKerning: CanvasFontKerning;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/textAlign) */
 	textAlign: CanvasTextAlign;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/textBaseline) */
 	textBaseline: CanvasTextBaseline;
 
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/fillStyle) */
 	fillStyle: string | CanvasGradient | CanvasPattern;
-	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/strokeStyle) */
 	strokeStyle: string | CanvasGradient | CanvasPattern;
 }
 

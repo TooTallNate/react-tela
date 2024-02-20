@@ -7,6 +7,7 @@ import type {
 	IPath2D,
 	ICanvasRenderingContext2D,
 } from './types';
+import { proxyEvents } from './events';
 
 export interface RootParams {
 	Canvas?: new (w: number, h: number) => ICanvas;
@@ -39,6 +40,7 @@ export class Root extends TelaEventTarget {
 		if (opts.loadImage) {
 			this.loadImage = opts.loadImage;
 		}
+		this.proxyEvents();
 	}
 
 	async loadImage(src: string): Promise<IImage> {
@@ -55,6 +57,10 @@ export class Root extends TelaEventTarget {
 		if (r) {
 			this.addEventListener('render', r, { once: true });
 		}
+	}
+
+	proxyEvents() {
+		proxyEvents(this.ctx.canvas as EventTarget, this, true);
 	}
 
 	clear() {

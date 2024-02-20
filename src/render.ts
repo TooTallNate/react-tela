@@ -10,10 +10,8 @@ import { Image } from './image';
 import { Text } from './text';
 import { Entity } from './entity';
 import { RootContext } from './hooks/use-root';
-import { cloneMouseEvent, findTarget, getLayer } from './util';
 import type * as C from './index';
-import type { ICanvas, Point } from './types';
-import { proxyEvents } from './events';
+import type { ICanvas } from './types';
 
 type Components = {
 	Arc: C.ArcProps;
@@ -305,10 +303,6 @@ export function render(
 
 	// TODO: remove
 	(globalThis as any).root = root;
-
-	if (canvas.addEventListener) {
-		proxyEvents(canvas as EventTarget, root, true);
-	}
 
 	// @ts-expect-error I don't know that's supposed to be passed here…
 	const container = reconciler.createContainer(root, false, false);

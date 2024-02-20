@@ -1,7 +1,7 @@
 import type { Root } from './root';
 import type { Entity } from './entity';
 import type { ICanvas, Point, TelaMouseEvent } from './types';
-import { findTarget, getLayer, cloneMouseEvent } from './util';
+import { findTarget, getLayer, cloneMouseEvent, cloneTouchEvent } from './util';
 
 function scaledCoordinates(canvas: ICanvas, x: number, y: number): Point {
 	// Get CSS size
@@ -19,66 +19,143 @@ function scaledCoordinates(canvas: ICanvas, x: number, y: number): Point {
 	return { x: x * widthRatio, y: y * heightRatio };
 }
 
+function dispatchEvent(
+	target: EventTarget,
+	event: Event,
+	originalEvent: Event,
+) {
+	target.dispatchEvent(event);
+	if (event.defaultPrevented) {
+		originalEvent.preventDefault();
+	}
+	if (event.cancelBubble) {
+		originalEvent.stopPropagation();
+	}
+}
+
 export function proxyEvents(
 	canvasOrGroup: EventTarget,
 	root: Root,
-	scaleCoordinates: boolean,
+	shouldScalePoint: boolean,
 ) {
 	if (!canvasOrGroup.addEventListener) {
-		// Probably Node.js, where there are not events, so skip
+		// Probably Node.js, where there are no events, so skip
 		return;
 	}
 
 	let mouseCurrentlyOver: Root | Entity | null = null;
 
-	//canvasOrGroup.addEventListener('touchstart', (_event) => {
-	//	const event = _event as TouchEvent;
-	//	console.log(event);
-	//	_event.preventDefault();
-	//	const { x, y } = scaleCoordinates ? scaledCoordinates(
-	//		canvasOrGroup,
-	//		event.layerX,
-	//		event.layerY,
-	//	);
-	//	let target: EventTarget = root;
-	//	for (let i = root.entities.length - 1; i >= 0; i--) {
-	//		const entity = root.entities[i];
-	//		if (entity.isPointInPath(x, y)) {
-	//			target = entity;
-	//			break;
-	//		}
-	//	}
-	//});
+	const scalePoint = shouldScalePoint
+		? (x: number, y: number) =>
+				scaledCoordinates(canvasOrGroup as ICanvas, x, y)
+		: (x: number, y: number) => ({ x, y });
+
+	const activeTouches = new Map<number, Touch>();
+
+	canvasOrGroup.addEventListener('touchstart', (_event) => {
+		const event = _event as TouchEvent;
+		const offsetX = shouldScalePoint
+			? (_event.target as HTMLCanvasElement).offsetLeft
+			: 0;
+		const offsetY = shouldScalePoint
+			? (_event.target as HTMLCanvasElement).offsetTop
+			: 0;
+
+		let target: EventTarget = root;
+		for (const touch of event.changedTouches) {
+			const point = scalePoint(
+				touch.clientX - offsetX,
+				touch.clientY - offsetY,
+			);
+			const radius = scalePoint(touch.radiusX, touch.radiusY);
+			target = findTarget(root, point);
+			activeTouches.set(
+				touch.identifier,
+				new Touch({
+					clientX: point.x,
+					clientY: point.y,
+					force: touch.force,
+					identifier: touch.identifier,
+					pageX: point.x,
+					pageY: point.y,
+					radiusX: radius.x,
+					radiusY: radius.y,
+					rotationAngle: touch.rotationAngle,
+					screenX: point.x,
+					screenY: point.y,
+					target,
+				}),
+			);
+		}
+
+		const ev = cloneTouchEvent(event, activeTouches);
+		dispatchEvent(target, ev, event);
+	});
+
+	canvasOrGroup.addEventListener('touchmove', (_event) => {
+		const event = _event as TouchEvent;
+		const offsetX = shouldScalePoint
+			? (_event.target as HTMLCanvasElement).offsetLeft
+			: 0;
+		const offsetY = shouldScalePoint
+			? (_event.target as HTMLCanvasElement).offsetTop
+			: 0;
+		let target: EventTarget = root;
+		for (const touch of event.changedTouches) {
+			const prevTouch = activeTouches.get(touch.identifier);
+			const point = scalePoint(
+				touch.clientX - offsetX,
+				touch.clientY - offsetY,
+			);
+			const radius = scalePoint(touch.radiusX, touch.radiusY);
+			if (prevTouch) {
+				target = prevTouch.target;
+			}
+			activeTouches.set(
+				touch.identifier,
+				new Touch({
+					clientX: point.x,
+					clientY: point.y,
+					force: touch.force,
+					identifier: touch.identifier,
+					pageX: point.x,
+					pageY: point.y,
+					radiusX: radius.x,
+					radiusY: radius.y,
+					rotationAngle: touch.rotationAngle,
+					screenX: point.x,
+					screenY: point.y,
+					target,
+				}),
+			);
+		}
+		const ev = cloneTouchEvent(event, activeTouches);
+		dispatchEvent(target, ev, event);
+	});
+
+	canvasOrGroup.addEventListener('touchend', (_event) => {
+		const event = _event as TouchEvent;
+		const ev = cloneTouchEvent(event, activeTouches);
+		for (const touch of event.changedTouches) {
+			activeTouches.delete(touch.identifier);
+		}
+		dispatchEvent(ev.changedTouches[0].target, ev, event);
+	});
 
 	function doMouseEvent(_event: Event) {
 		const event = _event as TelaMouseEvent;
-		const point = scaledCoordinates(
-			canvasOrGroup as ICanvas,
-			event.layerX,
-			event.layerY,
-		);
+		const point = scalePoint(event.layerX, event.layerY);
 		const target = findTarget(root, point);
 		const layer = getLayer(target, point);
 		const ev = cloneMouseEvent(event, point, layer);
-		target.dispatchEvent(ev);
-		if (ev.defaultPrevented) {
-			event.preventDefault();
-		}
-		if (ev.cancelBubble) {
-			event.stopPropagation();
-		}
-		return target;
+		dispatchEvent(target, ev, event);
 	}
 	canvasOrGroup.addEventListener('click', doMouseEvent);
 	canvasOrGroup.addEventListener('mousedown', doMouseEvent);
 	canvasOrGroup.addEventListener('mouseup', doMouseEvent);
 	canvasOrGroup.addEventListener('mousemove', (e) => {
 		const event = e as TelaMouseEvent;
-		const point = scaledCoordinates(
-			canvasOrGroup as ICanvas,
-			event.layerX,
-			event.layerY,
-		);
+		const point = scalePoint(event.layerX, event.layerY);
 		const target = findTarget(root, point);
 		const layer = getLayer(target, point);
 
@@ -111,24 +188,13 @@ export function proxyEvents(
 		}
 
 		const ev = cloneMouseEvent(event, point, layer);
-		target.dispatchEvent(ev);
-		if (ev.defaultPrevented) {
-			event.preventDefault();
-		}
-		if (ev.cancelBubble) {
-			event.stopPropagation();
-		}
-		return target;
+		dispatchEvent(target, ev, event);
 	});
 	canvasOrGroup.addEventListener('mouseleave', (_e) => {
 		mouseCurrentlyOver = null;
 		const event = _e as TelaMouseEvent;
-		const point = scaledCoordinates(
-			canvasOrGroup as ICanvas,
-			event.layerX,
-			event.layerY,
-		);
+		const point = scalePoint(event.layerX, event.layerY);
 		const ev = cloneMouseEvent(_e as TelaMouseEvent, point, point);
-		root.dispatchEvent(ev);
+		dispatchEvent(root, ev, event);
 	});
 }

@@ -6,6 +6,8 @@ export function parsePercent(str: PercentageString) {
 	return parseFloat(str.slice(0, -1)) / 100;
 }
 
+const MouseEvent = globalThis.MouseEvent || class extends Event {};
+
 export function cloneMouseEvent(
 	e: MouseEvent,
 	client: Point,
@@ -35,6 +37,39 @@ export function cloneMouseEvent(
 		offsetY: { value: client.y, configurable: true },
 		layerX: { value: layer.x, configurable: true },
 		layerY: { value: layer.y, configurable: true },
+	});
+	return clone;
+}
+
+function mapTouches(list: TouchList, touches: Map<number, Touch>) {
+	return [...list].map((t) => {
+		const touch = touches.get(t.identifier);
+		if (!touch) {
+			throw new Error(`Could not find Touch for ${t.identifier}`);
+		}
+		return touch;
+	});
+}
+
+export function cloneTouchEvent(
+	e: TouchEvent,
+	touches: Map<number, Touch>,
+	type = e.type,
+) {
+	const clone = new TouchEvent(type, {
+		...e,
+		bubbles: e.bubbles,
+		cancelable: e.cancelable,
+		composed: e.composed,
+		ctrlKey: e.ctrlKey,
+		metaKey: e.metaKey,
+		shiftKey: e.shiftKey,
+		detail: e.detail,
+		which: e.which,
+		view: e.view,
+		touches: mapTouches(e.touches, touches),
+		changedTouches: mapTouches(e.changedTouches, touches),
+		targetTouches: mapTouches(e.targetTouches, touches),
 	});
 	return clone;
 }
