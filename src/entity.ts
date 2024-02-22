@@ -44,6 +44,7 @@ export type EntityProps = {
 	 * @default 1.0
 	 */
 	scaleY?: number;
+	pointerEvents?: boolean;
 	/**
 	 * Fires when the user clicks the left mouse button on the entity.
 	 *
@@ -69,6 +70,7 @@ export class Entity extends TelaEventTarget {
 	rotate: number;
 	scaleX?: number;
 	scaleY?: number;
+	pointerEvents: boolean;
 	_root: Root | null;
 
 	onclick: ((ev: TelaMouseEvent) => any) | null;
@@ -92,6 +94,7 @@ export class Entity extends TelaEventTarget {
 		this.rotate = opts.rotate ?? 0;
 		this.scaleX = opts.scaleX;
 		this.scaleY = opts.scaleY;
+		this.pointerEvents = opts.pointerEvents !== false;
 		this.onclick = opts.onClick ?? null;
 		this.onmousemove = opts.onMouseMove ?? null;
 		this.onmouseenter = opts.onMouseEnter ?? null;

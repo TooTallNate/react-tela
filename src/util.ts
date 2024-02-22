@@ -82,7 +82,7 @@ export function findTarget(root: Root, point: Point) {
 	let target: Root | Entity = root;
 	for (let i = root.entities.length - 1; i >= 0; i--) {
 		const entity = root.entities[i];
-		if (entity.isPointInPath(point.x, point.y)) {
+		if (entity.pointerEvents && entity.isPointInPath(point.x, point.y)) {
 			target = entity;
 			break;
 		}
