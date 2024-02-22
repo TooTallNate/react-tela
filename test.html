@@ -19,6 +19,8 @@
 			height: 468px;
 			position: relative;
 			margin: 10px;
+			user-select: none;
+			touch-action: none;
 		}
 
 		#other {
@@ -35,7 +37,7 @@
 			onmouseleave="console.log('mouseleave child')"></div>
 	</div>
 	<div id="other" style="width: 30px; height: 30px; background-color: red; margin-left: 10px; position:relative; top: -80px; left: 20px"
-		onmouseenter="console.log(event)" onmouseleave="console.log('mouseleave other')" onclick="console.log(event)">
+		onmouseenter="console.log(event)" onmouseleave="console.log('mouseleave other')" onclick="console.log(event)"></div>
 	<!--<script src="http://localhost:8097"></script>-->
 	<script src="test.js"></script>
 </body>
