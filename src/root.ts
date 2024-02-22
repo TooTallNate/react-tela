@@ -16,6 +16,15 @@ export interface RootParams {
 	loadImage?: (src: string) => Promise<IImage>;
 }
 
+function createOffscreenCanvas(doc: Document) {
+	return (w: number, h: number) => {
+		const c = doc.createElement('canvas');
+		c.width = w;
+		c.height = h;
+		return c;
+	};
+}
+
 export class Root extends TelaEventTarget {
 	ctx: ICanvasRenderingContext2D;
 	dirty: boolean;
@@ -34,9 +43,14 @@ export class Root extends TelaEventTarget {
 		this.render = this.render.bind(this);
 		this.renderCount = 0;
 		this.renderQueued = false;
-		this.Canvas = opts.Canvas || OffscreenCanvas;
-		this.DOMMatrix = opts.DOMMatrix || DOMMatrix;
-		this.Path2D = opts.Path2D || Path2D;
+		this.Canvas =
+			opts.Canvas ||
+			globalThis.OffscreenCanvas ||
+			createOffscreenCanvas(
+				(ctx.canvas as HTMLCanvasElement).ownerDocument,
+			);
+		this.DOMMatrix = opts.DOMMatrix || globalThis.DOMMatrix;
+		this.Path2D = opts.Path2D || globalThis.Path2D;
 		if (opts.loadImage) {
 			this.loadImage = opts.loadImage;
 		}
