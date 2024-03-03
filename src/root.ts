@@ -31,9 +31,16 @@ export class Root extends TelaEventTarget {
 	entities: Entity[];
 	renderCount: number;
 	renderQueued: boolean;
-	Canvas: new (w: number, h: number) => ICanvas;
-	DOMMatrix: new (init?: string | number[]) => IDOMMatrix;
-	Path2D: new (path?: string) => IPath2D;
+	Canvas: new (
+		w: number,
+		h: number,
+	) => ICanvas;
+	DOMMatrix: new (
+		init?: string | number[],
+	) => IDOMMatrix;
+	Path2D: new (
+		path?: string,
+	) => IPath2D;
 
 	constructor(ctx: ICanvasRenderingContext2D, opts: RootParams = {}) {
 		super();
@@ -46,9 +53,7 @@ export class Root extends TelaEventTarget {
 		this.Canvas =
 			opts.Canvas ||
 			globalThis.OffscreenCanvas ||
-			createOffscreenCanvas(
-				(ctx.canvas as HTMLCanvasElement).ownerDocument,
-			);
+			createOffscreenCanvas((ctx.canvas as HTMLCanvasElement).ownerDocument);
 		this.DOMMatrix = opts.DOMMatrix || globalThis.DOMMatrix;
 		this.Path2D = opts.Path2D || globalThis.Path2D;
 		if (opts.loadImage) {
@@ -104,9 +109,7 @@ export class Root extends TelaEventTarget {
 	insertBefore(child: Entity, beforeChild: Entity) {
 		const i = this.entities.indexOf(beforeChild);
 		if (i === -1) {
-			throw new Error(
-				'Entity to insert before is not a child of this Root',
-			);
+			throw new Error('Entity to insert before is not a child of this Root');
 		}
 		if (child._root) child._root.remove(child);
 		child._root = this;

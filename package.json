@@ -16,7 +16,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
-    "format": "prettier --write --single-quote src"
+    "format": "biome format --write --quote-style=single --jsx-quote-style=single src examples",
+    "node": "tsx examples/node.tsx"
   },
   "keywords": [],
   "author": "Nathan Rajlich <n@n8.io>",
@@ -26,12 +27,12 @@
     "react-reconciler": "^0.29.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.5.3",
     "@napi-rs/canvas": "^0.1.48",
     "@types/node": "^20.8.6",
     "@types/react": "^18.2.28",
     "@types/react-reconciler": "^0.28.5",
     "esbuild": "^0.19.4",
-    "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-fps": "^1.0.6",
     "terminal-image": "^2.0.0",

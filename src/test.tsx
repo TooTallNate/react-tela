@@ -1,39 +1,113 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { render } from './render';
-import { Circle, Group, Rect, Image, Arc, Text, useRoot, Path } from './index';
+import {
+	Circle,
+	Group,
+	Rect,
+	Image,
+	Arc,
+	Text,
+	useRoot,
+	Path,
+	RoundRectProps,
+	RoundRect,
+} from './index';
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 
 const randomColor = () =>
-	`#${((Math.random() * 256) | 0).toString(16).padStart(2, '0')}${(
-		(Math.random() * 256) |
+	`#${((Math.random() * 255) | 0).toString(16).padStart(2, '0')}${(
+		(Math.random() * 255) |
 		0
 	)
 		.toString(16)
-		.padStart(2, '0')}${((Math.random() * 256) | 0)
+		.padStart(2, '0')}${((Math.random() * 255) | 0)
 		.toString(16)
 		.padStart(2, '0')}`;
 
-function App() {
+function Button({ children, ...props }: RoundRectProps & { children: string }) {
+	const root = useRoot();
+	const rectRef = useRef();
+	const [hover, setHover] = useState(false);
+	const [textPos, setTextPos] = useState({ x: 0, y: 0 });
 	return (
-		<Rect
-			x={10}
-			y={10}
-			width={100}
-			height={100}
-			fill="red"
-			onTouchStart={(e) => {
-				e.preventDefault();
-				console.log('touchstart', e.changedTouches[0]);
-			}}
-			onTouchMove={(e) => {
-				e.preventDefault();
-				console.log('touchmove', e.changedTouches[0]);
-			}}
-			onTouchEnd={(e) => {
-				e.preventDefault();
-				console.log('touchstart', e.changedTouches[0]);
-			}}
-		/>
+		<>
+			<RoundRect
+				{...props}
+				fill={hover ? 'rgba(250, 250, 250, 0.9)' : props.fill}
+				onMouseEnter={() => {
+					setHover(true);
+					// @ts-ignore
+					root.ctx.canvas.style.cursor = 'pointer';
+				}}
+				onMouseLeave={() => {
+					setHover(false);
+					// @ts-ignore
+					root.ctx.canvas.style.cursor = 'unset';
+				}}
+				onClick={() => {
+					console.log('click!');
+				}}
+				ref={(ref) => {
+					if (!ref || rectRef.current) return;
+					// @ts-ignore
+					rectRef.current = ref;
+					setTextPos({
+						x: ref.calculatedX,
+						y: ref.calculatedY,
+					});
+				}}
+			></RoundRect>
+			<Text
+				x={textPos.x}
+				y={textPos.y}
+				fill='black'
+				fontFamily='Geist'
+				pointerEvents={false}
+				textAlign='center'
+				textBaseline='middle'
+			>
+				{children}
+			</Text>
+		</>
+	);
+}
+
+function App() {
+	const [r, setR] = useState(0);
+	const [pos, setPos] = useState({ x: 0, y: 0 });
+	useEffect(() => {
+		function frame() {
+			setR((r) => r + 1);
+			requestAnimationFrame(frame);
+		}
+		//requestAnimationFrame(frame);
+	}, []);
+	return (
+		<>
+			<Rect
+				x={pos.x}
+				y={pos.y}
+				width={800}
+				height={600}
+				fill='#222'
+				rotate={r}
+				onTouchMove={(e) => {
+					e.preventDefault();
+					const touch = e.changedTouches[0];
+					setPos({ x: touch.clientX - 200, y: touch.clientY - 150 });
+				}}
+			></Rect>
+			<Button
+				x={400}
+				y={200}
+				width={150}
+				height={75}
+				radii={30}
+				fill='rgb(250, 250, 250)'
+			>
+				Button
+			</Button>
+		</>
 	);
 }
 
@@ -176,6 +250,10 @@ function App() {
 
 document.body.onclick = (e) => {
 	console.log('body', e.offsetX, e.offsetY);
+};
+
+document.body.ontouchmove = (e) => {
+	console.log(e.target);
 };
 
 document.getElementById('parent')!.ontouchstart = (e) => {

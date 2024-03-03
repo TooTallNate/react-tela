@@ -39,11 +39,7 @@ export class Group extends Entity {
 class GroupRoot extends Root {
 	#group: Group;
 
-	constructor(
-		ctx: ICanvasRenderingContext2D,
-		group: Group,
-		opts: RootParams,
-	) {
+	constructor(ctx: ICanvasRenderingContext2D, group: Group, opts: RootParams) {
 		super(ctx, opts);
 		this.#group = group;
 	}

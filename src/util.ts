@@ -6,7 +6,7 @@ export function parsePercent(str: PercentageString) {
 	return parseFloat(str.slice(0, -1)) / 100;
 }
 
-const MouseEvent = globalThis.MouseEvent || class extends Event {};
+const MouseEvent = globalThis.MouseEvent || class MouseEvent extends Event {};
 
 export function cloneMouseEvent(
 	e: MouseEvent,

@@ -14,13 +14,7 @@ export class RoundRect extends Shape {
 
 	get path() {
 		const p = new this.root.Path2D();
-		p.roundRect(
-			0,
-			0,
-			this.calculatedWidth,
-			this.calculatedHeight,
-			this.radii,
-		);
+		p.roundRect(0, 0, this.calculatedWidth, this.calculatedHeight, this.radii);
 		return p;
 	}
 }

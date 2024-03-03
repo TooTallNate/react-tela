@@ -4,7 +4,10 @@ import config, { Canvas, GlobalFonts } from '@napi-rs/canvas';
 import { render } from '../src/render';
 import { Group, Text, Rect, Image } from '../src';
 
-GlobalFonts.registerFromPath('/Users/nrajlich/Downloads/NINTENDOSWITCHUI.TTF', 'Switch Font');
+GlobalFonts.registerFromPath(
+	'/Users/nrajlich/Downloads/NINTENDOSWITCHUI.TTF',
+	'Switch Font',
+);
 
 function App() {
 	return (
@@ -19,11 +22,13 @@ function App() {
 			<Image src="https://nxjs.n8.io/assets/logo.png" width={400} height={400} x={200} y={200} rotate={45} />
 	*/}
 			<Rect
-				x={10}
-				y={10}
+				x={20}
+				y={20}
 				width={100}
 				height={100}
-				fill="red"
+				fill='red'
+				stroke='green'
+				lineWidth={8}
 				onClick={console.log}
 			/>
 		</>
@@ -31,7 +36,6 @@ function App() {
 }
 
 const canvas = new Canvas(800, 800);
-console.log(canvas.style);
 const root = render(<App />, canvas, config);
 const ev = new EventTarget();
 canvas.addEventListener = ev.addEventListener.bind(ev);
@@ -39,14 +43,14 @@ canvas.removeEventListener = ev.removeEventListener.bind(ev);
 canvas.dispatchEvent = ev.dispatchEvent.bind(ev);
 await root;
 //await root;
-console.log('p')
+console.log('p');
 root.proxyEvents();
 canvas.dispatchEvent(
-	Object.assign(new Event("click"), {
-		layerX: 5,
-		layerY: 5,
+	Object.assign(new Event('click'), {
+		layerX: 15,
+		layerY: 15,
 	}),
 );
 
-const buffer = canvas.toBuffer("image/png");
+const buffer = canvas.toBuffer('image/png');
 console.log(await terminalImage.buffer(buffer, { height: 45 }));

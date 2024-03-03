@@ -27,7 +27,7 @@ export function FPS() {
 			<Rect
 				width={width}
 				height={height}
-				fill="blue"
+				fill='blue'
 				top={-height / 2}
 				left={-width / 2}
 			/>
@@ -37,7 +37,7 @@ export function FPS() {
 				return (
 					<Rect
 						key={i}
-						fill="rgb(38, 240, 253)"
+						fill='rgb(38, 240, 253)'
 						width={4}
 						height={h}
 						left={-width / 2 + i * 5}
@@ -48,10 +48,10 @@ export function FPS() {
 			{typeof fps.currentFps === 'number' ? (
 				<Text
 					fontSize={16}
-					fontFamily="Geist Mono (Beta)"
-					fill="rgb(38, 240, 253)"
-					originX="center"
-					originY="center"
+					fontFamily='Geist Mono (Beta)'
+					fill='rgb(38, 240, 253)'
+					originX='center'
+					originY='center'
 					top={-height / 2 + 16}
 				>
 					{fps.currentFps} FPS

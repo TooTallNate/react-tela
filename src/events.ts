@@ -94,6 +94,7 @@ export function proxyEvents(
 
 	canvasOrGroup.addEventListener('touchmove', (_event) => {
 		const event = _event as TouchEvent;
+		console.log(event.target);
 		const offsetX = shouldScalePoint
 			? (_event.target as HTMLCanvasElement).offsetLeft
 			: 0;
