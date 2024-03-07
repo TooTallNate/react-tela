@@ -1,6 +1,6 @@
 {
   "name": "react-tela",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React renderer for Canvas",
   "type": "module",
   "module": "./dist/index.js",
