@@ -7,13 +7,13 @@ import { join } from 'path';
 
 config.GlobalFonts.registerFromPath(
 	join(__dirname, 'Geist-Regular.otf'),
-	'Geist',
+	'Geist Sans',
 );
 
 test('should render <Text>', async () => {
 	const canvas = new Canvas(300, 100);
 	await render(
-		<Text x={10} y={10} fontSize={32} fontFamily='Geist' fill='blue'>
+		<Text x={10} y={10} fontSize={32} fontFamily='Geist Sans' fill='blue'>
 			Hello world!
 		</Text>,
 		canvas,
