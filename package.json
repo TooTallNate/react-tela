@@ -16,7 +16,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
-    "format": "biome format --write --quote-style=single --jsx-quote-style=single src examples",
+    "format": "biome format --write --quote-style=single --jsx-quote-style=single src examples test",
     "node": "tsx examples/node.tsx",
     "test": "vitest"
   },
