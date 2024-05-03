@@ -13,7 +13,14 @@ GlobalFonts.registerFromPath(
 test('should render <Text>', async () => {
 	const canvas = new Canvas(300, 100);
 	await render(
-		<Text x={10} y={10} fontSize={32} fontFamily='Geist Sans' fill='blue'>
+		<Text
+			x={10}
+			y={10}
+			fontSize={50}
+			fontFamily='Geist Sans'
+			fill='blue'
+			stroke='red'
+		>
 			Hello world!
 		</Text>,
 		canvas,
