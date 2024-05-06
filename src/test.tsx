@@ -1,5 +1,10 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { render } from './render';
+import React, { useEffect, useRef, useState } from 'react';
+import { render } from './render.js';
+import {
+	RouterProvider,
+	createMemoryRouter,
+	useNavigate,
+} from 'react-router-dom';
 import {
 	Circle,
 	Group,
@@ -11,7 +16,7 @@ import {
 	Path,
 	RoundRectProps,
 	RoundRect,
-} from './index';
+} from './index.js';
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 
 const randomColor = () =>
@@ -29,6 +34,12 @@ function Button({ children, ...props }: RoundRectProps & { children: string }) {
 	const rectRef = useRef();
 	const [hover, setHover] = useState(false);
 	const [textPos, setTextPos] = useState({ x: 0, y: 0 });
+	useEffect(() => {
+		return () => {
+			// @ts-ignore
+			root.ctx.canvas.style.cursor = 'unset';
+		};
+	}, []);
 	return (
 		<>
 			<RoundRect
@@ -44,9 +55,9 @@ function Button({ children, ...props }: RoundRectProps & { children: string }) {
 					// @ts-ignore
 					root.ctx.canvas.style.cursor = 'unset';
 				}}
-				onClick={() => {
-					console.log('click!');
-				}}
+				//onClick={() => {
+				//	console.log('click!');
+				//}}
 				ref={(ref) => {
 					if (!ref || rectRef.current) return;
 					// @ts-ignore
@@ -72,7 +83,20 @@ function Button({ children, ...props }: RoundRectProps & { children: string }) {
 	);
 }
 
+function Link({ to, children }: React.PropsWithChildren<{ to: string }>) {
+	const navigate = useNavigate();
+	return React.Children.map(children, (child) => {
+		if (child == null || typeof child !== 'object') return child;
+		return React.cloneElement(child, {
+			onClick() {
+				navigate(to);
+			},
+		});
+	});
+}
+
 function App() {
+	const navigate = useNavigate();
 	const [r, setR] = useState(0);
 	const [pos, setPos] = useState({ x: 0, y: 0 });
 	useEffect(() => {
@@ -97,16 +121,18 @@ function App() {
 					setPos({ x: touch.clientX - 200, y: touch.clientY - 150 });
 				}}
 			></Rect>
-			<Button
-				x={400}
-				y={200}
-				width={150}
-				height={75}
-				radii={30}
-				fill='rgb(250, 250, 250)'
-			>
-				Button
-			</Button>
+			<Link to='/page2'>
+				<Button
+					x={400}
+					y={200}
+					width={150}
+					height={75}
+					radii={30}
+					fill='rgb(250, 250, 250)'
+				>
+					Button
+				</Button>
+			</Link>
 		</>
 	);
 }
@@ -248,16 +274,57 @@ function App() {
 //	);
 //}
 
-document.body.onclick = (e) => {
-	console.log('body', e.offsetX, e.offsetY);
-};
+//document.body.onclick = (e) => {
+//	console.log('body', e.offsetX, e.offsetY);
+//};
+//
+//document.body.ontouchmove = (e) => {
+//	console.log(e.target);
+//};
+//
+//document.getElementById('parent')!.ontouchstart = (e) => {
+//	console.log(e);
+//};
 
-document.body.ontouchmove = (e) => {
-	console.log(e.target);
-};
+function Page2() {
+	return (
+		<>
+			<Rect fill='#111' width='100%' height='100%' />
+			<Text fill='white' fontFamily='Geist'>
+				Page 2
+			</Text>
+			<Link to='/'>
+				<Button
+					x={30}
+					y={50}
+					width={150}
+					height={75}
+					radii={30}
+					fill='rgb(250, 250, 250)'
+				>
+					Go back
+				</Button>
+			</Link>
+		</>
+	);
+}
 
-document.getElementById('parent')!.ontouchstart = (e) => {
-	console.log(e);
-};
+const routes = [
+	{
+		path: '/',
+		element: <App />,
+		//loader: () => FAKE_EVENT,
+	},
+	{
+		path: '/page2',
+		element: <Page2 />,
+		//loader: () => FAKE_EVENT,
+	},
+];
 
-render(<App />, canvas);
+const router = createMemoryRouter(routes, {
+	//initialEntries: ['/', '/foo'],
+	//initialIndex: 0,
+});
+
+render(<RouterProvider router={router} />, canvas);

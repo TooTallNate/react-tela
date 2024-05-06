@@ -171,7 +171,6 @@ export function proxyEvents(
 			}
 
 			if (mouseCurrentlyOver) {
-
 				// do "mouseleave" event
 				mouseCurrentlyOver.dispatchEvent(
 					cloneMouseEvent(
