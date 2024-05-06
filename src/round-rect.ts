@@ -1,4 +1,4 @@
-import { Shape, type ShapeProps } from './shape';
+import { Shape, type ShapeProps } from './shape.js';
 
 export type RoundRectProps = ShapeProps & {
 	radii?: number | DOMPointInit | (number | DOMPointInit)[];

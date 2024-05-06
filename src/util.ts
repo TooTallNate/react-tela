@@ -1,6 +1,6 @@
-import { Root } from './root';
-import type { Entity } from './entity';
-import type { PercentageString, Point } from './types';
+import { Root } from './root.js';
+import type { Entity } from './entity.js';
+import type { PercentageString, Point } from './types.js';
 
 export function parsePercent(str: PercentageString) {
 	return parseFloat(str.slice(0, -1)) / 100;

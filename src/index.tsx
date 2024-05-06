@@ -3,13 +3,13 @@ import React, {
 	forwardRef,
 	type PropsWithChildren,
 } from 'react';
-import { Group as _Group, type GroupProps as _GroupProps } from './group';
-import { Rect as _Rect, type RectProps } from './rect';
-import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect';
-import { Arc as _Arc, type ArcProps } from './arc';
-import { Path as _Path, type PathProps } from './path';
-import { Image as _Image, type ImageProps } from './image';
-import { Text as _Text, type TextProps as _TextProps } from './text';
+import { Group as _Group, type GroupProps as _GroupProps } from './group.js';
+import { Rect as _Rect, type RectProps } from './rect.js';
+import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect.js';
+import { Arc as _Arc, type ArcProps } from './arc.js';
+import { Path as _Path, type PathProps } from './path.js';
+import { Image as _Image, type ImageProps } from './image.js';
+import { Text as _Text, type TextProps as _TextProps } from './text.js';
 
 type MaybeArray<T> = T | T[];
 
@@ -46,4 +46,4 @@ export const Circle = forwardRef<_Arc, CircleProps>((props, ref) => {
 });
 Circle.displayName = 'Circle';
 
-export { useRoot } from './hooks/use-root';
+export { useRoot } from './hooks/use-root.js';

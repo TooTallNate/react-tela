@@ -1,17 +1,17 @@
 import { createElement } from 'react';
 import ReactReconciler from 'react-reconciler';
-import { Root, type RootParams } from './root';
-import { Arc } from './arc';
-import { Group } from './group';
-import { Rect } from './rect';
-import { RoundRect } from './round-rect';
-import { Path } from './path';
-import { Image } from './image';
-import { Text } from './text';
-import { Entity } from './entity';
-import { RootContext } from './hooks/use-root';
-import type * as C from './index';
-import type { ICanvas } from './types';
+import { Root, type RootParams } from './root.js';
+import { Arc } from './arc.js';
+import { Group } from './group.js';
+import { Rect } from './rect.js';
+import { RoundRect } from './round-rect.js';
+import { Path } from './path.js';
+import { Image } from './image.js';
+import { Text } from './text.js';
+import { Entity } from './entity.js';
+import { RootContext } from './hooks/use-root.js';
+import type * as C from './index.js';
+import type { ICanvas } from './types.js';
 
 type Components = {
 	Arc: C.ArcProps;

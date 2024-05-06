@@ -1,4 +1,4 @@
-import { Entity, type EntityProps } from './entity';
+import { Entity, type EntityProps } from './entity.js';
 
 export interface ShapeProps extends EntityProps {
 	clip?: boolean;

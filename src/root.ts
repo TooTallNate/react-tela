@@ -1,13 +1,13 @@
-import { TelaEventTarget } from './event-target';
-import type { Entity } from './entity';
+import { TelaEventTarget } from './event-target.js';
+import type { Entity } from './entity.js';
 import type {
 	IDOMMatrix,
 	ICanvas,
 	IImage,
 	IPath2D,
 	ICanvasRenderingContext2D,
-} from './types';
-import { proxyEvents } from './events';
+} from './types.js';
+import { proxyEvents } from './events.js';
 
 export interface RootParams {
 	Canvas?: new (w: number, h: number) => ICanvas;

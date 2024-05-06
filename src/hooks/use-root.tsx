@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { Root } from '../root';
+import type { Root } from '../root.js';
 
 export const RootContext = createContext<Root | null>(null);
 

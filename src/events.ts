@@ -1,7 +1,12 @@
-import type { Root } from './root';
-import type { Entity } from './entity';
-import type { ICanvas, Point, TelaMouseEvent } from './types';
-import { findTarget, getLayer, cloneMouseEvent, cloneTouchEvent } from './util';
+import type { Root } from './root.js';
+import type { Entity } from './entity.js';
+import type { ICanvas, Point, TelaMouseEvent } from './types.js';
+import {
+	findTarget,
+	getLayer,
+	cloneMouseEvent,
+	cloneTouchEvent,
+} from './util.js';
 
 function scaledCoordinates(canvas: ICanvas, x: number, y: number): Point {
 	// Get CSS size

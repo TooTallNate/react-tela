@@ -1,7 +1,7 @@
-import { TelaEventTarget } from './event-target';
-import { parsePercent } from './util';
-import type { Root } from './root';
-import type { PercentageString, TelaMouseEvent } from './types';
+import { TelaEventTarget } from './event-target.js';
+import { parsePercent } from './util.js';
+import type { Root } from './root.js';
+import type { PercentageString, TelaMouseEvent } from './types.js';
 
 export type EntityProps = {
 	/**

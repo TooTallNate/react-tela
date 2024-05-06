@@ -1,4 +1,4 @@
-import { Entity, EntityProps } from './entity';
+import { Entity, EntityProps } from './entity.js';
 
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	value: string;

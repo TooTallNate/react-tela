@@ -1,5 +1,5 @@
-import { Shape, type ShapeProps } from './shape';
-import { degreesToRadians } from './util';
+import { Shape, type ShapeProps } from './shape.js';
+import { degreesToRadians } from './util.js';
 
 export type ArcProps = Omit<ShapeProps, 'width' | 'height'> & {
 	startAngle: number;

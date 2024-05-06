@@ -1,7 +1,7 @@
-import { Root, RootParams } from './root';
-import { Entity, EntityProps } from './entity';
-import type { ICanvas, ICanvasRenderingContext2D } from './types';
-import { proxyEvents } from './events';
+import { Root, RootParams } from './root.js';
+import { Entity, EntityProps } from './entity.js';
+import type { ICanvas, ICanvasRenderingContext2D } from './types.js';
+import { proxyEvents } from './events.js';
 
 export interface GroupProps extends EntityProps {}
 

@@ -1,6 +1,6 @@
-import { Entity, type EntityProps } from './entity';
-import type { Root } from './root';
-import type { IImage, PercentageString } from './types';
+import { Entity, type EntityProps } from './entity.js';
+import type { Root } from './root.js';
+import type { IImage, PercentageString } from './types.js';
 
 export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
 	src: string;
