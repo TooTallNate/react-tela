@@ -1,12 +1,12 @@
-import type { Root } from './root.js';
-import type { Entity } from './entity.js';
-import type { ICanvas, Point, TelaMouseEvent } from './types.js';
+import { Entity } from './entity.js';
 import {
 	findTarget,
 	getLayer,
 	cloneMouseEvent,
 	cloneTouchEvent,
 } from './util.js';
+import type { Root } from './root.js';
+import type { ICanvas, Point, TelaMouseEvent } from './types.js';
 
 function scaledCoordinates(canvas: ICanvas, x: number, y: number): Point {
 	// Get CSS size
@@ -165,7 +165,13 @@ export function proxyEvents(
 		const layer = getLayer(target, point);
 
 		if (target !== mouseCurrentlyOver) {
+			if (mouseCurrentlyOver instanceof Entity && !mouseCurrentlyOver._root) {
+				// Previous mouse target has been unmounted
+				mouseCurrentlyOver = null;
+			}
+
 			if (mouseCurrentlyOver) {
+
 				// do "mouseleave" event
 				mouseCurrentlyOver.dispatchEvent(
 					cloneMouseEvent(
