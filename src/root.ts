@@ -94,6 +94,7 @@ export class Root extends TelaEventTarget {
 		if (entity._root) entity._root.remove(entity);
 		entity._root = this;
 		this.entities.push(entity);
+		entity.dispatchEvent(new Event('add'));
 		this.queueRender();
 	}
 
@@ -102,6 +103,7 @@ export class Root extends TelaEventTarget {
 		if (i !== -1) {
 			entity._root = null;
 			this.entities.splice(i, 1);
+			entity.dispatchEvent(new Event('remove'));
 			this.queueRender();
 		}
 	}
