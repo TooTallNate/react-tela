@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import ReactReconciler from 'react-reconciler';
 import { Root, type RootParams } from './root.js';
 import { Arc } from './arc.js';
+import { Canvas } from './canvas.js';
 import { Group } from './group.js';
 import { Rect } from './rect.js';
 import { RoundRect } from './round-rect.js';
@@ -9,12 +10,13 @@ import { Path } from './path.js';
 import { Image } from './image.js';
 import { Text } from './text.js';
 import { Entity } from './entity.js';
-import { RootContext } from './hooks/use-root.js';
+import { ParentContext } from './hooks/use-parent.js';
 import type * as C from './index.js';
 import type { ICanvas } from './types.js';
 
 type Components = {
 	Arc: C.ArcProps;
+	Canvas: C.CanvasProps;
 	Group: C.GroupProps;
 	Image: C.ImageProps;
 	Path: C.PathProps;
@@ -56,11 +58,6 @@ const is = <T extends Type>(
 	return type === t.type;
 };
 
-//const getText = ({ children: c }: C.TextProps) => {
-//	if (c === null || typeof c === 'undefined') return '';
-//	return Array.isArray(c) ? c.map(String).join('') : String(c);
-//};
-
 function assertIsGroup(v: any): asserts v is Group {
 	if (!(v && v instanceof Group)) {
 		throw new Error('Expected Group');
@@ -68,7 +65,7 @@ function assertIsGroup(v: any): asserts v is Group {
 }
 
 const getText = ({ children: c }: C.TextProps) => {
-	if (c === null || typeof c === 'undefined') return '';
+	if (c == null) return '';
 	return Array.isArray(c) ? c.map(String).join('') : String(c);
 };
 
@@ -94,9 +91,12 @@ const reconciler = ReactReconciler<
 		const t = { type, props };
 		//console.log('createInstance', t, root);
 		if (is('Group', t)) {
-			return new Group(t.props, root);
+			// @ts-expect-error "root" is missing from the type, but definitely gets passed in from the <Group> component
+			return new Group(t.props);
 		} else if (is('Arc', t)) {
 			return new Arc(t.props);
+		} else if (is('Canvas', t)) {
+			return new Canvas(t.props, root);
 		} else if (is('Image', t)) {
 			return new Image(t.props, root);
 		} else if (is('Path', t)) {
@@ -111,7 +111,7 @@ const reconciler = ReactReconciler<
 		throw new Error(`Unsupported type: ${type}`);
 	},
 	createTextInstance(text, root) {
-		//console.log('createTextInstance', { text, root });
+		console.log('createTextInstance', { text, root });
 		throw new Error('Text must be placed inside of a <Text> component');
 	},
 	appendInitialChild(parentInstance, child) {
@@ -282,6 +282,14 @@ const reconciler = ReactReconciler<
 	detachDeletedInstance(instance) {
 		//console.log("detachDeletedInstance", instance);
 	},
+	hideInstance(instance) {
+		//console.log('hideInstance', { instance});
+		instance._hidden = true;
+	},
+	unhideInstance(instance, props) {
+		//console.log('unhideInstance', { instance, props });
+		instance._hidden = false;
+	},
 });
 
 reconciler.injectIntoDevTools({
@@ -307,7 +315,7 @@ export function render(
 	// @ts-expect-error I don't know that's supposed to be passed here…
 	const container = reconciler.createContainer(root, false, false);
 	reconciler.updateContainer(
-		createElement(RootContext.Provider, { value: root }, app),
+		createElement(ParentContext.Provider, { value: root }, app),
 		container,
 		null,
 		null,

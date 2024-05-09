@@ -1,25 +1,19 @@
-import { Root, RootParams } from './root.js';
+import { Root } from './root.js';
 import { Entity, EntityProps } from './entity.js';
-import type { ICanvas, ICanvasRenderingContext2D } from './types.js';
 import { proxyEvents } from './events.js';
+import type { ICanvasRenderingContext2D } from './types.js';
 
-export interface GroupProps extends EntityProps {}
+export interface GroupProps extends Omit<EntityProps, 'width' | 'height'> {
+	width: number;
+	height: number;
+}
 
 export class Group extends Entity {
 	subroot: Root;
-	subcanvas: ICanvas;
 
-	constructor(opts: GroupProps, root: Root) {
+	constructor(opts: GroupProps & { root: GroupRoot }) {
 		super(opts);
-		this.subcanvas = new root.Canvas(
-			this.calculatedWidth,
-			this.calculatedHeight,
-		);
-		const ctx = this.subcanvas.getContext('2d');
-		if (!ctx) {
-			throw new TypeError(`canvas.getContext('2d') returned: ${ctx}`);
-		}
-		this.subroot = new GroupRoot(ctx, this, root);
+		this.subroot = opts.root;
 		proxyEvents(this, this.subroot, false);
 	}
 
@@ -27,7 +21,7 @@ export class Group extends Entity {
 		super.render();
 		this.subroot.render();
 		this.root.ctx.drawImage(
-			this.subcanvas,
+			this.subroot.ctx.canvas,
 			0,
 			0,
 			this.calculatedWidth,
@@ -36,16 +30,16 @@ export class Group extends Entity {
 	}
 }
 
-class GroupRoot extends Root {
-	#group: Group;
+export class GroupRoot extends Root {
+	parent: Root;
 
-	constructor(ctx: ICanvasRenderingContext2D, group: Group, opts: RootParams) {
-		super(ctx, opts);
-		this.#group = group;
+	constructor(ctx: ICanvasRenderingContext2D, parent: Root) {
+		super(ctx, parent);
+		this.parent = parent;
 	}
 
 	queueRender(): void {
 		this.dirty = true;
-		this.#group._root?.queueRender();
+		this.parent.queueRender();
 	}
 }

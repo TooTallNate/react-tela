@@ -72,6 +72,7 @@ export class Entity extends TelaEventTarget {
 	scaleY?: number;
 	pointerEvents: boolean;
 	_root: Root | null;
+	_hidden: boolean;
 
 	onclick: ((ev: TelaMouseEvent) => any) | null;
 	onmousedown: ((ev: TelaMouseEvent) => any) | null;
@@ -86,6 +87,7 @@ export class Entity extends TelaEventTarget {
 	constructor(opts: EntityProps = {}) {
 		super();
 		this._root = null;
+		this._hidden = false;
 		this.x = opts.x ?? 0;
 		this.y = opts.y ?? 0;
 		this.width = opts.width ?? 0;

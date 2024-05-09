@@ -128,12 +128,21 @@ export class Root extends TelaEventTarget {
 		ctx.resetTransform();
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for (const entity of this.entities) {
+			if (entity._hidden) continue;
 			ctx.save();
 			entity.render();
 			ctx.restore();
 		}
 		this.dirty = false;
 		this.dispatchEvent(new Event('render'));
+	}
+
+	get width() {
+		return this.ctx.canvas.width;
+	}
+
+	get height() {
+		return this.ctx.canvas.height;
 	}
 
 	queueRender() {

@@ -1,36 +1,44 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { render } from './render.js';
 import {
+	Await,
+	RouteObject,
 	RouterProvider,
-	createMemoryRouter,
+	createBrowserRouter,
+	defer,
+	useAsyncError,
+	useAsyncValue,
+	useLoaderData,
 	useNavigate,
+	useRouteError,
 } from 'react-router-dom';
 import {
-	Circle,
+	Canvas,
 	Group,
 	Rect,
-	Image,
-	Arc,
 	Text,
-	useRoot,
-	Path,
+	useParent,
 	RoundRectProps,
 	RoundRect,
+	CanvasRef,
+	useTextMetrics,
+	TextProps,
+	useDimensions,
 } from './index.js';
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 
-const randomColor = () =>
-	`#${((Math.random() * 255) | 0).toString(16).padStart(2, '0')}${(
-		(Math.random() * 255) |
-		0
-	)
-		.toString(16)
-		.padStart(2, '0')}${((Math.random() * 255) | 0)
-		.toString(16)
-		.padStart(2, '0')}`;
+//const randomColor = () =>
+//	`#${((Math.random() * 255) | 0).toString(16).padStart(2, '0')}${(
+//		(Math.random() * 255) |
+//		0
+//	)
+//		.toString(16)
+//		.padStart(2, '0')}${((Math.random() * 255) | 0)
+//		.toString(16)
+//		.padStart(2, '0')}`;
 
 function Button({ children, ...props }: RoundRectProps & { children: string }) {
-	const root = useRoot();
+	const root = useParent();
 	const rectRef = useRef();
 	const [hover, setHover] = useState(false);
 	const [textPos, setTextPos] = useState({ x: 0, y: 0 });
@@ -39,7 +47,7 @@ function Button({ children, ...props }: RoundRectProps & { children: string }) {
 			// @ts-ignore
 			root.ctx.canvas.style.cursor = 'unset';
 		};
-	}, []);
+	}, [root]);
 	return (
 		<>
 			<RoundRect
@@ -96,16 +104,7 @@ function Link({ to, children }: React.PropsWithChildren<{ to: string }>) {
 }
 
 function App() {
-	const navigate = useNavigate();
-	const [r, setR] = useState(0);
 	const [pos, setPos] = useState({ x: 0, y: 0 });
-	useEffect(() => {
-		function frame() {
-			setR((r) => r + 1);
-			requestAnimationFrame(frame);
-		}
-		//requestAnimationFrame(frame);
-	}, []);
 	return (
 		<>
 			<Rect
@@ -114,7 +113,6 @@ function App() {
 				width={800}
 				height={600}
 				fill='#222'
-				rotate={r}
 				onTouchMove={(e) => {
 					e.preventDefault();
 					const touch = e.changedTouches[0];
@@ -138,7 +136,7 @@ function App() {
 }
 
 //function App() {
-//	const root = useRoot();
+//	const root = useParent();
 //	const [rotation, setRotation] = useState(0);
 //	const [pos, setPos] = useState({ x: 100, y: 50 });
 //	const isDragging = useRef(false);
@@ -287,33 +285,118 @@ function App() {
 //};
 
 function Page2() {
+	const root = useParent();
+	const canvasRef = useRef<CanvasRef | null>(null);
+	useEffect(() => {
+		if (!canvasRef.current) return;
+		const ctx = canvasRef.current.getContext('2d');
+		if (!ctx) return;
+		ctx.fillStyle = 'blue';
+		ctx.fillRect(0, 0, 50, 50);
+		root.queueRender();
+	}, [canvasRef, root]);
+	return <Canvas ref={canvasRef} width={100} height={100} rotate={30} />;
+}
+
+function CenteredText({ children, ...props }: TextProps) {
+	const dims = useDimensions();
+	const metrics = useTextMetrics(
+		children,
+		props.fontFamily,
+		props.fontSize,
+		props.fontWeight,
+	);
+	return (
+		<Text
+			x={dims.width / 2 - metrics.width / 2}
+			y={dims.height / 2 - (props.fontSize || 24) / 2}
+			{...props}
+		>
+			{children}
+		</Text>
+	);
+}
+
+function Page1() {
+	const data = useLoaderData();
 	return (
 		<>
-			<Rect fill='#111' width='100%' height='100%' />
-			<Text fill='white' fontFamily='Geist'>
-				Page 2
-			</Text>
-			<Link to='/'>
-				<Button
-					x={30}
-					y={50}
-					width={150}
-					height={75}
-					radii={30}
-					fill='rgb(250, 250, 250)'
-				>
-					Go back
-				</Button>
+			<Link to='/test?bar'>
+				<Rect
+					fill='red'
+					width={100}
+					height={100}
+					onMouseEnter={console.log}
+				></Rect>
 			</Link>
+			<Rect x={1280 / 2} width={1} height='100%' fill='red' />
+			<CenteredText
+				fill='green'
+				fontWeight='bold'
+				fontFamily='Geist'
+				fontSize={40}
+			>
+				hello world
+			</CenteredText>
+			<Group width={300} height={100} x={50} y={200}>
+				<Rect width='100%' height='100%' fill='yellow' />
+				<CenteredText fill='green' fontFamily='Comic Sans MS'>
+					hello world
+				</CenteredText>
+			</Group>
+			<Page2 />
+			<Suspense
+				fallback={
+					<Text x={100} y={100} fill='black'>
+						Loading...
+					</Text>
+				}
+			>
+				<Await resolve={data.sleep} errorElement={<ErrorBoundary />}>
+					<Async />
+				</Await>
+			</Suspense>
 		</>
 	);
 }
 
-const routes = [
+function ErrorBoundary() {
+	const error = useAsyncError();
+	console.error(error);
+	return (
+		<Text x={100} y={100} fill='black'>
+			{error.message}
+		</Text>
+	);
+}
+
+function Async() {
+	const data = useAsyncValue();
+	console.log(data);
+	return (
+		<Text x={100} y={100} fill='green'>
+			Loaded!
+		</Text>
+	);
+}
+
+const routes: RouteObject[] = [
 	{
 		path: '/',
 		element: <App />,
 		//loader: () => FAKE_EVENT,
+	},
+	{
+		path: '/test',
+		element: <Page1 />,
+		errorElement: <Text fill='black'>There was an error</Text>,
+		loader: () =>
+			defer({
+				sleep: new Promise((r) => setTimeout(r, 1000)).then(() => {
+					throw new Error('bad');
+					return 'data';
+				}),
+			}),
 	},
 	{
 		path: '/page2',
@@ -322,8 +405,8 @@ const routes = [
 	},
 ];
 
-const router = createMemoryRouter(routes, {
-	//initialEntries: ['/', '/foo'],
+const router = createBrowserRouter(routes, {
+	//initialEntries: ['/', '/page2'],
 	//initialIndex: 0,
 });
 
