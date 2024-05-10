@@ -17,6 +17,7 @@ import { Arc as _Arc, type ArcProps } from './arc.js';
 import { Path as _Path, type PathProps } from './path.js';
 import { Image as _Image, type ImageProps } from './image.js';
 import { Text as _Text, type TextProps as _TextProps } from './text.js';
+import { ICanvas } from './types.js';
 
 type MaybeArray<T> = T | T[];
 
@@ -65,11 +66,24 @@ Circle.displayName = 'Circle';
 export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 	const root = useParent();
 	const rootRef = useRef<GroupRoot>();
-	if (!rootRef.current) {
-		const canvas = new root.Canvas(props.width || 300, props.height || 150);
-		const ctx = canvas.getContext('2d')!;
+	let canvas: ICanvas;
+	if (rootRef.current) {
+		canvas = rootRef.current.ctx.canvas;
+	} else {
+		canvas = new root.Canvas(props.width || 300, props.height || 150);
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			throw new Error('Could not get "2d" canvas context');
+		}
 		rootRef.current = new GroupRoot(ctx, root);
 	}
+	if (props.width > 0 && props.width !== canvas.width) {
+		canvas.width = props.width;
+	}
+	if (props.height > 0 && props.height !== canvas.height) {
+		canvas.height = props.height;
+	}
+	//console.log({ props })
 	return (
 		<ParentContext.Provider value={rootRef.current}>
 			{createElement('Group', {

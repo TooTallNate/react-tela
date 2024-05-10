@@ -1,4 +1,12 @@
-import React, { useEffect, useRef, useState, Suspense } from 'react';
+import React, {
+	useEffect,
+	useRef,
+	useState,
+	Suspense,
+	createContext,
+	useContext,
+	useLayoutEffect,
+} from 'react';
 import { render } from './render.js';
 import {
 	Await,
@@ -10,8 +18,21 @@ import {
 	useAsyncValue,
 	useLoaderData,
 	useNavigate,
-	useRouteError,
 } from 'react-router-dom';
+import initYoga, {
+	ALIGN_CENTER,
+	FLEX_DIRECTION_COLUMN,
+	FLEX_DIRECTION_ROW,
+	EDGE_LEFT,
+	EDGE_RIGHT,
+	EDGE_TOP,
+	EDGE_BOTTOM,
+	EDGE_ALL,
+	DIRECTION_LTR,
+	GUTTER_ALL,
+	type Node as YogaNode,
+	type FlexDirection,
+} from 'yoga-wasm-web/asm';
 import {
 	Canvas,
 	Group,
@@ -26,6 +47,36 @@ import {
 	useDimensions,
 } from './index.js';
 const canvas = document.getElementById('c') as HTMLCanvasElement;
+
+const yoga = initYoga();
+
+const root = yoga.Node.create();
+root.setFlexDirection(FLEX_DIRECTION_ROW);
+root.setWidth(400);
+root.setHeight(300);
+root.setPosition(EDGE_TOP, 10);
+root.setPosition(EDGE_LEFT, 10);
+
+const child0 = yoga.Node.create();
+child0.setFlexGrow(1);
+child0.setMargin(EDGE_RIGHT, 10);
+child0.setPadding(EDGE_LEFT, 10);
+root.insertChild(child0, 0);
+
+const child1 = yoga.Node.create();
+child1.setFlexGrow(1);
+root.insertChild(child1, 1);
+
+const child2 = yoga.Node.create();
+child2.setFlexGrow(1);
+root.insertChild(child2, 2);
+
+root.calculateLayout(undefined, undefined, DIRECTION_LTR);
+
+//console.log(root.getComputedLayout());
+console.log(child0.getComputedLayout());
+//console.log(child1.getComputedLayout());
+//console.log(child2.getComputedLayout());
 
 //const randomColor = () =>
 //	`#${((Math.random() * 255) | 0).toString(16).padStart(2, '0')}${(
@@ -95,7 +146,7 @@ function Link({ to, children }: React.PropsWithChildren<{ to: string }>) {
 	const navigate = useNavigate();
 	return React.Children.map(children, (child) => {
 		if (child == null || typeof child !== 'object') return child;
-		return React.cloneElement(child, {
+		return React.cloneElement(child as any, {
 			onClick() {
 				navigate(to);
 			},
@@ -272,17 +323,140 @@ function App() {
 //	);
 //}
 
-//document.body.onclick = (e) => {
-//	console.log('body', e.offsetX, e.offsetY);
-//};
-//
-//document.body.ontouchmove = (e) => {
-//	console.log(e.target);
-//};
-//
-//document.getElementById('parent')!.ontouchstart = (e) => {
-//	console.log(e);
-//};
+interface FlexProps {
+	flexDirection?: FlexDirection;
+	gap?: number;
+	margin?: number;
+	padding?: number;
+}
+
+const FlexContext = createContext<YogaNode | null>(null);
+
+function Flex({
+	flexDirection,
+	gap,
+	margin,
+	padding,
+	children,
+	x,
+	y,
+	width,
+	height,
+	...props
+}: FlexProps) {
+	const [layout, setLayout] =
+		useState<ReturnType<YogaNode['getComputedLayout']>>();
+	const dims = useDimensions();
+	const parentNode = useContext(FlexContext);
+	//console.log(parentNode);
+	const nodeRef = useRef<YogaNode | null>(null);
+	let node = nodeRef.current;
+	if (!node) {
+		nodeRef.current = node = yoga.Node.create();
+		if (parentNode) {
+			parentNode.insertChild(node, parentNode.getChildCount());
+		}
+	}
+
+	if (flexDirection) {
+		node.setFlexDirection(flexDirection);
+	}
+
+	if (typeof gap === 'number') {
+		console.log({ gap });
+		node.setGap(GUTTER_ALL, gap);
+	}
+
+	if (typeof margin === 'number') {
+		node.setMargin(EDGE_ALL, margin);
+	}
+
+	if (typeof padding === 'number') {
+		node.setPadding(EDGE_ALL, padding);
+	}
+
+	if (x) node.setPosition(EDGE_LEFT, x);
+	if (y) node.setPosition(EDGE_TOP, y);
+	if (width) node.setWidth(width);
+	if (height) node.setHeight(height);
+	node.setFlexGrow(1);
+
+	useEffect(() => {
+		return () => {
+			if (parentNode) {
+				parentNode.removeChild(node);
+			}
+			node.free();
+		};
+	});
+
+	useLayoutEffect(() => {
+		let rootNode = node;
+		while (true) {
+			const p = rootNode.getParent();
+			if (!p) break;
+			rootNode = p;
+		}
+
+		rootNode.calculateLayout(dims.width, dims.height, DIRECTION_LTR);
+		const l = node.getComputedLayout();
+		//console.log(l);
+		setLayout(l);
+	}, []);
+
+	return (
+		<FlexContext.Provider value={node}>
+			{React.Children.map(children, (child) => {
+				if (child.type === Flex) return child;
+				if (!layout) return child;
+				return React.cloneElement(child, {
+					width: layout.width,
+					height: layout.height,
+					x: layout.left,
+					y: layout.top,
+				});
+			})}
+		</FlexContext.Provider>
+	);
+}
+
+function FlexTest() {
+	return (
+		<>
+			<Rect width={800} height={600} x={10} y={10} stroke='black' />
+			<Flex
+				width={800}
+				height={600}
+				x={10}
+				y={10}
+				gap={10}
+				flexDirection={FLEX_DIRECTION_ROW}
+			>
+				<Group alpha={0.9}>
+					<Flex padding={100}>
+						<Rect fill='red' alpha={0.8}></Rect>
+					</Flex>
+					<Flex margin={10}>
+						<Rect fill='orange' alpha={0.8}></Rect>
+					</Flex>
+					<Flex>
+						<Rect fill='yellow' alpha={0.8}></Rect>
+						<Text fill='black'>Hello</Text>
+					</Flex>
+					<Flex>
+						<Rect fill='green' alpha={0.8}></Rect>
+					</Flex>
+					<Flex>
+						<Rect fill='blue' alpha={0.5}></Rect>
+					</Flex>
+					<Flex>
+						<Rect fill='purple' alpha={0.5}></Rect>
+					</Flex>
+				</Group>
+			</Flex>
+		</>
+	);
+}
 
 function Page2() {
 	const root = useParent();
@@ -301,7 +475,7 @@ function Page2() {
 function CenteredText({ children, ...props }: TextProps) {
 	const dims = useDimensions();
 	const metrics = useTextMetrics(
-		children,
+		children as any,
 		props.fontFamily,
 		props.fontSize,
 		props.fontWeight,
@@ -318,7 +492,7 @@ function CenteredText({ children, ...props }: TextProps) {
 }
 
 function Page1() {
-	const data = useLoaderData();
+	const data = useLoaderData() as any;
 	return (
 		<>
 			<Link to='/test?bar'>
@@ -361,11 +535,11 @@ function Page1() {
 }
 
 function ErrorBoundary() {
-	const error = useAsyncError();
+	const error = useAsyncError() as any;
 	console.error(error);
 	return (
-		<Text x={100} y={100} fill='black'>
-			{error.message}
+		<Text x={100} y={100} fill='red'>
+			Error: {String(error)}
 		</Text>
 	);
 }
@@ -388,12 +562,12 @@ const routes: RouteObject[] = [
 	},
 	{
 		path: '/test',
-		element: <Page1 />,
+		//element: <Page1 />,
+		element: <FlexTest />,
 		errorElement: <Text fill='black'>There was an error</Text>,
 		loader: () =>
 			defer({
 				sleep: new Promise((r) => setTimeout(r, 1000)).then(() => {
-					throw new Error('bad');
 					return 'data';
 				}),
 			}),
@@ -405,9 +579,6 @@ const routes: RouteObject[] = [
 	},
 ];
 
-const router = createBrowserRouter(routes, {
-	//initialEntries: ['/', '/page2'],
-	//initialIndex: 0,
-});
+const router = createBrowserRouter(routes);
 
 render(<RouterProvider router={router} />, canvas);
