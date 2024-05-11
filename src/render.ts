@@ -319,18 +319,8 @@ export function render(
 	// TODO: remove
 	(globalThis as any).root = root;
 
-	const container = reconciler.createContainer(
-		root,
-		0 /* Root Tag */,
-		null /* hydrationCallbacks */,
-		false /* isStrictMode */,
-		null /* concurrentUpdatesByDefaultOverride */,
-		'' /* identifierPrefix */,
-		function onRecoverableError(err) {
-			console.log(err);
-		},
-		null /* transitionCallbacks */,
-	);
+	// @ts-expect-error - I don't know what is supposed to go here…
+	const container = reconciler.createContainer(root, false, false);
 
 	reconciler.updateContainer(
 		createElement(ParentContext.Provider, { value: root }, app),

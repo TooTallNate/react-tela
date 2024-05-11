@@ -745,8 +745,8 @@ const routes: RouteObject[] = [
 	},
 	{
 		path: '/test',
-		//element: <Page1 />,
-		element: <FlexTest />,
+		element: <Page1 />,
+		//element: <FlexTest />,
 		errorElement: <RouteErrorBoundary />,
 		loader: () =>
 			defer({

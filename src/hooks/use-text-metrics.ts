@@ -7,9 +7,9 @@ export function useTextMetrics(
 	fontSize = 24,
 	fontWeight: string | number = '',
 ) {
-	const root = useParent();
+	const { ctx } = useParent();
 	return useMemo(() => {
-		root.ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
-		return root.ctx.measureText(text);
-	}, [root, text, fontWeight, fontSize, fontFamily]);
+		ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
+		return ctx.measureText(text);
+	}, [ctx, text, fontWeight, fontSize, fontFamily]);
 }
