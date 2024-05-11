@@ -46,13 +46,7 @@ export class Image extends Entity {
 	}
 
 	async loadImage() {
-		let img: IImage | undefined;
-		try {
-			img = await this.#root.loadImage(this.#src);
-		} catch (err) {
-			throw err;
-		}
-
+		const img = await this.#root.loadImage(this.#src);
 		this.#image = img;
 		if (this.width === 0) {
 			this.width = img.naturalWidth;
@@ -65,7 +59,7 @@ export class Image extends Entity {
 
 	render(): void {
 		super.render();
-		let { root } = this;
+		const { root } = this;
 		const img = this.#image;
 		if (!img) return;
 		root.ctx.drawImage(

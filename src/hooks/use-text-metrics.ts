@@ -11,5 +11,5 @@ export function useTextMetrics(
 	return useMemo(() => {
 		root.ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
 		return root.ctx.measureText(text);
-	}, [text, fontWeight]);
+	}, [root, text, fontWeight, fontSize, fontFamily]);
 }

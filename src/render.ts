@@ -93,19 +93,26 @@ const reconciler = ReactReconciler<
 		if (is('Group', t)) {
 			// @ts-expect-error "root" is missing from the type, but definitely gets passed in from the <Group> component
 			return new Group(t.props);
-		} else if (is('Arc', t)) {
+		}
+		if (is('Arc', t)) {
 			return new Arc(t.props);
-		} else if (is('Canvas', t)) {
+		}
+		if (is('Canvas', t)) {
 			return new Canvas(t.props, root);
-		} else if (is('Image', t)) {
+		}
+		if (is('Image', t)) {
 			return new Image(t.props, root);
-		} else if (is('Path', t)) {
+		}
+		if (is('Path', t)) {
 			return new Path(t.props);
-		} else if (is('Rect', t)) {
+		}
+		if (is('Rect', t)) {
 			return new Rect(t.props);
-		} else if (is('RoundRect', t)) {
+		}
+		if (is('RoundRect', t)) {
 			return new RoundRect(t.props);
-		} else if (is('Text', t)) {
+		}
+		if (is('Text', t)) {
 			return new Text({ ...t.props, value: getText(t.props) });
 		}
 		throw new Error(`Unsupported type: ${type}`);
@@ -247,7 +254,7 @@ const reconciler = ReactReconciler<
 		return null;
 	},
 	resetAfterCommit(containerInfo) {},
-	preparePortalMount: function (containerInfo: unknown): void {
+	preparePortalMount(containerInfo: unknown) {
 		throw new Error('Function not implemented.');
 	},
 	scheduleTimeout(
@@ -312,13 +319,24 @@ export function render(
 	// TODO: remove
 	(globalThis as any).root = root;
 
-	// @ts-expect-error I don't know that's supposed to be passed here…
-	const container = reconciler.createContainer(root, false, false);
+	const container = reconciler.createContainer(
+		root,
+		0 /* Root Tag */,
+		null /* hydrationCallbacks */,
+		false /* isStrictMode */,
+		null /* concurrentUpdatesByDefaultOverride */,
+		'' /* identifierPrefix */,
+		function onRecoverableError(err) {
+			console.log(err);
+		},
+		null /* transitionCallbacks */,
+	);
+
 	reconciler.updateContainer(
 		createElement(ParentContext.Provider, { value: root }, app),
 		container,
-		null,
-		null,
+		null /* parentComponent */,
+		null /* callback */,
 	);
 
 	return root;

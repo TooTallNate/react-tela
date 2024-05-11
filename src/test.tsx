@@ -18,9 +18,12 @@ import {
 	useAsyncValue,
 	useLoaderData,
 	useNavigate,
+	useRouteError,
 } from 'react-router-dom';
 import initYoga, {
 	ALIGN_CENTER,
+	ALIGN_FLEX_START,
+	ALIGN_FLEX_END,
 	FLEX_DIRECTION_COLUMN,
 	FLEX_DIRECTION_ROW,
 	EDGE_LEFT,
@@ -30,8 +33,23 @@ import initYoga, {
 	EDGE_ALL,
 	DIRECTION_LTR,
 	GUTTER_ALL,
+	POSITION_TYPE_ABSOLUTE,
+	POSITION_TYPE_RELATIVE,
+	POSITION_TYPE_STATIC,
+	FLEX_DIRECTION_COLUMN_REVERSE,
+	FLEX_DIRECTION_ROW_REVERSE,
+	JUSTIFY_CENTER,
+	JUSTIFY_FLEX_END,
+	JUSTIFY_FLEX_START,
+	JUSTIFY_SPACE_AROUND,
+	JUSTIFY_SPACE_BETWEEN,
+	JUSTIFY_SPACE_EVENLY,
+	ALIGN_AUTO,
+	ALIGN_BASELINE,
+	ALIGN_SPACE_AROUND,
+	ALIGN_SPACE_BETWEEN,
+	ALIGN_STRETCH,
 	type Node as YogaNode,
-	type FlexDirection,
 } from 'yoga-wasm-web/asm';
 import {
 	Canvas,
@@ -50,33 +68,33 @@ const canvas = document.getElementById('c') as HTMLCanvasElement;
 
 const yoga = initYoga();
 
-const root = yoga.Node.create();
-root.setFlexDirection(FLEX_DIRECTION_ROW);
-root.setWidth(400);
-root.setHeight(300);
-root.setPosition(EDGE_TOP, 10);
-root.setPosition(EDGE_LEFT, 10);
+// const root = yoga.Node.create();
+// root.setFlexDirection(FLEX_DIRECTION_ROW);
+// root.setWidth(400);
+// root.setHeight(300);
+// root.setPosition(EDGE_TOP, 10);
+// root.setPosition(EDGE_LEFT, 10);
 
-const child0 = yoga.Node.create();
-child0.setFlexGrow(1);
-child0.setMargin(EDGE_RIGHT, 10);
-child0.setPadding(EDGE_LEFT, 10);
-root.insertChild(child0, 0);
+// const child0 = yoga.Node.create();
+// child0.setFlexGrow(1);
+// child0.setMargin(EDGE_RIGHT, 10);
+// child0.setPadding(EDGE_LEFT, 10);
+// root.insertChild(child0, 0);
 
-const child1 = yoga.Node.create();
-child1.setFlexGrow(1);
-root.insertChild(child1, 1);
+// const child1 = yoga.Node.create();
+// child1.setFlexGrow(1);
+// root.insertChild(child1, 1);
 
-const child2 = yoga.Node.create();
-child2.setFlexGrow(1);
-root.insertChild(child2, 2);
+// const child2 = yoga.Node.create();
+// child2.setFlexGrow(1);
+// root.insertChild(child2, 2);
 
-root.calculateLayout(undefined, undefined, DIRECTION_LTR);
+// root.calculateLayout(undefined, undefined, DIRECTION_LTR);
 
-//console.log(root.getComputedLayout());
-console.log(child0.getComputedLayout());
-//console.log(child1.getComputedLayout());
-//console.log(child2.getComputedLayout());
+// console.log(root.getComputedLayout());
+// console.log(child0.getComputedLayout());
+// console.log(child1.getComputedLayout());
+// console.log(child2.getComputedLayout());
 
 //const randomColor = () =>
 //	`#${((Math.random() * 255) | 0).toString(16).padStart(2, '0')}${(
@@ -126,7 +144,7 @@ function Button({ children, ...props }: RoundRectProps & { children: string }) {
 						y: ref.calculatedY,
 					});
 				}}
-			></RoundRect>
+			/>
 			<Text
 				x={textPos.x}
 				y={textPos.y}
@@ -146,6 +164,7 @@ function Link({ to, children }: React.PropsWithChildren<{ to: string }>) {
 	const navigate = useNavigate();
 	return React.Children.map(children, (child) => {
 		if (child == null || typeof child !== 'object') return child;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		return React.cloneElement(child as any, {
 			onClick() {
 				navigate(to);
@@ -169,7 +188,7 @@ function App() {
 					const touch = e.changedTouches[0];
 					setPos({ x: touch.clientX - 200, y: touch.clientY - 150 });
 				}}
-			></Rect>
+			/>
 			<Link to='/page2'>
 				<Button
 					x={400}
@@ -323,34 +342,91 @@ function App() {
 //	);
 //}
 
+const ALIGN = {
+	auto: ALIGN_AUTO,
+	'flex-start': ALIGN_FLEX_START,
+	center: ALIGN_CENTER,
+	'flex-end': ALIGN_FLEX_END,
+	stretch: ALIGN_STRETCH,
+	baseline: ALIGN_BASELINE,
+	'space-between': ALIGN_SPACE_BETWEEN,
+	'space-around': ALIGN_SPACE_AROUND,
+} as const;
+
+const JUSTIFY = {
+	'flex-start': JUSTIFY_FLEX_START,
+	center: JUSTIFY_CENTER,
+	'flex-end': JUSTIFY_FLEX_END,
+	'space-between': JUSTIFY_SPACE_BETWEEN,
+	'space-around': JUSTIFY_SPACE_AROUND,
+	'space-evenly': JUSTIFY_SPACE_EVENLY,
+} as const;
+
+const POSITION = {
+	static: POSITION_TYPE_STATIC,
+	relative: POSITION_TYPE_RELATIVE,
+	absolute: POSITION_TYPE_ABSOLUTE,
+} as const;
+
+const FLEX_DIRECTION = {
+	column: FLEX_DIRECTION_COLUMN,
+	row: FLEX_DIRECTION_ROW,
+	'column-reverse': FLEX_DIRECTION_COLUMN_REVERSE,
+	'row-reverse': FLEX_DIRECTION_ROW_REVERSE,
+} as const;
+
 interface FlexProps {
-	flexDirection?: FlexDirection;
+	flexDirection?: keyof typeof FLEX_DIRECTION;
 	gap?: number;
 	margin?: number;
+	marginInline?: number;
 	padding?: number;
+	width?: number | string;
+	height?: number | string;
+	flex?: number;
+	flexGrow?: number;
+	rowGap?: number;
+	x?: number;
+	y?: number;
+	top?: number;
+	left?: number;
+	right?: number;
+	bottom?: number;
+	position?: keyof typeof POSITION;
+	alignItems?: keyof typeof ALIGN;
+	justifyContent?: keyof typeof JUSTIFY;
 }
 
 const FlexContext = createContext<YogaNode | null>(null);
 
 function Flex({
+	alignItems,
+	flex,
 	flexDirection,
+	flexGrow,
 	gap,
+	justifyContent,
 	margin,
 	padding,
+	position,
 	children,
 	x,
 	y,
+	top,
+	left,
+	right,
+	bottom,
 	width,
 	height,
-	...props
-}: FlexProps) {
+}: React.PropsWithChildren<FlexProps>) {
 	const [layout, setLayout] =
 		useState<ReturnType<YogaNode['getComputedLayout']>>();
+	//console.log({ children })
 	const dims = useDimensions();
 	const parentNode = useContext(FlexContext);
-	//console.log(parentNode);
 	const nodeRef = useRef<YogaNode | null>(null);
 	let node = nodeRef.current;
+	//console.log({ node })
 	if (!node) {
 		nodeRef.current = node = yoga.Node.create();
 		if (parentNode) {
@@ -359,11 +435,13 @@ function Flex({
 	}
 
 	if (flexDirection) {
-		node.setFlexDirection(flexDirection);
+		const v = FLEX_DIRECTION[flexDirection];
+		if (typeof v !== 'undefined') {
+			node.setFlexDirection(v);
+		}
 	}
 
 	if (typeof gap === 'number') {
-		console.log({ gap });
 		node.setGap(GUTTER_ALL, gap);
 	}
 
@@ -375,11 +453,67 @@ function Flex({
 		node.setPadding(EDGE_ALL, padding);
 	}
 
+	if (typeof flex === 'number') {
+		node.setFlex(flex);
+	}
+
+	if (typeof flexGrow === 'number') {
+		node.setFlexGrow(flexGrow);
+	}
+
+	if (typeof justifyContent === 'string') {
+		const v = JUSTIFY[justifyContent];
+		if (typeof v !== 'undefined') {
+			node.setJustifyContent(v);
+		}
+	}
+
+	if (typeof alignItems === 'string') {
+		const v = ALIGN[alignItems];
+		if (typeof v !== 'undefined') {
+			node.setAlignItems(v);
+		}
+	}
+
+	if (typeof position === 'string') {
+		const v = POSITION[position];
+		if (typeof v !== 'undefined') {
+			node.setPositionType(v);
+		}
+	}
+
 	if (x) node.setPosition(EDGE_LEFT, x);
 	if (y) node.setPosition(EDGE_TOP, y);
-	if (width) node.setWidth(width);
-	if (height) node.setHeight(height);
-	node.setFlexGrow(1);
+
+	if (typeof width === 'number') {
+		node.setWidth(width);
+	} else if (typeof width === 'string') {
+		const p = parseInt(width, 10);
+		node.setWidthPercent(p);
+	}
+
+	if (typeof height === 'number') {
+		node.setHeight(height);
+	} else if (typeof height === 'string') {
+		const p = parseInt(height, 10);
+		node.setHeightPercent(p);
+	}
+
+	if (typeof top === 'number') {
+		node.setPosition(EDGE_TOP, top);
+	}
+
+	if (typeof left === 'number') {
+		node.setPosition(EDGE_LEFT, left);
+	}
+
+	if (typeof right === 'number') {
+		node.setPosition(EDGE_RIGHT, right);
+	}
+
+	if (typeof bottom === 'number') {
+		node.setPosition(EDGE_BOTTOM, bottom);
+	}
 
 	useEffect(() => {
 		return () => {
@@ -388,9 +522,10 @@ function Flex({
 			}
 			node.free();
 		};
-	});
+	}, [parentNode, node]);
 
 	useLayoutEffect(() => {
+		//console.log('layout effect')
 		let rootNode = node;
 		while (true) {
 			const p = rootNode.getParent();
@@ -399,10 +534,18 @@ function Flex({
 		}
 
 		rootNode.calculateLayout(dims.width, dims.height, DIRECTION_LTR);
+
 		const l = node.getComputedLayout();
+		let p: YogaNode | null = node;
+		while ((p = p.getParent())) {
+			l.left += p.getComputedLeft();
+			l.top += p.getComputedTop();
+		}
 		//console.log(l);
 		setLayout(l);
-	}, []);
+	}, [node, dims]);
+
+	//console.log('here')
 
 	return (
 		<FlexContext.Provider value={node}>
@@ -420,41 +563,72 @@ function Flex({
 	);
 }
 
+Flex.Text = (props: TextProps) => {
+	const { children, fontFamily, fontWeight, fontSize } = props;
+	const dims = useTextMetrics(children, fontFamily, fontSize, fontWeight);
+	return (
+		<Flex width={dims.width} height={fontSize}>
+			<Text {...props} />
+		</Flex>
+	);
+};
+
 function FlexTest() {
 	return (
-		<>
-			<Rect width={800} height={600} x={10} y={10} stroke='black' />
-			<Flex
-				width={800}
-				height={600}
-				x={10}
-				y={10}
-				gap={10}
-				flexDirection={FLEX_DIRECTION_ROW}
-			>
-				<Group alpha={0.9}>
-					<Flex padding={100}>
-						<Rect fill='red' alpha={0.8}></Rect>
+		<Flex
+			width='100%'
+			height='100%'
+			justifyContent='center'
+			alignItems='center'
+		>
+			<Rect fill='rgb(42, 117, 100)' />
+			<Flex width={250} height={475}>
+				<Rect fill='rgb(21, 23, 25)' stroke='rgb(52, 57, 62)' />
+				<Flex flex={1} margin={10} gap={10}>
+					<Flex height={60} flexGrow={1}>
+						<Rect fill='red' alpha={0.8} />
 					</Flex>
-					<Flex margin={10}>
-						<Rect fill='orange' alpha={0.8}></Rect>
+					<Flex flex={1}>
+						<Rect fill='orange' alpha={0.8} />
 					</Flex>
-					<Flex>
-						<Rect fill='yellow' alpha={0.8}></Rect>
-						<Text fill='black'>Hello</Text>
+					<Flex flex={2} justifyContent='center' alignItems='center'>
+						<Rect fill='yellow' alpha={0.8} />
+						<Flex.Text
+							fill='black'
+							fontFamily='Geist'
+							onClick={() => {
+								console.log('hello world');
+							}}
+						>
+							Hello World 👍
+						</Flex.Text>
 					</Flex>
-					<Flex>
-						<Rect fill='green' alpha={0.8}></Rect>
+					<Flex
+						position='absolute'
+						width='100%'
+						bottom={0}
+						height={64}
+						flexDirection='row'
+						alignItems='center'
+						justifyContent='space-around'
+					>
+						<Rect fill='rgb(77, 84, 93)' stroke='rgb(122, 130, 140)' />
+						<Flex width={40} height={40}>
+							<Rect fill='rgb(122, 130, 140)' stroke='rgb(177, 182, 189)' />
+						</Flex>
+						<Flex width={40} height={40}>
+							<Rect fill='rgb(122, 130, 140)' stroke='rgb(177, 182, 189)' />
+						</Flex>
+						<Flex width={40} height={40}>
+							<Rect fill='rgb(122, 130, 140)' stroke='rgb(177, 182, 189)' />
+						</Flex>
+						<Flex width={40} height={40}>
+							<Rect fill='rgb(122, 130, 140)' stroke='rgb(177, 182, 189)' />
+						</Flex>
 					</Flex>
-					<Flex>
-						<Rect fill='blue' alpha={0.5}></Rect>
-					</Flex>
-					<Flex>
-						<Rect fill='purple' alpha={0.5}></Rect>
-					</Flex>
-				</Group>
+				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 }
 
@@ -468,13 +642,14 @@ function Page2() {
 		ctx.fillStyle = 'blue';
 		ctx.fillRect(0, 0, 50, 50);
 		root.queueRender();
-	}, [canvasRef, root]);
+	}, [root]);
 	return <Canvas ref={canvasRef} width={100} height={100} rotate={30} />;
 }
 
 function CenteredText({ children, ...props }: TextProps) {
 	const dims = useDimensions();
 	const metrics = useTextMetrics(
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		children as any,
 		props.fontFamily,
 		props.fontSize,
@@ -492,16 +667,12 @@ function CenteredText({ children, ...props }: TextProps) {
 }
 
 function Page1() {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const data = useLoaderData() as any;
 	return (
 		<>
 			<Link to='/test?bar'>
-				<Rect
-					fill='red'
-					width={100}
-					height={100}
-					onMouseEnter={console.log}
-				></Rect>
+				<Rect fill='red' width={100} height={100} onMouseEnter={console.log} />
 			</Link>
 			<Rect x={1280 / 2} width={1} height='100%' fill='red' />
 			<CenteredText
@@ -535,11 +706,23 @@ function Page1() {
 }
 
 function ErrorBoundary() {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const error = useAsyncError() as any;
 	console.error(error);
 	return (
 		<Text x={100} y={100} fill='red'>
-			Error: {String(error)}
+			Async Error: {String(error)}
+		</Text>
+	);
+}
+
+function RouteErrorBoundary() {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const error = useRouteError() as any;
+	console.error(error);
+	return (
+		<Text x={100} y={100} fill='red'>
+			Route Error: {String(error)}
 		</Text>
 	);
 }
@@ -564,7 +747,7 @@ const routes: RouteObject[] = [
 		path: '/test',
 		//element: <Page1 />,
 		element: <FlexTest />,
-		errorElement: <Text fill='black'>There was an error</Text>,
+		errorElement: <RouteErrorBoundary />,
 		loader: () =>
 			defer({
 				sleep: new Promise((r) => setTimeout(r, 1000)).then(() => {
