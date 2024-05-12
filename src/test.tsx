@@ -6,6 +6,7 @@ import React, {
 	createContext,
 	useContext,
 	useLayoutEffect,
+	useCallback,
 } from 'react';
 import { render } from './render.js';
 import {
@@ -24,6 +25,11 @@ import initYoga, {
 	ALIGN_CENTER,
 	ALIGN_FLEX_START,
 	ALIGN_FLEX_END,
+	ALIGN_AUTO,
+	ALIGN_BASELINE,
+	ALIGN_SPACE_AROUND,
+	ALIGN_SPACE_BETWEEN,
+	ALIGN_STRETCH,
 	FLEX_DIRECTION_COLUMN,
 	FLEX_DIRECTION_ROW,
 	EDGE_LEFT,
@@ -44,11 +50,6 @@ import initYoga, {
 	JUSTIFY_SPACE_AROUND,
 	JUSTIFY_SPACE_BETWEEN,
 	JUSTIFY_SPACE_EVENLY,
-	ALIGN_AUTO,
-	ALIGN_BASELINE,
-	ALIGN_SPACE_AROUND,
-	ALIGN_SPACE_BETWEEN,
-	ALIGN_STRETCH,
 	type Node as YogaNode,
 } from 'yoga-wasm-web/asm';
 import {
@@ -398,11 +399,17 @@ interface FlexProps {
 }
 
 const FlexContext = createContext<YogaNode | null>(null);
+const UpdateLayoutContext = createContext<EventTarget>(new EventTarget());
+
+window.rootNodes = [];
+
+const config = yoga.Config.create();
+config.setPointScaleFactor(0);
 
 function Flex({
 	alignItems,
 	flex,
-	flexDirection,
+	flexDirection = 'row',
 	flexGrow,
 	gap,
 	justifyContent,
@@ -422,16 +429,57 @@ function Flex({
 	const [layout, setLayout] =
 		useState<ReturnType<YogaNode['getComputedLayout']>>();
 	//console.log({ children })
+	const [layoutX, setLayoutX] = useState(0);
+	const [layoutY, setLayoutY] = useState(0);
+	const [layoutWidth, setLayoutWidth] = useState(0);
+	const [layoutHeight, setLayoutHeight] = useState(0);
 	const dims = useDimensions();
 	const parentNode = useContext(FlexContext);
+	const isRootNode = !parentNode;
 	const nodeRef = useRef<YogaNode | null>(null);
+	const updateLayoutEmitter = useRef<EventTarget | null>(null);
+	const updateLayoutEventListenerAdded = useRef(false);
+	const updateLayoutContext = useContext(UpdateLayoutContext);
+	if (isRootNode && !updateLayoutEmitter.current) {
+		updateLayoutEmitter.current = new EventTarget();
+	}
+
 	let node = nodeRef.current;
 	//console.log({ node })
 	if (!node) {
-		nodeRef.current = node = yoga.Node.create();
+		nodeRef.current = node = yoga.Node.createWithConfig(config);
+		if (isRootNode) {
+			console.log('creating root node');
+			window.rootNodes.push(node);
+		}
 		if (parentNode) {
 			parentNode.insertChild(node, parentNode.getChildCount());
 		}
+	}
+
+	const onUpdateLayout = useCallback(() => {
+		console.log('update');
+		const l = node.getComputedLayout();
+		let p: YogaNode | null = node;
+		while ((p = p.getParent())) {
+			l.left += p.getComputedLeft();
+			l.top += p.getComputedTop();
+		}
+		//console.log(l);
+		//setLayout(l);
+		setLayoutX(l.left);
+		setLayoutY(l.top);
+		setLayoutWidth(l.width);
+		setLayoutHeight(l.height);
+	}, [node]);
+
+	if (!updateLayoutEventListenerAdded.current) {
+		console.log('adding update handler');
+		(updateLayoutEmitter.current || updateLayoutContext).addEventListener(
+			'update',
+			onUpdateLayout,
+		);
+		updateLayoutEventListenerAdded.current = true;
 	}
 
 	if (flexDirection) {
@@ -517,15 +565,19 @@ function Flex({
 
 	useEffect(() => {
 		return () => {
+			(updateLayoutEmitter.current || updateLayoutContext).removeEventListener(
+				'update',
+				onUpdateLayout,
+			);
 			if (parentNode) {
 				parentNode.removeChild(node);
 			}
 			node.free();
 		};
-	}, [parentNode, node]);
+	}, [parentNode, node, updateLayoutContext, onUpdateLayout]);
 
 	useLayoutEffect(() => {
-		//console.log('layout effect')
+		console.log('layout effect');
 		let rootNode = node;
 		while (true) {
 			const p = rootNode.getParent();
@@ -534,33 +586,58 @@ function Flex({
 		}
 
 		rootNode.calculateLayout(dims.width, dims.height, DIRECTION_LTR);
-
-		const l = node.getComputedLayout();
-		let p: YogaNode | null = node;
-		while ((p = p.getParent())) {
-			l.left += p.getComputedLeft();
-			l.top += p.getComputedTop();
-		}
-		//console.log(l);
-		setLayout(l);
-	}, [node, dims]);
+		(updateLayoutEmitter.current || updateLayoutContext).dispatchEvent(
+			new Event('update'),
+		);
+	}, [
+		node,
+		dims,
+		flexDirection,
+		gap,
+		flex,
+		flexGrow,
+		x,
+		y,
+		width,
+		height,
+		position,
+		top,
+		left,
+		bottom,
+		right,
+		padding,
+		margin,
+		justifyContent,
+		alignItems,
+	]);
 
 	//console.log('here')
+	let c: React.ReactNode = React.Children.map(children, (child) => {
+		if (child.type === Flex) return child;
+		//if (!layout) return child;
+		return React.cloneElement(child, {
+			width: layoutWidth,
+			height: layoutHeight,
+			x: layoutX,
+			y: layoutY,
+			//width: layout.width,
+			//height: layout.height,
+			//x: layout.left,
+			//y: layout.top,
+		});
+	});
 
-	return (
-		<FlexContext.Provider value={node}>
-			{React.Children.map(children, (child) => {
-				if (child.type === Flex) return child;
-				if (!layout) return child;
-				return React.cloneElement(child, {
-					width: layout.width,
-					height: layout.height,
-					x: layout.left,
-					y: layout.top,
-				});
-			})}
-		</FlexContext.Provider>
-	);
+	if (updateLayoutEmitter.current) {
+		c = (
+			<UpdateLayoutContext.Provider value={updateLayoutEmitter.current}>
+				{c}
+			</UpdateLayoutContext.Provider>
+		);
+	}
+
+	console.log('render');
+
+	return <FlexContext.Provider value={node}>{c}</FlexContext.Provider>;
 }
 
 Flex.Text = (props: TextProps) => {
@@ -572,8 +649,11 @@ Flex.Text = (props: TextProps) => {
 		</Flex>
 	);
 };
+Flex.Text.displayName = 'Flex.Text';
 
 function FlexTest() {
+	const [c, setC] = useState('orange');
+	console.log({ c });
 	return (
 		<Flex
 			width='100%'
@@ -584,18 +664,27 @@ function FlexTest() {
 			<Rect fill='rgb(42, 117, 100)' />
 			<Flex width={250} height={475}>
 				<Rect fill='rgb(21, 23, 25)' stroke='rgb(52, 57, 62)' />
-				<Flex flex={1} margin={10} gap={10}>
+				<Flex flex={1} margin={10} gap={10} flexDirection='column'>
 					<Flex height={60} flexGrow={1}>
 						<Rect fill='red' alpha={0.8} />
 					</Flex>
 					<Flex flex={1}>
-						<Rect fill='orange' alpha={0.8} />
+						<RoundRect
+							fill={c}
+							alpha={0.8}
+							radii={25}
+							onClick={() => {
+								console.log('click');
+								setC('blue');
+							}}
+						/>
 					</Flex>
 					<Flex flex={2} justifyContent='center' alignItems='center'>
-						<Rect fill='yellow' alpha={0.8} />
+						<RoundRect fill='yellow' alpha={0.8} radii={25} />
 						<Flex.Text
 							fill='black'
 							fontFamily='Geist'
+							fontSize={24}
 							onClick={() => {
 								console.log('hello world');
 							}}
@@ -745,8 +834,10 @@ const routes: RouteObject[] = [
 	},
 	{
 		path: '/test',
-		element: <Page1 />,
-		//element: <FlexTest />,
+		//element: <Page1 />,
+		//element: <React.StrictMode><Page1 /></React.StrictMode>,
+		element: <FlexTest />,
+		//element: <React.StrictMode><FlexTest /></React.StrictMode>,
 		errorElement: <RouteErrorBoundary />,
 		loader: () =>
 			defer({
