@@ -21,15 +21,22 @@
 ```tsx
 // App.jsx
 import React from "react";
-import { Group, Rect, Text } from "react-tela";
+import { Group, Rect, Text, useDimensions } from "react-tela";
+
+function Contents() {
+    const dims = useDimensions();
+    return <>
+        <Rect width={dims.width} height={dims.height} fill="purple" alpha={0.5} />
+        <Text fontSize={32} fontFamily="Geist" fill="white">
+            Hello world!
+        </Text>
+    </>;
+}
 
 export function App() {
 	return (
 		<Group x={5} y={15} width={180} height={30} rotate={0.1}>
-			<Rect width="100%" height="100%" fill="purple" alpha={0.5} />
-			<Text fontSize={32} fontFamily="Geist" fill="white">
-				Hello world!
-			</Text>
+            <Contents />
 		</Group>
 	);
 }

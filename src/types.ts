@@ -1,5 +1,3 @@
-export type PercentageString = `${string}%`;
-
 export interface ICanvasRenderingContext2D {
 	globalAlpha: number;
 	canvas: ICanvas;

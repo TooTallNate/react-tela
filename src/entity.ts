@@ -1,25 +1,24 @@
 import { TelaEventTarget } from './event-target.js';
-import { parsePercent } from './util.js';
 import type { Root } from './root.js';
-import type { PercentageString, TelaMouseEvent } from './types.js';
+import type { TelaMouseEvent } from './types.js';
 
 export type EntityProps = {
 	/**
 	 * The x (horizontal) coordinate of the entity from the top-left corner of the context.
 	 */
-	x?: number | PercentageString;
+	x?: number;
 	/**
 	 * The y (vertical) coordinate of the entity from the top-left corner of the context.
 	 */
-	y?: number | PercentageString;
+	y?: number;
+	/**
+	 * The width of the entity in pixels.
+	 */
+	width?: number;
 	/**
 	 * The height of the entity in pixels.
 	 */
-	width?: number | PercentageString;
-	/**
-	 * The height of the entity in pixels.
-	 */
-	height?: number | PercentageString;
+	height?: number;
 	/**
 	 * The alpha transparency value of the entity. The value `0` is fully transparent. The value `1` is fully opaque.
 	 *
@@ -62,10 +61,10 @@ export type EntityProps = {
 };
 
 export class Entity extends TelaEventTarget {
-	x: number | PercentageString;
-	y: number | PercentageString;
-	width: number | PercentageString;
-	height: number | PercentageString;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
 	alpha: number;
 	rotate: number;
 	scaleX?: number;
@@ -123,41 +122,19 @@ export class Entity extends TelaEventTarget {
 	}
 
 	get calculatedX() {
-		let { x } = this;
-		if (typeof x !== 'number') {
-			x = this.root.ctx.canvas.width * parsePercent(x);
-		}
-		return x + this.calculatedWidth / 2;
+		return this.x + this.width / 2;
 	}
 
 	get calculatedY() {
-		let { y } = this;
-		if (typeof y !== 'number') {
-			y = this.root.ctx.canvas.height * parsePercent(y);
-		}
-		return y + this.calculatedHeight / 2;
-	}
-
-	get calculatedWidth() {
-		if (typeof this.width === 'number') {
-			return this.width;
-		}
-		return this.root.ctx.canvas.width * parsePercent(this.width);
-	}
-
-	get calculatedHeight() {
-		if (typeof this.height === 'number') {
-			return this.height;
-		}
-		return this.root.ctx.canvas.height * parsePercent(this.height);
+		return this.y + this.height / 2;
 	}
 
 	get offsetX() {
-		return -this.calculatedWidth / 2;
+		return -this.width / 2;
 	}
 
 	get offsetY() {
-		return -this.calculatedHeight / 2;
+		return -this.height / 2;
 	}
 
 	get matrix() {
@@ -191,7 +168,7 @@ export class Entity extends TelaEventTarget {
 
 	get path() {
 		const p = new this.root.Path2D();
-		p.rect(0, 0, this.calculatedWidth, this.calculatedHeight);
+		p.rect(0, 0, this.width, this.height);
 		return p;
 	}
 

@@ -9,10 +9,7 @@ export class Canvas extends Entity {
 
 	constructor(opts: CanvasProps, root: Root) {
 		super(opts);
-		this.subcanvas = new root.Canvas(
-			this.calculatedWidth,
-			this.calculatedHeight,
-		);
+		this.subcanvas = new root.Canvas(this.width, this.height);
 	}
 
 	getContext(...args: Parameters<ICanvas['getContext']>) {
@@ -21,12 +18,6 @@ export class Canvas extends Entity {
 
 	render(): void {
 		super.render();
-		this.root.ctx.drawImage(
-			this.subcanvas,
-			0,
-			0,
-			this.calculatedWidth,
-			this.calculatedHeight,
-		);
+		this.root.ctx.drawImage(this.subcanvas, 0, 0, this.width, this.height);
 	}
 }

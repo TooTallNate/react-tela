@@ -3,10 +3,7 @@ import { Entity, EntityProps } from './entity.js';
 import { proxyEvents } from './events.js';
 import type { ICanvasRenderingContext2D } from './types.js';
 
-export interface GroupProps extends Omit<EntityProps, 'width' | 'height'> {
-	width: number;
-	height: number;
-}
+export interface GroupProps extends EntityProps {}
 
 export class Group extends Entity {
 	subroot: Root;
@@ -24,8 +21,8 @@ export class Group extends Entity {
 			this.subroot.ctx.canvas,
 			0,
 			0,
-			this.calculatedWidth,
-			this.calculatedHeight,
+			this.width,
+			this.height,
 		);
 	}
 }

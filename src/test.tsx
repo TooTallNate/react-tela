@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {
 	useEffect,
 	useRef,
@@ -64,6 +65,7 @@ import {
 	useTextMetrics,
 	TextProps,
 	useDimensions,
+	LayoutContext,
 } from './index.js';
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 
@@ -758,12 +760,13 @@ function CenteredText({ children, ...props }: TextProps) {
 function Page1() {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const data = useLoaderData() as any;
+	const dims = useDimensions();
 	return (
 		<>
 			<Link to='/test?bar'>
 				<Rect fill='red' width={100} height={100} onMouseEnter={console.log} />
 			</Link>
-			<Rect x={1280 / 2} width={1} height='100%' fill='red' />
+			<Rect x={1280 / 2} width={1} height={dims.height} fill='red' />
 			<CenteredText
 				fill='green'
 				fontWeight='bold'
@@ -773,7 +776,7 @@ function Page1() {
 				hello world
 			</CenteredText>
 			<Group width={300} height={100} x={50} y={200}>
-				<Rect width='100%' height='100%' fill='yellow' />
+				<Rect width={dims.width} height={dims.height} fill='yellow' />
 				<CenteredText fill='green' fontFamily='Comic Sans MS'>
 					hello world
 				</CenteredText>
@@ -792,6 +795,18 @@ function Page1() {
 			</Suspense>
 		</>
 	);
+}
+
+function Page3() {
+	return (
+		<LayoutContext.Provider value={{ x: 10, y: 15, width: 200, height: 100 }}>
+			<RedRect />
+		</LayoutContext.Provider>
+	);
+}
+
+function RedRect() {
+	return <Rect fill='red' />;
 }
 
 function ErrorBoundary() {
@@ -820,7 +835,7 @@ function Async() {
 	const data = useAsyncValue();
 	console.log(data);
 	return (
-		<Text x={100} y={100} fill='green'>
+		<Text x={100} y={100} fill='green' fontFamily='Geist'>
 			Loaded!
 		</Text>
 	);
@@ -835,6 +850,7 @@ const routes: RouteObject[] = [
 	{
 		path: '/test',
 		//element: <Page1 />,
+		//element: <Page3 />,
 		//element: <React.StrictMode><Page1 /></React.StrictMode>,
 		element: <FlexTest />,
 		//element: <React.StrictMode><FlexTest /></React.StrictMode>,

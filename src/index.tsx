@@ -18,13 +18,24 @@ import { Path as _Path, type PathProps } from './path.js';
 import { Image as _Image, type ImageProps } from './image.js';
 import { Text as _Text, type TextProps as _TextProps } from './text.js';
 import { ICanvas } from './types.js';
+import { LayoutContext, useLayout } from './hooks/use-layout.js';
+import { EntityProps } from './entity.js';
 
 type MaybeArray<T> = T | T[];
 
-const factory = <Ref, Props>(type: string) => {
-	const c = forwardRef<Ref, Props>((props, ref) =>
-		createElement(type, { ...props, ref }),
-	);
+function useAdjustedLayout(props: any) {
+	let { x, y, width, height } = useLayout();
+	x += props.x ?? 0;
+	y += props.y ?? 0;
+	width += props.width ?? 0;
+	height += props.height ?? 0;
+	return { x, y, width, height };
+}
+
+const factory = <Ref, Props extends EntityProps>(type: string) => {
+	const c = forwardRef<Ref, Props>((props, ref) => {
+		return createElement(type, { ...props, ...useAdjustedLayout(props), ref });
+	});
 	c.displayName = type;
 	return c;
 };
@@ -42,7 +53,6 @@ export type { _Canvas as CanvasRef };
 
 export const Arc = factory<_Arc, ArcProps>('Arc');
 export const Canvas = factory<_Canvas, CanvasProps>('Canvas');
-//export const Group = factory<_Group, GroupProps>('Group');
 export const Image = factory<_Image, ImageProps>('Image');
 export const Path = factory<_Path, PathProps>('Path');
 export const Rect = factory<_Rect, RectProps>('Rect');
@@ -67,35 +77,40 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 	const root = useParent();
 	const rootRef = useRef<GroupRoot>();
 	let canvas: ICanvas;
+	const layout = useAdjustedLayout(props);
 	if (rootRef.current) {
 		canvas = rootRef.current.ctx.canvas;
 	} else {
-		canvas = new root.Canvas(props.width || 300, props.height || 150);
+		canvas = new root.Canvas(layout.width || 300, layout.height || 150);
 		const ctx = canvas.getContext('2d');
 		if (!ctx) {
 			throw new Error('Could not get "2d" canvas context');
 		}
 		rootRef.current = new GroupRoot(ctx, root);
 	}
-	if (props.width > 0 && props.width !== canvas.width) {
-		canvas.width = props.width;
+	if (layout.width > 0 && layout.width !== canvas.width) {
+		canvas.width = layout.width;
 	}
-	if (props.height > 0 && props.height !== canvas.height) {
-		canvas.height = props.height;
+	if (layout.height > 0 && layout.height !== canvas.height) {
+		canvas.height = layout.height;
 	}
 	//console.log({ props })
 	return (
 		<ParentContext.Provider value={rootRef.current}>
-			{createElement('Group', {
-				...props,
-				root: rootRef.current,
-				ref,
-			})}
+			<LayoutContext.Provider value={{ x: 0, y: 0, width: 0, height: 0 }}>
+				{createElement('Group', {
+					...props,
+					...layout,
+					root: rootRef.current,
+					ref,
+				})}
+			</LayoutContext.Provider>
 		</ParentContext.Provider>
 	);
 });
 Group.displayName = 'Group';
 
 export { useParent } from './hooks/use-parent.js';
+export { useLayout, LayoutContext, type Layout } from './hooks/use-layout.js';
 export { useDimensions } from './hooks/use-dimensions.js';
 export { useTextMetrics } from './hooks/use-text-metrics.js';

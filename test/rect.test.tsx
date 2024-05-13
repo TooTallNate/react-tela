@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { test, expect } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
-import { Rect } from '../src';
+import { LayoutContext, Rect } from '../src';
 import { render } from '../src/render';
 import { enableEvents, dispatchEvent } from './helpers/event';
 
@@ -9,6 +9,21 @@ test('should render <Rect>', async () => {
 	const canvas = new Canvas(150, 100);
 	await render(
 		<Rect x={10} y={10} width={10} height={10} fill='red' />,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render <Rect> with layout context', async () => {
+	const canvas = new Canvas(150, 100);
+	function BlueRect() {
+		return <Rect fill='blue' />;
+	}
+	await render(
+		<LayoutContext.Provider value={{ x: 10, y: 10, width: 50, height: 40 }}>
+			<BlueRect />
+		</LayoutContext.Provider>,
 		canvas,
 		config,
 	);

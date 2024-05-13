@@ -49,7 +49,7 @@ export class Text extends Entity {
 	}
 
 	render(): void {
-		let {
+		const {
 			value,
 			fontFamily = 'sans-serif',
 			fontWeight = '',

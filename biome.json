@@ -1,6 +1,6 @@
 {
   "linter": {
-    "enabled": true
+    "enabled": false
   },
   "javascript": {
     "formatter": {

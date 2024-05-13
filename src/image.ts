@@ -1,15 +1,13 @@
 import { Entity, type EntityProps } from './entity.js';
 import type { Root } from './root.js';
-import type { IImage, PercentageString } from './types.js';
+import type { IImage } from './types.js';
 
-export interface ImageProps extends Omit<EntityProps, 'width' | 'height'> {
+export interface ImageProps extends EntityProps {
 	src: string;
 	sx?: number;
 	sy?: number;
 	sw?: number;
 	sh?: number;
-	width?: number | PercentageString;
-	height?: number | PercentageString;
 }
 
 export class Image extends Entity {
@@ -70,8 +68,8 @@ export class Image extends Entity {
 			this.sh ?? img.naturalHeight,
 			0,
 			0,
-			this.calculatedWidth,
-			this.calculatedHeight,
+			this.width,
+			this.height,
 		);
 	}
 }
