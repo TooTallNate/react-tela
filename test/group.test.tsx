@@ -23,7 +23,7 @@ test('should render <Group>', async () => {
 					fill='purple'
 					alpha={0.5}
 				/>
-				<Text x={10} y={15} fontSize={32} fontFamily='Geist' fill='white'>
+				<Text x={10} y={15} fontSize={32} fontFamily='Geist Sans' fill='white'>
 					Hello world!
 				</Text>
 			</>
@@ -56,7 +56,7 @@ test('should render <Group> with parent layout context', async () => {
 					fill='orange'
 					alpha={0.5}
 				/>
-				<Text x={10} y={15} fontSize={32} fontFamily='Geist' fill='black'>
+				<Text x={10} y={15} fontSize={32} fontFamily='Geist Sans' fill='black'>
 					Hello world!
 				</Text>
 			</>
