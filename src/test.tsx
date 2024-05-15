@@ -8,6 +8,7 @@ import React, {
 	useContext,
 	useLayoutEffect,
 	useCallback,
+	useMemo,
 } from 'react';
 import { render } from './render.js';
 import {
@@ -33,6 +34,8 @@ import initYoga, {
 	ALIGN_STRETCH,
 	FLEX_DIRECTION_COLUMN,
 	FLEX_DIRECTION_ROW,
+	DISPLAY_FLEX,
+	DISPLAY_NONE,
 	EDGE_LEFT,
 	EDGE_RIGHT,
 	EDGE_TOP,
@@ -55,9 +58,11 @@ import initYoga, {
 } from 'yoga-wasm-web/asm';
 import {
 	Canvas,
+	Circle,
 	Group,
 	Rect,
 	Text,
+	Image,
 	useParent,
 	RoundRectProps,
 	RoundRect,
@@ -378,12 +383,20 @@ const FLEX_DIRECTION = {
 	'row-reverse': FLEX_DIRECTION_ROW_REVERSE,
 } as const;
 
+const DISPLAY = {
+	flex: DISPLAY_FLEX,
+	none: DISPLAY_NONE,
+} as const;
+
 interface FlexProps {
 	flexDirection?: keyof typeof FLEX_DIRECTION;
 	gap?: number;
 	margin?: number;
-	marginInline?: number;
 	padding?: number;
+	paddingTop?: number;
+	paddingBottom?: number;
+	paddingLeft?: number;
+	paddingRight?: number;
 	width?: number | string;
 	height?: number | string;
 	flex?: number;
@@ -398,10 +411,13 @@ interface FlexProps {
 	position?: keyof typeof POSITION;
 	alignItems?: keyof typeof ALIGN;
 	justifyContent?: keyof typeof JUSTIFY;
+	display?: keyof typeof DISPLAY;
 }
 
 const FlexContext = createContext<YogaNode | null>(null);
+FlexContext.displayName = 'FlexContext';
 const UpdateLayoutContext = createContext<EventTarget>(new EventTarget());
+UpdateLayoutContext.displayName = 'UpdateLayoutContext';
 
 window.rootNodes = [];
 
@@ -417,6 +433,10 @@ function Flex({
 	justifyContent,
 	margin,
 	padding,
+	paddingTop,
+	paddingBottom,
+	paddingLeft,
+	paddingRight,
 	position,
 	children,
 	x,
@@ -427,10 +447,8 @@ function Flex({
 	bottom,
 	width,
 	height,
+	display,
 }: React.PropsWithChildren<FlexProps>) {
-	const [layout, setLayout] =
-		useState<ReturnType<YogaNode['getComputedLayout']>>();
-	//console.log({ children })
 	const [layoutX, setLayoutX] = useState(0);
 	const [layoutY, setLayoutY] = useState(0);
 	const [layoutWidth, setLayoutWidth] = useState(0);
@@ -467,8 +485,6 @@ function Flex({
 			l.left += p.getComputedLeft();
 			l.top += p.getComputedTop();
 		}
-		//console.log(l);
-		//setLayout(l);
 		setLayoutX(l.left);
 		setLayoutY(l.top);
 		setLayoutWidth(l.width);
@@ -501,6 +517,22 @@ function Flex({
 
 	if (typeof padding === 'number') {
 		node.setPadding(EDGE_ALL, padding);
+	}
+
+	if (typeof paddingTop === 'number') {
+		node.setPadding(EDGE_TOP, paddingTop);
+	}
+
+	if (typeof paddingLeft === 'number') {
+		node.setPadding(EDGE_LEFT, paddingLeft);
+	}
+
+	if (typeof paddingBottom === 'number') {
+		node.setPadding(EDGE_BOTTOM, paddingBottom);
+	}
+
+	if (typeof paddingRight === 'number') {
+		node.setPadding(EDGE_RIGHT, paddingRight);
 	}
 
 	if (typeof flex === 'number') {
@@ -565,18 +597,42 @@ function Flex({
 		node.setPosition(EDGE_BOTTOM, bottom);
 	}
 
-	useEffect(() => {
+	if (typeof display === 'string') {
+		const v = DISPLAY[display];
+		if (typeof v !== 'undefined') {
+			node.setDisplay(v);
+		}
+	}
+
+	useLayoutEffect(() => {
+		console.log('flex init');
 		return () => {
+			console.log('flex init cleanup');
+
+			let rootNode = nodeRef.current;
+			while (true) {
+				const p = rootNode.getParent();
+				if (!p) break;
+				rootNode = p;
+			}
+
 			(updateLayoutEmitter.current || updateLayoutContext).removeEventListener(
 				'update',
 				onUpdateLayout,
 			);
 			if (parentNode) {
-				parentNode.removeChild(node);
+				parentNode.removeChild(nodeRef.current);
 			}
-			node.free();
+			nodeRef.current.free();
+
+			console.log({ rootNode, dims, parentNode });
+
+			rootNode.calculateLayout(dims.width, dims.height, DIRECTION_LTR);
+			(updateLayoutEmitter.current || updateLayoutContext).dispatchEvent(
+				new Event('update'),
+			);
 		};
-	}, [parentNode, node, updateLayoutContext, onUpdateLayout]);
+	}, [parentNode, updateLayoutContext, onUpdateLayout]);
 
 	useLayoutEffect(() => {
 		console.log('layout effect');
@@ -608,26 +664,23 @@ function Flex({
 		bottom,
 		right,
 		padding,
+		paddingBottom,
+		paddingLeft,
+		paddingRight,
+		paddingTop,
 		margin,
 		justifyContent,
 		alignItems,
+		display,
 	]);
 
-	//console.log('here')
-	let c: React.ReactNode = React.Children.map(children, (child) => {
-		if (child.type === Flex) return child;
-		//if (!layout) return child;
-		return React.cloneElement(child, {
-			width: layoutWidth,
-			height: layoutHeight,
-			x: layoutX,
-			y: layoutY,
-			//width: layout.width,
-			//height: layout.height,
-			//x: layout.left,
-			//y: layout.top,
-		});
-	});
+	const layout = useMemo(() => {
+		return { x: layoutX, y: layoutY, width: layoutWidth, height: layoutHeight };
+	}, [layoutX, layoutY, layoutWidth, layoutHeight]);
+
+	let c: React.ReactNode = (
+		<LayoutContext.Provider value={layout}>{children}</LayoutContext.Provider>
+	);
 
 	if (updateLayoutEmitter.current) {
 		c = (
@@ -666,21 +719,31 @@ function FlexTest() {
 			<Rect fill='rgb(42, 117, 100)' />
 			<Flex width={250} height={475}>
 				<Rect fill='rgb(21, 23, 25)' stroke='rgb(52, 57, 62)' />
-				<Flex flex={1} margin={10} gap={10} flexDirection='column'>
+				<Flex
+					flex={1}
+					margin={10}
+					gap={10}
+					flexDirection='column'
+					justifyContent='center'
+				>
 					<Flex height={60} flexGrow={1}>
 						<Rect fill='red' alpha={0.8} />
 					</Flex>
-					<Flex flex={1}>
-						<RoundRect
-							fill={c}
-							alpha={0.8}
-							radii={25}
-							onClick={() => {
-								console.log('click');
-								setC('blue');
-							}}
-						/>
-					</Flex>
+					{c === 'orange' && (
+						<Flex flex={1} justifyContent='center'>
+							<Flex flex={1}>
+								<Circle
+									fill={c}
+									alpha={0.8}
+									//radius={25}
+									onClick={() => {
+										console.log('click');
+										setC('blue');
+									}}
+								/>
+							</Flex>
+						</Flex>
+					)}
 					<Flex flex={2} justifyContent='center' alignItems='center'>
 						<RoundRect fill='yellow' alpha={0.8} radii={25} />
 						<Flex.Text
@@ -702,6 +765,7 @@ function FlexTest() {
 						flexDirection='row'
 						alignItems='center'
 						justifyContent='space-around'
+						display='none'
 					>
 						<Rect fill='rgb(77, 84, 93)' stroke='rgb(122, 130, 140)' />
 						<Flex width={40} height={40}>
@@ -719,6 +783,167 @@ function FlexTest() {
 					</Flex>
 				</Flex>
 			</Flex>
+		</Flex>
+	);
+}
+
+function SwitchSettings() {
+	return (
+		<Flex width='100%' height='100%' flexDirection='column' alignItems='center'>
+			<Rect fill='#2d2d2d' />
+			<SwitchHeader />
+			<SwitchSpacer />
+			<SwitchContent />
+			<SwitchSpacer />
+			<SwitchFooter />
+		</Flex>
+	);
+}
+
+function SwitchHeader() {
+	return (
+		<Flex width='100%' height={87} padding={10} gap={16} alignItems='center'>
+			{/*<Rect fill='black' />*/}
+			<Flex width={40} height='100%' />
+			<Flex width={54} height={54}>
+				<Image src='/gear.png' />
+			</Flex>
+			<Flex.Text fontFamily='Nintendo Switch' fontSize={32} fill='#fafafa'>
+				System Settings
+			</Flex.Text>
+		</Flex>
+	);
+}
+
+function SwitchSpinner(props) {
+	const end = 0xe027;
+	const speed = 70;
+	const [frame, setFrame] = useState(0xe020);
+	useEffect(() => {
+		const id = setInterval(
+			() => setFrame((c) => (c === 0xe027 ? 0xe020 : c + 1)),
+			speed,
+		);
+		return () => clearInterval(id);
+	}, [speed]);
+	return (
+		<Flex.Text {...props} fontFamily='Nintendo Switch Icons'>
+			{String.fromCharCode(frame)}
+		</Flex.Text>
+	);
+}
+
+function SwitchSpacer() {
+	return (
+		<Flex width='96%' height={1}>
+			<Rect fill='white' />
+		</Flex>
+	);
+}
+
+function SwitchContent() {
+	return (
+		<Flex flexGrow={1} width='100%'>
+			<SwitchSidebar>
+				<SidebarItem active>One</SidebarItem>
+				<SidebarItem selected>Two</SidebarItem>
+				<SidebarSpacer />
+				<SidebarItem active selected>
+					Three
+				</SidebarItem>
+				<SidebarItem touching>Four</SidebarItem>
+				<SidebarSpacer />
+				<SidebarItem>Five</SidebarItem>
+				<SidebarItem>Six</SidebarItem>
+			</SwitchSidebar>
+			<SwitchPage />
+		</Flex>
+	);
+}
+
+function SidebarItem({ children, active, selected, touching }) {
+	return (
+		<Flex padding={24} alignItems='center' height={74}>
+			{selected ? <Rect fill='#212227' stroke='#65afce' lineWidth={5} /> : null}
+			{active ? (
+				<Flex width={4} height={52} position='absolute' left={12}>
+					<Rect fill='#75fccc' />
+				</Flex>
+			) : null}
+			<Flex.Text
+				fontFamily='Nintendo Switch'
+				fontSize={22}
+				fill={active ? '#75fccc' : '#fafafa'}
+			>
+				{children}
+			</Flex.Text>
+			{touching ? <Rect fill='red' /> : null}
+		</Flex>
+	);
+}
+
+function SidebarSpacer() {
+	return (
+		<Flex margin={10} height={1}>
+			<Rect fill='rgba(255, 255, 255, 0.2)' />
+		</Flex>
+	);
+}
+
+function SwitchSidebar({ children }) {
+	return (
+		<Flex
+			width={410}
+			height='100%'
+			padding={30}
+			flexDirection='column'
+			paddingLeft={75}
+		>
+			<Rect fill='#323232' />
+			{children}
+		</Flex>
+	);
+}
+
+function SwitchPage() {
+	return null;
+}
+
+function SwitchFooter() {
+	return (
+		<Flex
+			width='100%'
+			height={72}
+			padding={10}
+			paddingLeft={50}
+			paddingRight={50}
+			gap={16}
+			alignItems='center'
+			justifyContent='space-between'
+		>
+			<Flex width={70} height={30}>
+				<Rect fill='#fefefe' />
+			</Flex>
+			<Flex height='100%' gap={36}>
+				<SwitchButton short='B' action='Back' />
+				<SwitchButton short='A' action='OK' />
+			</Flex>
+		</Flex>
+	);
+}
+
+function SwitchButton({ short, action }) {
+	return (
+		<Flex alignItems='center' height='100%' gap={10}>
+			<Flex width={25} height={25} alignItems='center' justifyContent='center'>
+				<Circle fill='white' />
+				<Flex.Text fontFamily='Nintendo Switch UI' fill='black' fontSize={16}>
+					{short}
+				</Flex.Text>
+			</Flex>
+			<Flex.Text fontFamily='Nintendo Switch UI' fill='white' fontSize={20}>
+				{action}
+			</Flex.Text>
 		</Flex>
 	);
 }
@@ -852,8 +1077,9 @@ const routes: RouteObject[] = [
 		//element: <Page1 />,
 		//element: <Page3 />,
 		//element: <React.StrictMode><Page1 /></React.StrictMode>,
-		element: <FlexTest />,
+		//element: <FlexTest />,
 		//element: <React.StrictMode><FlexTest /></React.StrictMode>,
+		element: <SwitchSettings />,
 		errorElement: <RouteErrorBoundary />,
 		loader: () =>
 			defer({

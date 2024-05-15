@@ -51,7 +51,6 @@ export {
 };
 export type { _Canvas as CanvasRef };
 
-export const Arc = factory<_Arc, ArcProps>('Arc');
 export const Canvas = factory<_Canvas, CanvasProps>('Canvas');
 export const Image = factory<_Image, ImageProps>('Image');
 export const Path = factory<_Path, PathProps>('Path');
@@ -62,6 +61,20 @@ export type TextProps = Omit<_TextProps, 'value'> & {
 	children?: MaybeArray<string | number>;
 };
 export const Text = factory<_Text, TextProps>('Text');
+
+//export const Arc = factory<_Arc, ArcProps>('Arc');
+export const Arc = forwardRef<_Arc, ArcProps>((props, ref) => {
+	const layout = useAdjustedLayout(props);
+	const radius = props.radius ?? Math.min(layout.width, layout.height) / 2;
+	return createElement('Arc', {
+		...props,
+		x: layout.x,
+		y: layout.y,
+		radius,
+		ref,
+	});
+});
+Arc.displayName = 'Arc';
 
 export type CircleProps = Omit<
 	ArcProps,

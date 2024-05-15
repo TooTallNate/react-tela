@@ -13,6 +13,7 @@ export const LayoutContext = createContext<Layout>({
 	width: 0,
 	height: 0,
 });
+LayoutContext.displayName = 'LayoutContext';
 
 export function useLayout() {
 	return useContext(LayoutContext);
