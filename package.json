@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "description": "React renderer for Canvas",
   "type": "module",
+  "packageManager": "pnpm@8.15.8",
   "module": "./dist/index.js",
   "types": "./dist/index.js.map",
   "exports": {
@@ -48,5 +49,5 @@
   },
   "peerDependencies": {
     "react": "18"
-  }
+  },
 }
