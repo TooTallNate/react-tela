@@ -21,6 +21,14 @@ export interface ICanvasRenderingContext2D {
 	fillRect(x: number, y: number, w: number, h: number): void;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/strokeRect) */
 	strokeRect(x: number, y: number, w: number, h: number): void;
+	transform(
+		a: number,
+		b: number,
+		c: number,
+		d: number,
+		e: number,
+		f: number,
+	): void;
 	resetTransform(): void;
 	getTransform(): IDOMMatrix;
 	setTransform(
