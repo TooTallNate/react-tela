@@ -221,10 +221,6 @@ export interface IPath2D {
 	): void;
 }
 
-export type InstanceProperties<T> = {
-	[K in keyof T]: T[K];
-};
-
 export interface Point {
 	x: number;
 	y: number;
