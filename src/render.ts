@@ -23,12 +23,6 @@ type Components = {
 	Rect: C.RectProps;
 	RoundRect: C.RoundRectProps;
 	Text: C.TextProps;
-	//Line: C.LineProps;
-	//Circle: C.CircleProps;
-	//Triangle: C.TriangleProps;
-	//Text: C.TextProps;
-	//Path: C.PathProps;
-	//Image: C.ImageProps;
 };
 
 interface HostContext {}
