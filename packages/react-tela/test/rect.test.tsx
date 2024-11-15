@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { test, expect } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
 import { LayoutContext, Rect } from '../src';

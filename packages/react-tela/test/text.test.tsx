@@ -1,5 +1,4 @@
 import './helpers/font';
-import React from 'react';
 import { test, expect } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Text } from '../src';

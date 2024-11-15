@@ -1,4 +1,3 @@
-import React from 'react';
 import { test, expect } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Path } from '../src';
@@ -20,17 +19,9 @@ test('should render <Path>', async () => {
    C22.602,0.567,25.338,0.567,26.285,2.486z'
 			fill='#ED8A19'
 			stroke='red'
-			//rotate={rotation}
 			scaleX={5}
 			scaleY={5}
-			//stroke={stroke3 || 'red' || stroke3}
 			lineWidth={3}
-			//onMouseEnter={(e) => {
-			//	setStroke3('black');
-			//}}
-			//onMouseLeave={() => {
-			//	setStroke3(undefined);
-			//}}
 		/>,
 		canvas,
 		config,
