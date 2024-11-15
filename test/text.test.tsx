@@ -1,14 +1,9 @@
+import './font';
 import React from 'react';
-import { join } from 'path';
 import { test, expect } from 'vitest';
-import config, { Canvas, GlobalFonts } from '@napi-rs/canvas';
+import config, { Canvas } from '@napi-rs/canvas';
 import { Text } from '../src';
 import { render } from '../src/render';
-
-GlobalFonts.registerFromPath(
-	join(__dirname, 'Geist-Regular.otf'),
-	'Geist Sans',
-);
 
 test('should render <Text>', async () => {
 	const canvas = new Canvas(300, 100);
