@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - '!*'
+      - "!*"
   pull_request:
 
 jobs:
@@ -27,13 +27,13 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 8.15.8
+          version: 8.15.9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile

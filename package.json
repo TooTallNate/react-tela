@@ -1,53 +1,11 @@
 {
-  "name": "react-tela",
-  "version": "0.0.3",
-  "description": "React renderer for Canvas",
-  "type": "module",
+  "private": true,
+  "name": "react-tela-monorepo",
   "packageManager": "pnpm@8.15.9",
-  "module": "./dist/index.js",
-  "types": "./dist/index.js.map",
-  "exports": {
-    ".": "./dist/index.js",
-    "./render": "./dist/render.js",
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
-    "format": "biome format --write src examples test",
-    "node": "tsx examples/node.tsx",
-    "test": "vitest"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Nathan Rajlich <n@n8.io>",
-  "license": "MIT",
-  "dependencies": {
-    "parse-svg-path": "^0.1.2",
-    "react-reconciler": "^0.29.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
-    "@napi-rs/canvas": "^0.1.48",
-    "@types/jest-image-snapshot": "^6.4.0",
-    "@types/node": "^20.8.6",
-    "@types/react": "^18.2.28",
-    "@types/react-reconciler": "^0.28.5",
-    "esbuild": "^0.19.4",
-    "jest-image-snapshot": "^6.4.0",
-    "react": "^18.2.0",
-    "react-fps": "^1.0.6",
-    "react-router-dom": "^6.23.0",
-    "terminal-image": "^2.0.0",
-    "tsx": "^4.7.0",
-    "typescript": "^5.2.2",
-    "vite": "^5.1.6",
-    "vitest": "^1.3.1",
-    "yoga-wasm-web": "^0.3.3"
-  },
-  "peerDependencies": {
-    "react": "18"
-  }
+  "author": "",
+  "license": "ISC"
 }
