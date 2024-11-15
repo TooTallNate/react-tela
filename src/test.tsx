@@ -16,6 +16,7 @@ import {
 	RouteObject,
 	RouterProvider,
 	createBrowserRouter,
+	createMemoryRouter,
 	defer,
 	useAsyncError,
 	useAsyncValue,
@@ -54,6 +55,9 @@ import initYoga, {
 	JUSTIFY_SPACE_AROUND,
 	JUSTIFY_SPACE_BETWEEN,
 	JUSTIFY_SPACE_EVENLY,
+	WRAP_NO_WRAP,
+	WRAP_WRAP,
+	WRAP_WRAP_REVERSE,
 	type Node as YogaNode,
 } from 'yoga-wasm-web/asm';
 import {
@@ -71,7 +75,9 @@ import {
 	TextProps,
 	useDimensions,
 	LayoutContext,
+	ParentNodeContext,
 } from './index.js';
+import { TelaEventTarget } from './event-target.js';
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 
 const yoga = initYoga();
@@ -388,6 +394,12 @@ const DISPLAY = {
 	none: DISPLAY_NONE,
 } as const;
 
+const WRAP = {
+	'no-wrap': WRAP_NO_WRAP,
+	wrap: WRAP_WRAP,
+	'wrap-reverse': WRAP_WRAP_REVERSE,
+} as const;
+
 interface FlexProps {
 	flexDirection?: keyof typeof FLEX_DIRECTION;
 	gap?: number;
@@ -416,6 +428,7 @@ interface FlexProps {
 
 const FlexContext = createContext<YogaNode | null>(null);
 FlexContext.displayName = 'FlexContext';
+
 const UpdateLayoutContext = createContext<EventTarget>(new EventTarget());
 UpdateLayoutContext.displayName = 'UpdateLayoutContext';
 
@@ -564,6 +577,13 @@ function Flex({
 		}
 	}
 
+	if (typeof flexWrap === 'string') {
+		const v = WRAP[flexWrap];
+		if (typeof v !== 'undefined') {
+			node.setFlexWrap(v);
+		}
+	}
+
 	if (x) node.setPosition(EDGE_LEFT, x);
 	if (y) node.setPosition(EDGE_TOP, y);
 
@@ -692,7 +712,14 @@ function Flex({
 
 	console.log('render');
 
-	return <FlexContext.Provider value={node}>{c}</FlexContext.Provider>;
+	const emitter = new TelaEventTarget();
+	emitter.onclick = (e) => console.log('emitter', e);
+
+	return (
+		<ParentNodeContext.Provider value={emitter}>
+			<FlexContext.Provider value={node}>{c}</FlexContext.Provider>
+		</ParentNodeContext.Provider>
+	);
 }
 
 Flex.Text = (props: TextProps) => {
@@ -802,12 +829,21 @@ function SwitchSettings() {
 
 function SwitchHeader() {
 	return (
-		<Flex width='100%' height={87} padding={10} gap={16} alignItems='center'>
-			{/*<Rect fill='black' />*/}
-			<Flex width={40} height='100%' />
-			<Flex width={54} height={54}>
-				<Image src='/gear.png' />
-			</Flex>
+		<Flex
+			width='100%'
+			height={87}
+			padding={10}
+			gap={16}
+			paddingLeft={60}
+			alignItems='center'
+		>
+			<Flex.Text
+				fontFamily='Nintendo Switch Icons'
+				fontSize={40}
+				fill='#fafafa'
+			>
+				{'\uE130'}
+			</Flex.Text>
 			<Flex.Text fontFamily='Nintendo Switch' fontSize={32} fill='#fafafa'>
 				System Settings
 			</Flex.Text>
@@ -844,7 +880,7 @@ function SwitchSpacer() {
 function SwitchContent() {
 	return (
 		<Flex flexGrow={1} width='100%'>
-			<SwitchSidebar>
+			<SwitchSidebar onClick={(e) => console.log('SwitchSidebar', e)}>
 				<SidebarItem active>One</SidebarItem>
 				<SidebarItem selected>Two</SidebarItem>
 				<SidebarSpacer />
@@ -853,7 +889,9 @@ function SwitchContent() {
 				</SidebarItem>
 				<SidebarItem touching>Four</SidebarItem>
 				<SidebarSpacer />
-				<SidebarItem>Five</SidebarItem>
+				<SidebarItem onClick={(e) => console.log('SidebarItem', e)}>
+					Five
+				</SidebarItem>
 				<SidebarItem>Six</SidebarItem>
 			</SwitchSidebar>
 			<SwitchPage />
@@ -861,9 +899,9 @@ function SwitchContent() {
 	);
 }
 
-function SidebarItem({ children, active, selected, touching }) {
+function SidebarItem({ children, active, selected, touching, ...props }) {
 	return (
-		<Flex padding={24} alignItems='center' height={74}>
+		<Flex padding={24} alignItems='center' height={74} {...props}>
 			{selected ? <Rect fill='#212227' stroke='#65afce' lineWidth={5} /> : null}
 			{active ? (
 				<Flex width={4} height={52} position='absolute' left={12}>
@@ -877,7 +915,7 @@ function SidebarItem({ children, active, selected, touching }) {
 			>
 				{children}
 			</Flex.Text>
-			{touching ? <Rect fill='red' /> : null}
+			{touching ? <Rect fill='rgba(117, 251, 204, 0.1)' /> : null}
 		</Flex>
 	);
 }
@@ -925,23 +963,20 @@ function SwitchFooter() {
 				<Rect fill='#fefefe' />
 			</Flex>
 			<Flex height='100%' gap={36}>
-				<SwitchButton short='B' action='Back' />
-				<SwitchButton short='A' action='OK' />
+				<SwitchButton icon={'\uE0E1'} action='Back' />
+				<SwitchButton icon={'\uE0E0'} action='OK' />
 			</Flex>
 		</Flex>
 	);
 }
 
-function SwitchButton({ short, action }) {
+function SwitchButton({ icon, action }) {
 	return (
 		<Flex alignItems='center' height='100%' gap={10}>
-			<Flex width={25} height={25} alignItems='center' justifyContent='center'>
-				<Circle fill='white' />
-				<Flex.Text fontFamily='Nintendo Switch UI' fill='black' fontSize={16}>
-					{short}
-				</Flex.Text>
-			</Flex>
-			<Flex.Text fontFamily='Nintendo Switch UI' fill='white' fontSize={20}>
+			<Flex.Text fontFamily='Nintendo Switch Icons' fill='white' fontSize={25}>
+				{icon}
+			</Flex.Text>
+			<Flex.Text fontFamily='Nintendo Switch' fill='white' fontSize={20}>
 				{action}
 			</Flex.Text>
 		</Flex>
@@ -1051,7 +1086,7 @@ function RouteErrorBoundary() {
 	console.error(error);
 	return (
 		<Text x={100} y={100} fill='red'>
-			Route Error: {String(error)}
+			Route Error: {error.data}
 		</Text>
 	);
 }
@@ -1070,6 +1105,7 @@ const routes: RouteObject[] = [
 	{
 		path: '/',
 		element: <App />,
+		errorElement: <RouteErrorBoundary />,
 		//loader: () => FAKE_EVENT,
 	},
 	{
@@ -1080,6 +1116,7 @@ const routes: RouteObject[] = [
 		//element: <FlexTest />,
 		//element: <React.StrictMode><FlexTest /></React.StrictMode>,
 		element: <SwitchSettings />,
+		//element: <App />,
 		errorElement: <RouteErrorBoundary />,
 		loader: () =>
 			defer({
@@ -1090,11 +1127,15 @@ const routes: RouteObject[] = [
 	},
 	{
 		path: '/page2',
-		element: <Page2 />,
+		//element: <Page2 />,
+		element: <App />,
 		//loader: () => FAKE_EVENT,
 	},
 ];
 
-const router = createBrowserRouter(routes);
+//const router = createBrowserRouter(routes);
+const router = createMemoryRouter(routes, {
+	initialEntries: ['/', '/test'],
+});
 
 render(<RouterProvider router={router} />, canvas);

@@ -72,6 +72,7 @@ export class Entity extends TelaEventTarget {
 	pointerEvents: boolean;
 	_root: Root | null;
 	_hidden: boolean;
+	_parentNode?: TelaEventTarget | null;
 
 	onclick: ((ev: TelaMouseEvent) => any) | null;
 	onmousedown: ((ev: TelaMouseEvent) => any) | null;
@@ -87,6 +88,7 @@ export class Entity extends TelaEventTarget {
 		super();
 		this._root = null;
 		this._hidden = false;
+		this._parentNode = null;
 		this.x = opts.x ?? 0;
 		this.y = opts.y ?? 0;
 		this.width = opts.width ?? 0;
@@ -108,7 +110,11 @@ export class Entity extends TelaEventTarget {
 	}
 
 	get parentNode() {
-		return this._root;
+		return this._parentNode || this._root;
+	}
+
+	set parentNode(n: TelaEventTarget | null) {
+		this._parentNode = n;
 	}
 
 	get root() {
@@ -149,6 +155,7 @@ export class Entity extends TelaEventTarget {
 			m.scaleSelf(this.scaleX ?? 1, this.scaleY ?? 1);
 		}
 		m.translateSelf(this.offsetX, this.offsetY);
+		//console.log(this.constructor.name, m);
 		return m;
 	}
 
@@ -159,6 +166,7 @@ export class Entity extends TelaEventTarget {
 
 	isPointInPath(x: number, y: number) {
 		const { ctx } = this.root;
+		//const this.parentNode.matrix
 		//const prevMatrix = ctx.getTransform();
 		ctx.setTransform(this.matrix);
 		const result = ctx.isPointInPath(this.path, x, y);
@@ -168,18 +176,27 @@ export class Entity extends TelaEventTarget {
 
 	get path() {
 		const p = new this.root.Path2D();
+		//console.log(this.width, this.height);
 		p.rect(0, 0, this.width, this.height);
 		return p;
 	}
 
 	render() {
-		if (!this.root) {
+		const { root, matrix, alpha } = this;
+		if (!root) {
 			throw new Error(
 				`${this.constructor.name} instance has not been added to a root context`,
 			);
 		}
-		const { ctx } = this.root;
-		ctx.globalAlpha = this.alpha;
-		ctx.setTransform(this.matrix);
+		const { ctx } = root;
+		ctx.globalAlpha = alpha;
+		ctx.transform(
+			matrix.a!,
+			matrix.b!,
+			matrix.c!,
+			matrix.d!,
+			matrix.e!,
+			matrix.f!,
+		);
 	}
 }

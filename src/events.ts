@@ -29,6 +29,9 @@ function dispatchEvent(
 	event: Event,
 	originalEvent: Event,
 ) {
+	Object.defineProperty(event, 'target', {
+		value: target,
+	});
 	target.dispatchEvent(event);
 	if (event.defaultPrevented) {
 		originalEvent.preventDefault();
@@ -151,6 +154,7 @@ export function proxyEvents(
 		const event = _event as TelaMouseEvent;
 		const point = scalePoint(event.layerX, event.layerY);
 		const target = findTarget(root, point);
+		//console.log(target);
 		const layer = getLayer(target, point);
 		const ev = cloneMouseEvent(event, point, layer);
 		dispatchEvent(target, ev, event);

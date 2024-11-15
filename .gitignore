@@ -1,7 +1,9 @@
 /dist
 /node_modules
-/*.js
-/*.js.map
+/?.js
+/?.js.map
+/test.js
+/test.js.map
 /*.png
 /*.tgz
 /test/__image_snapshots__/__diff_output__

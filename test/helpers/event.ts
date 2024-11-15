@@ -7,4 +7,5 @@ export function enableEvents(canvas: any) {
 
 export function dispatchEvent(target: any, event: Event) {
 	target.dispatchEvent(event);
+	return event;
 }

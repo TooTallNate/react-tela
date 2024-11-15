@@ -2,7 +2,7 @@ import { Root } from './root.js';
 import type { Entity } from './entity.js';
 import type { Point } from './types.js';
 
-const MouseEvent = globalThis.MouseEvent || class MouseEvent extends Event {};
+const MouseEvent = globalThis.MouseEvent || class MouseEvent extends Event { };
 
 export function cloneMouseEvent(
 	e: MouseEvent,
@@ -74,10 +74,17 @@ export function degreesToRadians(degrees: number) {
 	return degrees * (Math.PI / 180);
 }
 
-export function findTarget(root: Root, point: Point) {
+export function findTarget(
+	root: Root,
+	point: Point,
+	xOffset = 0,
+	yOffset = 0,
+): Root | Entity {
+	//console.log(point);
 	let target: Root | Entity = root;
 	for (let i = root.entities.length - 1; i >= 0; i--) {
-		const entity = root.entities[i];
+		const entity: Entity = root.entities[i];
+		//console.log(entity.entities[0].x);
 		if (entity.pointerEvents && entity.isPointInPath(point.x, point.y)) {
 			target = entity;
 			break;
