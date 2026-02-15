@@ -14,6 +14,7 @@ import {
 import { Rect as _Rect, type RectProps } from './rect.js';
 import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect.js';
 import { Arc as _Arc, type ArcProps } from './arc.js';
+import { Ellipse as _Ellipse, type EllipseProps } from './ellipse.js';
 import { Path as _Path, type PathProps } from './path.js';
 import { Image as _Image, type ImageProps } from './image.js';
 import { Line as _Line, type LineProps } from './line.js';
@@ -57,6 +58,7 @@ export type GroupProps = PropsWithChildren<_GroupProps>;
 export {
 	ArcProps,
 	CanvasProps,
+	EllipseProps,
 	RectProps,
 	RoundRectProps,
 	PathProps,
@@ -66,6 +68,7 @@ export {
 export type { _Canvas as CanvasRef };
 
 export const Canvas = factory<_Canvas, CanvasProps>('Canvas');
+export const Ellipse = factory<_Ellipse, EllipseProps>('Ellipse');
 export const Image = factory<_Image, ImageProps>('Image');
 export const Line = factory<_Line, LineProps>('Line');
 export const Path = factory<_Path, PathProps>('Path');

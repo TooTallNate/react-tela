@@ -3,6 +3,7 @@ import ReactReconciler from 'react-reconciler';
 import { Root, type RootParams } from './root.js';
 import { Arc } from './arc.js';
 import { Canvas } from './canvas.js';
+import { Ellipse } from './ellipse.js';
 import { Group } from './group.js';
 import { Line } from './line.js';
 import { Rect } from './rect.js';
@@ -18,6 +19,7 @@ import type { ICanvas } from './types.js';
 type Components = {
 	Arc: C.ArcProps;
 	Canvas: C.CanvasProps;
+	Ellipse: C.EllipseProps;
 	Group: C.GroupProps;
 	Image: C.ImageProps;
 	Line: C.LineProps;
@@ -95,6 +97,9 @@ const reconciler = ReactReconciler<
 		}
 		if (is('Canvas', t)) {
 			return new Canvas(t.props, root);
+		}
+		if (is('Ellipse', t)) {
+			return new Ellipse(t.props);
 		}
 		if (is('Image', t)) {
 			return new Image(t.props, root);
