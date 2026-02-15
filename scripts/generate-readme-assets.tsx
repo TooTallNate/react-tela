@@ -80,92 +80,68 @@ function CenteredText({ children }: { children: string }) {
 async function main() {
 	// Quick Start (update existing example.png too)
 	await saveExample('example', 300, 100, (
-		<>
-			<Rect width={300} height={100} fill='#1a1a2e' />
-			<Group x={5} y={15} width={180} height={30} rotate={0.1}>
-				<QuickStartContents />
-			</Group>
-		</>
+		<Group x={5} y={15} width={180} height={30} rotate={0.1}>
+			<QuickStartContents />
+		</Group>
 	));
 
 	// Rect
-	await saveExample('example-rect', 200, 80, (
-		<>
-			<Rect width={200} height={80} fill='#1a1a2e' />
-			<Rect x={10} y={10} width={100} height={50} fill='red' stroke='black' lineWidth={2} />
-		</>
+	await saveExample('example-rect', 130, 70, (
+		<Rect x={5} y={5} width={100} height={50} fill='red' stroke='black' lineWidth={2} />
 	));
 
 	// RoundRect
-	await saveExample('example-roundrect', 200, 80, (
-		<>
-			<Rect width={200} height={80} fill='#1a1a2e' />
-			<RoundRect x={10} y={10} width={100} height={50} fill='blue' radii={10} />
-		</>
+	await saveExample('example-roundrect', 130, 70, (
+		<RoundRect x={5} y={5} width={100} height={50} fill='blue' radii={10} />
 	));
 
 	// Circle
-	await saveExample('example-circle', 200, 120, (
-		<>
-			<Rect width={200} height={120} fill='#1a1a2e' />
-			<Circle x={60} y={20} radius={40} fill='green' />
-		</>
+	await saveExample('example-circle', 100, 100, (
+		<Circle x={10} y={10} radius={40} fill='green' />
 	));
 
 	// Arc
-	await saveExample('example-arc', 200, 120, (
-		<>
-			<Rect width={200} height={120} fill='#1a1a2e' />
-			<Arc x={50} y={10} radius={50} startAngle={0} endAngle={180} fill='orange' />
-		</>
+	await saveExample('example-arc', 120, 70, (
+		<Arc x={10} y={5} radius={50} startAngle={0} endAngle={180} fill='orange' />
 	));
 
 	// Path (star)
-	await saveExample('example-path', 200, 200, (
-		<>
-			<Rect width={200} height={200} fill='#1a1a2e' />
-			<Path
-				x={52}
-				y={52}
-				width={47.94}
-				height={47.94}
-				d='M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757c2.118,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685c-1.894,0.996-4.108-0.613-3.746-2.722l2.065-12.042c0.144-0.837-0.134-1.692-0.742-2.285l-8.749-8.528c-1.532-1.494-0.687-4.096,1.431-4.403l12.091-1.757c0.841-0.122,1.568-0.65,1.944-1.412l5.407-10.956C22.602,0.567,25.338,0.567,26.285,2.486z'
-				fill='#ED8A19'
-				stroke='red'
-				lineWidth={3}
-				scaleX={2}
-				scaleY={2}
-			/>
-		</>
+	await saveExample('example-path', 120, 120, (
+		<Path
+			x={12}
+			y={12}
+			width={47.94}
+			height={47.94}
+			d='M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757c2.118,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685c-1.894,0.996-4.108-0.613-3.746-2.722l2.065-12.042c0.144-0.837-0.134-1.692-0.742-2.285l-8.749-8.528c-1.532-1.494-0.687-4.096,1.431-4.403l12.091-1.757c0.841-0.122,1.568-0.65,1.944-1.412l5.407-10.956C22.602,0.567,25.338,0.567,26.285,2.486z'
+			fill='#ED8A19'
+			stroke='red'
+			lineWidth={3}
+			scaleX={2}
+			scaleY={2}
+		/>
 	));
 
 	// Text
-	await saveExample('example-text', 300, 60, (
-		<>
-			<Rect width={300} height={60} fill='#1a1a2e' />
-			<Text x={10} y={10} fontSize={24} fontFamily='Geist' fill='white' stroke='rgba(255,255,255,0.3)'>
-				Hello world!
-			</Text>
-		</>
+	await saveExample('example-text', 220, 45, (
+		<Text x={10} y={10} fontSize={24} fontFamily='Geist' fill='#333' stroke='rgba(0,0,0,0.1)'>
+			Hello world!
+		</Text>
 	));
 
 	// Group
 	await saveExample('example-group', 300, 120, (
-		<>
-			<Rect width={300} height={120} fill='#1a1a2e' />
-			<Group x={50} y={20} width={200} height={80} rotate={5}>
-				<Rect width={200} height={80} fill='purple' alpha={0.5} />
-				<Text fontSize={24} fontFamily='Geist' fill='white'>
-					Inside a group
-				</Text>
-			</Group>
-		</>
+		<Group x={50} y={20} width={200} height={80} rotate={5}>
+			<Rect width={200} height={80} fill='purple' alpha={0.5} />
+			<Text fontSize={24} fontFamily='Geist' fill='white'>
+				Inside a group
+			</Text>
+		</Group>
 	));
 
-	// useTextMetrics: CenteredText
-	await saveExample('example-centered-text', 300, 80, (
-		<Group x={0} y={0} width={300} height={80}>
-			<Rect width={300} height={80} fill='#2c3e50' />
+	// useTextMetrics: CenteredText — wider canvas to avoid clipping
+	await saveExample('example-centered-text', 400, 60, (
+		<Group x={0} y={0} width={400} height={60}>
+			<Rect width={400} height={60} fill='#2c3e50' />
 			<CenteredText>Centered with useTextMetrics</CenteredText>
 		</Group>
 	));
@@ -202,11 +178,10 @@ async function main() {
 	// Flex.Text
 	await saveExample('example-flex-text', 300, 80, (
 		<Flex width={300} height={80} flexDirection='row' alignItems='center' justifyContent='center' gap={10}>
-			<Rect fill='#1a1a2e' />
 			<Flex width={40} height={40}>
 				<Circle fill='#3498db' radius={20} />
 			</Flex>
-			<Flex.Text fontSize={24} fontFamily='Geist' fill='white'>
+			<Flex.Text fontSize={24} fontFamily='Geist' fill='#333'>
 				Hello Flex!
 			</Flex.Text>
 		</Flex>
