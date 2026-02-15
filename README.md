@@ -92,7 +92,7 @@ Since the name `react-canvas` was already taken, using `react-tela` was a fun al
 
 ## Prior Art
 
-A few other React renderes for `<canvas>` alreay exist, so why another?
+A few other React renderers for `<canvas>` already exist, so why another?
 
 `react-tela` is designed to make as little assumptions about the runtime environment as possible. Others renderers assume they are running in a web browser, or possibly Node.js. This module only interacts with the canvas node it is provided, and never makes any assumptions about anything "outside" of the node.
 
