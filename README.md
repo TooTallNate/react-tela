@@ -116,6 +116,8 @@ Draws a filled and/or stroked rectangle.
 <Rect x={10} y={10} width={100} height={50} fill="red" stroke="black" lineWidth={2} />
 ```
 
+![Rect example](./assets/example-rect.png)
+
 ### `<RoundRect>`
 
 Like `<Rect>` but with rounded corners.
@@ -123,6 +125,8 @@ Like `<Rect>` but with rounded corners.
 ```tsx
 <RoundRect x={10} y={10} width={100} height={50} fill="blue" radii={10} />
 ```
+
+![RoundRect example](./assets/example-roundrect.png)
 
 The `radii` prop accepts a single number, a `DOMPointInit`, or an array — matching the [`CanvasRenderingContext2D.roundRect()`](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/roundRect) spec.
 
@@ -134,6 +138,8 @@ Draws a circle. Shorthand for `<Arc>` with `startAngle={0}` and `endAngle={360}`
 <Circle x={100} y={100} radius={40} fill="green" />
 ```
 
+![Circle example](./assets/example-circle.png)
+
 ### `<Arc>`
 
 Draws an arc or partial circle.
@@ -141,6 +147,8 @@ Draws an arc or partial circle.
 ```tsx
 <Arc x={100} y={100} radius={50} startAngle={0} endAngle={180} fill="orange" />
 ```
+
+![Arc example](./assets/example-arc.png)
 
 | Prop | Type | Description |
 |------|------|-------------|
@@ -170,6 +178,8 @@ Draws an SVG path.
 | `d` | `string` | SVG path data string |
 | `width` | `number` | Required. Path viewport width |
 | `height` | `number` | Required. Path viewport height |
+
+![Path example](./assets/example-path.png)
 
 ### `<Image>`
 
@@ -206,6 +216,8 @@ Renders text.
 | `textAlign` | `CanvasTextAlign` | `"start"` | Horizontal alignment |
 | `textBaseline` | `CanvasTextBaseline` | `"top"` | Vertical baseline |
 
+![Text example](./assets/example-text.png)
+
 ### `<Group>`
 
 Groups child components into a sub-canvas with its own coordinate system. Children render relative to the group's position.
@@ -216,6 +228,8 @@ Groups child components into a sub-canvas with its own coordinate system. Childr
   <Text fontSize={24} fill="white">Inside a group</Text>
 </Group>
 ```
+
+![Group example](./assets/example-group.png)
 
 ### `<Canvas>`
 
@@ -299,6 +313,8 @@ function CenteredText({ children }: { children: string }) {
 }
 ```
 
+![useTextMetrics example](./assets/example-centered-text.png)
+
 ## Flex Layout
 
 The `<Flex>` component provides CSS Flexbox-like layout powered by the [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web) layout engine. It calculates positions and sizes for child components and feeds them through `LayoutContext`, so standard components like `<Rect>` automatically receive the correct position and dimensions.
@@ -330,6 +346,8 @@ const Flex = createFlex(yoga);
 </Flex>
 ```
 
+![Flex row example](./assets/example-flex-row.png)
+
 ### Nesting
 
 Build complex layouts by nesting `<Flex>` components:
@@ -354,6 +372,8 @@ Build complex layouts by nesting `<Flex>` components:
 </Flex>
 ```
 
+![Flex layout example](./assets/example-flex-layout.png)
+
 ### `Flex.Text`
 
 For text within a flex layout, use `Flex.Text` — it measures the text and creates a correctly-sized flex node:
@@ -366,6 +386,8 @@ For text within a flex layout, use `Flex.Text` — it measures the text and crea
   </Flex.Text>
 </Flex>
 ```
+
+![Flex.Text example](./assets/example-flex-text.png)
 
 ### Flex Props
 
