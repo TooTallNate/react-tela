@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Editor, { type Monaco } from '@monaco-editor/react';
+import type { editor as MonacoEditor } from 'monaco-editor';
 import { configureMonaco } from './monaco-setup';
 import * as ReactModule from 'react';
 import * as reactTela from 'react-tela';
@@ -57,9 +58,9 @@ export function App() {
     }
   });
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  const editorRef = useRef<any>(null);
-  const monacoRef = useRef<Monaco | null>(null);
-  const vimModeRef = useRef<any>(null);
+  const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null);
+  const vimAdapterRef = useRef<{ dispose: () => void } | null>(null);
+  const vimEnabledRef = useRef(vimMode);
 
   const handleCodeChange = useCallback((value: string | undefined) => {
     if (!value) return;
@@ -83,42 +84,52 @@ export function App() {
     handleCodeChange(DEFAULT_CODE);
   }, [handleCodeChange]);
 
-  // Load/unload vim mode
-  useEffect(() => {
-    const editor = editorRef.current;
-    const monaco = monacoRef.current;
-    if (!editor || !monaco) return;
+  // Keep ref in sync for use in async callback
+  vimEnabledRef.current = vimMode;
 
+  // Persist vim preference
+  useEffect(() => {
     try {
       localStorage.setItem('react-tela-vim', String(vimMode));
     } catch {}
+  }, [vimMode]);
 
-    if (vimMode) {
-      // Dynamically import monaco-vim
-      import('monaco-vim').then((monacoVim) => {
-        const statusNode = document.getElementById('vim-status');
-        if (statusNode) {
-          vimModeRef.current = monacoVim.initVimMode(editor, statusNode);
-        }
-      }).catch(() => {
-        // monaco-vim not available
-      });
-    } else {
-      if (vimModeRef.current) {
-        vimModeRef.current.dispose();
-        vimModeRef.current = null;
-      }
-      const statusNode = document.getElementById('vim-status');
-      if (statusNode) statusNode.textContent = '';
+  // Apply or remove vim mode
+  const applyVimMode = useCallback(async (enable: boolean) => {
+    // Always dispose existing first
+    if (vimAdapterRef.current) {
+      vimAdapterRef.current.dispose();
+      vimAdapterRef.current = null;
     }
+    const statusNode = document.getElementById('vim-status');
+    if (statusNode) statusNode.textContent = '';
 
+    if (!enable || !editorRef.current) return;
+
+    try {
+      const { initVimMode } = await import('monaco-vim');
+      // Check the ref hasn't changed while we were loading
+      if (!vimEnabledRef.current || !editorRef.current) return;
+      if (statusNode) {
+        vimAdapterRef.current = initVimMode(editorRef.current, statusNode);
+      }
+    } catch (err) {
+      console.error('Failed to load monaco-vim:', err);
+    }
+  }, []);
+
+  // Re-apply when vimMode changes (after editor is mounted)
+  useEffect(() => {
+    if (editorRef.current) {
+      applyVimMode(vimMode);
+    }
     return () => {
-      if (vimModeRef.current) {
-        vimModeRef.current.dispose();
-        vimModeRef.current = null;
+      if (vimAdapterRef.current) {
+        vimAdapterRef.current.dispose();
+        vimAdapterRef.current = null;
       }
     };
-  }, [vimMode]);
+  }, [vimMode, applyVimMode]);
 
   return (
     <div
@@ -177,12 +188,11 @@ export function App() {
           defaultValue={DEFAULT_CODE}
           onChange={handleCodeChange}
           beforeMount={configureMonaco}
-          onMount={(editor, monaco) => {
+          onMount={(editor) => {
             editorRef.current = editor;
-            monacoRef.current = monaco;
-            // Trigger vim mode if enabled on mount
+            // Apply vim mode if it was enabled before mount
             if (vimMode) {
-              setVimMode(true);
+              applyVimMode(true);
             }
           }}
           theme="vs-dark"
