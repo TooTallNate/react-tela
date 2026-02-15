@@ -10,4 +10,7 @@ export default defineConfig({
       'react-tela': resolve(__dirname, '../src/index.tsx'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
 });

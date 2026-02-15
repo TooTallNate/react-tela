@@ -1,7 +1,12 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import Editor, { type Monaco } from '@monaco-editor/react';
+import Editor, { loader, type Monaco } from '@monaco-editor/react';
+import * as monacoAll from 'monaco-editor';
 import type { editor as MonacoEditor } from 'monaco-editor';
 import { configureMonaco } from './monaco-setup';
+
+// Use locally installed monaco-editor instead of CDN.
+// This ensures monaco-vim's KeyCode imports match the editor instance.
+loader.config({ monaco: monacoAll });
 import * as ReactModule from 'react';
 import * as reactTela from 'react-tela';
 import * as reactTelaRender from 'react-tela/render';
