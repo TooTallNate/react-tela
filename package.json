@@ -26,6 +26,10 @@
     "release": "pnpm build && changeset publish --provenance"
   },
   "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TooTallNate/react-tela.git"
+  },
   "author": "Nathan Rajlich <n@n8.io>",
   "license": "MIT",
   "dependencies": {
