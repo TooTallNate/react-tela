@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import Editor from '@monaco-editor/react';
+import Editor, { type Monaco } from '@monaco-editor/react';
+import { configureMonaco } from './monaco-setup';
 import * as ReactModule from 'react';
 import * as reactTela from 'react-tela';
 import * as reactTelaRender from 'react-tela/render';
@@ -93,8 +94,10 @@ export function App() {
         </div>
         <Editor
           defaultLanguage="typescript"
+          defaultPath="file:///playground.tsx"
           defaultValue={DEFAULT_CODE}
           onChange={handleCodeChange}
+          beforeMount={configureMonaco}
           theme="vs-dark"
           options={{
             fontSize: 13,
