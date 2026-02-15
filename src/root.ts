@@ -86,7 +86,7 @@ export class Root extends TelaEventTarget {
 		for (const e of this.entities) {
 			e._root = null;
 		}
-		this.entities.length === 0;
+		this.entities.length = 0;
 		this.queueRender();
 	}
 
