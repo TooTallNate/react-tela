@@ -1,65 +1,120 @@
-export const DEFAULT_CODE = `import React, { useState } from "react";
-import {
-  Rect,
-  RoundRect,
-  Circle,
-  Text,
-  Group,
-  useDimensions,
-} from "react-tela";
+export const DEFAULT_CODE = `import React from "react";
+import { Rect, RoundRect, Circle, Text, useDimensions } from "react-tela";
+import { createFlex } from "react-tela/flex";
+import initYoga from "yoga-wasm-web/asm";
+
+const yoga = initYoga();
+const Flex = createFlex(yoga);
 
 function Card({
-  x,
-  y,
-  width,
-  height,
   title,
   color,
+  children,
 }: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
   title: string;
   color: string;
+  children?: React.ReactNode;
 }) {
   return (
-    <Group x={x} y={y} width={width} height={height}>
+    <Flex flexDirection="column">
       <RoundRect fill="#1e293b" radii={12} />
-      <RoundRect
-        x={0}
-        y={0}
-        width={width}
-        height={6}
-        fill={color}
-        radii={[12, 12, 0, 0]}
-      />
-      <Text x={16} y={24} fontSize={18} fill="white">
-        {title}
-      </Text>
-      <Rect x={16} y={52} width={width - 32} height={1} fill="#334155" />
-      <Circle x={width / 2 - 20} y={80} radius={24} fill={color} alpha={0.3} />
-      <Circle x={width / 2 - 20} y={80} radius={16} fill={color} alpha={0.6} />
-    </Group>
+      {/* Color accent bar */}
+      <Flex height={4}>
+        <RoundRect fill={color} radii={[12, 12, 0, 0]} />
+      </Flex>
+      {/* Card content */}
+      <Flex flex={1} padding={16} gap={12} flexDirection="column">
+        <Flex height={20}>
+          <Text fontSize={16} fill="white">
+            {title}
+          </Text>
+        </Flex>
+        <Flex height={1}>
+          <Rect fill="#334155" />
+        </Flex>
+        <Flex flex={1} alignItems="center" justifyContent="center">
+          {children}
+        </Flex>
+      </Flex>
+    </Flex>
+  );
+}
+
+function StatCircle({ value, color }: { value: string; color: string }) {
+  return (
+    <Flex flexDirection="column" alignItems="center" gap={8}>
+      <Flex width={48} height={48}>
+        <Circle fill={color} alpha={0.2} />
+        <Circle fill={color} alpha={0.8} />
+      </Flex>
+      <Flex height={16}>
+        <Text fontSize={12} fill="#94a3b8">
+          {value}
+        </Text>
+      </Flex>
+    </Flex>
   );
 }
 
 export default function App() {
   const dims = useDimensions();
   return (
-    <>
-      <Rect width={dims.width} height={dims.height} fill="#0f172a" />
-      <Text x={24} y={20} fontSize={28} fill="white">
-        react-tela Playground
-      </Text>
-      <Text x={24} y={52} fontSize={14} fill="#94a3b8">
-        Edit the code on the left to see changes live →
-      </Text>
-      <Card x={24} y={90} width={200} height={140} title="Component A" color="#3b82f6" />
-      <Card x={240} y={90} width={200} height={140} title="Component B" color="#10b981" />
-      <Card x={456} y={90} width={200} height={140} title="Component C" color="#f59e0b" />
-      <Card x={24} y={250} width={632} height={100} title="Full Width" color="#8b5cf6" />
-    </>
+    <Flex
+      width={dims.width}
+      height={dims.height}
+      flexDirection="column"
+      padding={24}
+      gap={16}
+    >
+      {/* Background */}
+      <Rect fill="#0f172a" />
+
+      {/* Header */}
+      <Flex height={48} justifyContent="center" flexDirection="column">
+        <Flex height={28}>
+          <Text fontSize={24} fill="white">
+            react-tela Playground
+          </Text>
+        </Flex>
+        <Flex height={16}>
+          <Text fontSize={12} fill="#64748b">
+            Edit the code on the left · Changes render live
+          </Text>
+        </Flex>
+      </Flex>
+
+      {/* Cards row */}
+      <Flex flex={1} flexDirection="row" gap={16}>
+        <Card title="Performance" color="#3b82f6">
+          <Flex flexDirection="row" gap={16}>
+            <StatCircle value="11.9k/s" color="#3b82f6" />
+            <StatCircle value="0.08ms" color="#06b6d4" />
+          </Flex>
+        </Card>
+        <Card title="Components" color="#10b981">
+          <Flex flexDirection="row" gap={16}>
+            <StatCircle value="9 built-in" color="#10b981" />
+            <StatCircle value="4 hooks" color="#34d399" />
+          </Flex>
+        </Card>
+        <Card title="Layout" color="#f59e0b">
+          <Flex flexDirection="row" gap={16}>
+            <StatCircle value="Flexbox" color="#f59e0b" />
+            <StatCircle value="Yoga" color="#fbbf24" />
+          </Flex>
+        </Card>
+      </Flex>
+
+      {/* Footer bar */}
+      <Flex height={40} flexDirection="row" alignItems="center" padding={12} gap={8}>
+        <RoundRect fill="#1e293b" radii={8} />
+        <Flex height={14}>
+          <Text fontSize={11} fill="#64748b">
+            Powered by react-tela · Flex layout by Yoga
+          </Text>
+        </Flex>
+      </Flex>
+    </Flex>
   );
 }
 `;

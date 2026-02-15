@@ -1,6 +1,0 @@
-{
-  "buildCommand": "pnpm --filter react-tela-playground build",
-  "outputDirectory": "playground/dist",
-  "installCommand": "pnpm install",
-  "framework": null
-}

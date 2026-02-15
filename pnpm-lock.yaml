@@ -84,9 +84,15 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-tela:
+        specifier: workspace:*
+        version: link:..
       sucrase:
         specifier: ^3.35.0
         version: 3.35.1
+      yoga-wasm-web:
+        specifier: ^0.3.3
+        version: 0.3.3
     devDependencies:
       '@types/react':
         specifier: ^18.2.28
