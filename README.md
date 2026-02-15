@@ -105,6 +105,10 @@ All components accept these common props:
 | `rotate` | `number` | `0` | Rotation in degrees |
 | `scaleX` | `number` | `1` | Horizontal scale |
 | `scaleY` | `number` | `1` | Vertical scale |
+| `shadowColor` | `string` | — | Shadow color (CSS color string) |
+| `shadowBlur` | `number` | `0` | Shadow blur radius |
+| `shadowOffsetX` | `number` | `0` | Shadow horizontal offset |
+| `shadowOffsetY` | `number` | `0` | Shadow vertical offset |
 
 Mouse and touch events are supported on all components: `onClick`, `onMouseDown`, `onMouseUp`, `onMouseMove`, `onMouseEnter`, `onMouseLeave`, `onTouchStart`, `onTouchMove`, `onTouchEnd`.
 
