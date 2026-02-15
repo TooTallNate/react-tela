@@ -252,6 +252,8 @@ function CustomCanvas() {
 }
 ```
 
+![Canvas example](./assets/example-canvas.png)
+
 ### Shape Props
 
 `<Rect>`, `<RoundRect>`, `<Circle>`, `<Arc>`, and `<Path>` all share these shape-specific props:
