@@ -9,6 +9,7 @@
   "exports": {
     ".": "./dist/index.js",
     "./render": "./dist/render.js",
+    "./flex": "./dist/flex.js",
     "./package.json": "./package.json"
   },
   "files": [
