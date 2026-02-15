@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@8.15.9",
   "module": "./dist/index.js",
-  "types": "./dist/index.js.map",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
     "./render": "./dist/render.js",
