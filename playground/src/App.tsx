@@ -15,20 +15,55 @@ registerModule('react', ReactModule);
 registerModule('react-tela', reactTela);
 registerModule('react-tela/render', reactTelaRender);
 registerModule('react-tela/flex', reactTelaFlex);
-// yoga-wasm-web/asm is a CJS module (module.exports = fn).
-// Sucrase's interop wraps it: _interopRequireDefault(fn) → { default: fn }
-// So we register the raw function, not a namespace object.
 registerModule('yoga-wasm-web/asm', yogaInit);
+
+function VimToggle({
+  enabled,
+  onToggle,
+}: {
+  enabled: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      title={enabled ? 'Disable Vim keybindings' : 'Enable Vim keybindings'}
+      style={{
+        background: enabled ? '#6366f1' : '#3c3c3c',
+        color: enabled ? '#fff' : '#999',
+        border: '1px solid ' + (enabled ? '#818cf8' : '#555'),
+        borderRadius: 4,
+        padding: '2px 8px',
+        fontSize: 11,
+        cursor: 'pointer',
+        fontFamily: 'monospace',
+        fontWeight: 600,
+        transition: 'all 0.15s',
+      }}
+    >
+      VIM
+    </button>
+  );
+}
 
 export function App() {
   const [component, setComponent] = useState<React.ComponentType | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [vimMode, setVimMode] = useState(() => {
+    try {
+      return localStorage.getItem('react-tela-vim') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const editorRef = useRef<any>(null);
+  const monacoRef = useRef<Monaco | null>(null);
+  const vimModeRef = useRef<any>(null);
 
   const handleCodeChange = useCallback((value: string | undefined) => {
     if (!value) return;
 
-    // Debounce compilation
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       try {
@@ -47,6 +82,43 @@ export function App() {
   useEffect(() => {
     handleCodeChange(DEFAULT_CODE);
   }, [handleCodeChange]);
+
+  // Load/unload vim mode
+  useEffect(() => {
+    const editor = editorRef.current;
+    const monaco = monacoRef.current;
+    if (!editor || !monaco) return;
+
+    try {
+      localStorage.setItem('react-tela-vim', String(vimMode));
+    } catch {}
+
+    if (vimMode) {
+      // Dynamically import monaco-vim
+      import('monaco-vim').then((monacoVim) => {
+        const statusNode = document.getElementById('vim-status');
+        if (statusNode) {
+          vimModeRef.current = monacoVim.initVimMode(editor, statusNode);
+        }
+      }).catch(() => {
+        // monaco-vim not available
+      });
+    } else {
+      if (vimModeRef.current) {
+        vimModeRef.current.dispose();
+        vimModeRef.current = null;
+      }
+      const statusNode = document.getElementById('vim-status');
+      if (statusNode) statusNode.textContent = '';
+    }
+
+    return () => {
+      if (vimModeRef.current) {
+        vimModeRef.current.dispose();
+        vimModeRef.current = null;
+      }
+    };
+  }, [vimMode]);
 
   return (
     <div
@@ -87,9 +159,16 @@ export function App() {
               fontSize: 11,
               color: '#888',
               fontWeight: 400,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
             }}
           >
-            Edit code below • Changes render live
+            <VimToggle
+              enabled={vimMode}
+              onToggle={() => setVimMode((v) => !v)}
+            />
+            <span id="vim-status" style={{ color: '#6366f1', fontFamily: 'monospace', minWidth: 60 }} />
           </span>
         </div>
         <Editor
@@ -98,6 +177,14 @@ export function App() {
           defaultValue={DEFAULT_CODE}
           onChange={handleCodeChange}
           beforeMount={configureMonaco}
+          onMount={(editor, monaco) => {
+            editorRef.current = editor;
+            monacoRef.current = monaco;
+            // Trigger vim mode if enabled on mount
+            if (vimMode) {
+              setVimMode(true);
+            }
+          }}
           theme="vs-dark"
           options={{
             fontSize: 13,
