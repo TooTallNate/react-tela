@@ -4,7 +4,7 @@ import * as ReactModule from 'react';
 import * as reactTela from 'react-tela';
 import * as reactTelaRender from 'react-tela/render';
 import * as reactTelaFlex from 'react-tela/flex';
-import * as yogaWasmWeb from 'yoga-wasm-web/asm';
+import yogaInit from 'yoga-wasm-web/asm';
 import { registerModule, transpileAndEval } from './transpile';
 import { Preview } from './Preview';
 import { DEFAULT_CODE } from './default-code';
@@ -14,7 +14,10 @@ registerModule('react', ReactModule);
 registerModule('react-tela', reactTela);
 registerModule('react-tela/render', reactTelaRender);
 registerModule('react-tela/flex', reactTelaFlex);
-registerModule('yoga-wasm-web/asm', yogaWasmWeb);
+// yoga-wasm-web/asm is a CJS module (module.exports = fn).
+// Sucrase's interop wraps it: _interopRequireDefault(fn) → { default: fn }
+// So we register the raw function, not a namespace object.
+registerModule('yoga-wasm-web/asm', yogaInit);
 
 export function App() {
   const [component, setComponent] = useState<React.ComponentType | null>(null);
