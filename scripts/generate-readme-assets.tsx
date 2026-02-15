@@ -9,7 +9,7 @@ import { writeFileSync, mkdirSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-import nodeConfig, { Canvas, GlobalFonts } from '@napi-rs/canvas';
+import nodeConfig, { Canvas as NativeCanvas, GlobalFonts } from '@napi-rs/canvas';
 import { render } from '../src/render';
 import {
 	Rect,
@@ -19,7 +19,9 @@ import {
 	Path,
 	Text,
 	Group,
+	Canvas,
 	useDimensions,
+	useParent,
 	useTextMetrics,
 } from '../src/index';
 import initYoga from 'yoga-wasm-web/asm';
@@ -39,7 +41,7 @@ try {
 } catch {}
 
 async function saveExample(name: string, width: number, height: number, element: React.JSX.Element) {
-	const canvas = new Canvas(width, height);
+	const canvas = new NativeCanvas(width, height);
 	await render(element, canvas, nodeConfig);
 	const buffer = canvas.toBuffer('image/png');
 	const path = join(assetsDir, `${name}.png`);
@@ -127,6 +129,37 @@ async function main() {
 		<Text x={10} y={10} fontSize={24} fontFamily='Geist' fill='#333' stroke='rgba(0,0,0,0.1)'>
 			Hello world!
 		</Text>
+	));
+
+	// Canvas (imperative drawing)
+	function ImperativeCanvas() {
+		const root = useParent();
+		return (
+			<Canvas
+				width={120}
+				height={80}
+				ref={(ref) => {
+					if (!ref) return;
+					const ctx = ref.getContext('2d');
+					if (!ctx) return;
+					// Draw a gradient rectangle
+					const grad = ctx.createLinearGradient(0, 0, 120, 80);
+					grad.addColorStop(0, '#3498db');
+					grad.addColorStop(1, '#9b59b6');
+					ctx.fillStyle = grad;
+					ctx.fillRect(0, 0, 120, 80);
+					// Draw a white circle
+					ctx.fillStyle = 'white';
+					ctx.beginPath();
+					ctx.arc(60, 40, 25, 0, Math.PI * 2);
+					ctx.fill();
+					root.queueRender();
+				}}
+			/>
+		);
+	}
+	await saveExample('example-canvas', 120, 80, (
+		<ImperativeCanvas />
 	));
 
 	// Group
