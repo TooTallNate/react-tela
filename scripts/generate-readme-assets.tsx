@@ -100,16 +100,17 @@ async function main() {
 		<Circle x={10} y={10} radius={40} fill='green' />
 	));
 
-	// Arc
-	await saveExample('example-arc', 120, 70, (
-		<Arc x={10} y={5} radius={50} startAngle={0} endAngle={180} fill='orange' />
+	// Arc — radius=50, half-circle needs 100×60 plus padding
+	await saveExample('example-arc', 120, 120, (
+		<Arc x={10} y={10} radius={50} startAngle={0} endAngle={180} fill='orange' />
 	));
 
-	// Path (star)
-	await saveExample('example-path', 120, 120, (
+	// Path (star) — 47.94×47.94 at 2x scale = ~96×96, centered at (x+w/2, y+h/2)
+	// Extends ±48 from center, plus stroke. Need center at ~55 in a 115×115 canvas.
+	await saveExample('example-path', 115, 115, (
 		<Path
-			x={12}
-			y={12}
+			x={31}
+			y={31}
 			width={47.94}
 			height={47.94}
 			d='M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757c2.118,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685c-1.894,0.996-4.108-0.613-3.746-2.722l2.065-12.042c0.144-0.837-0.134-1.692-0.742-2.285l-8.749-8.528c-1.532-1.494-0.687-4.096,1.431-4.403l12.091-1.757c0.841-0.122,1.568-0.65,1.944-1.412l5.407-10.956C22.602,0.567,25.338,0.567,26.285,2.486z'
