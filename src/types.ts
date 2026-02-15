@@ -115,6 +115,11 @@ export interface ICanvasRenderingContext2D {
 
 	fillStyle: string | CanvasGradient | CanvasPattern;
 	strokeStyle: string | CanvasGradient | CanvasPattern;
+
+	shadowColor: string;
+	shadowBlur: number;
+	shadowOffsetX: number;
+	shadowOffsetY: number;
 }
 
 export interface IDOMMatrix {

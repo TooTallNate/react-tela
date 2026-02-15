@@ -43,6 +43,28 @@ export type EntityProps = {
 	 * @default 1.0
 	 */
 	scaleY?: number;
+	/**
+	 * The color of the shadow. A CSS color string.
+	 */
+	shadowColor?: string;
+	/**
+	 * The amount of blur applied to shadows.
+	 *
+	 * @default 0
+	 */
+	shadowBlur?: number;
+	/**
+	 * The horizontal distance of the shadow.
+	 *
+	 * @default 0
+	 */
+	shadowOffsetX?: number;
+	/**
+	 * The vertical distance of the shadow.
+	 *
+	 * @default 0
+	 */
+	shadowOffsetY?: number;
 	pointerEvents?: boolean;
 	/**
 	 * Fires when the user clicks the left mouse button on the entity.
@@ -69,6 +91,10 @@ export class Entity extends TelaEventTarget {
 	rotate: number;
 	scaleX?: number;
 	scaleY?: number;
+	shadowColor?: string;
+	shadowBlur?: number;
+	shadowOffsetX?: number;
+	shadowOffsetY?: number;
 	pointerEvents: boolean;
 	_root: Root | null;
 	_hidden: boolean;
@@ -95,6 +121,10 @@ export class Entity extends TelaEventTarget {
 		this.rotate = opts.rotate ?? 0;
 		this.scaleX = opts.scaleX;
 		this.scaleY = opts.scaleY;
+		this.shadowColor = opts.shadowColor;
+		this.shadowBlur = opts.shadowBlur;
+		this.shadowOffsetX = opts.shadowOffsetX;
+		this.shadowOffsetY = opts.shadowOffsetY;
 		this.pointerEvents = opts.pointerEvents !== false;
 		this.onclick = opts.onClick ?? null;
 		this.onmousemove = opts.onMouseMove ?? null;
@@ -180,6 +210,18 @@ export class Entity extends TelaEventTarget {
 		}
 		const { ctx } = this.root;
 		ctx.globalAlpha = this.alpha;
+		if (this.shadowColor) {
+			ctx.shadowColor = this.shadowColor;
+		}
+		if (typeof this.shadowBlur === 'number') {
+			ctx.shadowBlur = this.shadowBlur;
+		}
+		if (typeof this.shadowOffsetX === 'number') {
+			ctx.shadowOffsetX = this.shadowOffsetX;
+		}
+		if (typeof this.shadowOffsetY === 'number') {
+			ctx.shadowOffsetY = this.shadowOffsetY;
+		}
 		ctx.setTransform(this.matrix);
 	}
 }
