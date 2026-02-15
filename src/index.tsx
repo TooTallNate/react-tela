@@ -6,11 +6,13 @@ import React, {
 } from 'react';
 import { ParentContext, useParent } from './hooks/use-parent.js';
 import { Canvas as _Canvas, type CanvasProps } from './canvas.js';
+import { Ellipse as _Ellipse, type EllipseProps } from './ellipse.js';
 import {
 	GroupRoot,
 	Group as _Group,
 	type GroupProps as _GroupProps,
 } from './group.js';
+import { Line as _Line, type LineProps } from './line.js';
 import { Rect as _Rect, type RectProps } from './rect.js';
 import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect.js';
 import { Arc as _Arc, type ArcProps } from './arc.js';
@@ -56,6 +58,8 @@ export type GroupProps = PropsWithChildren<_GroupProps>;
 export {
 	ArcProps,
 	CanvasProps,
+	EllipseProps,
+	LineProps,
 	RectProps,
 	RoundRectProps,
 	PathProps,
@@ -64,7 +68,9 @@ export {
 export type { _Canvas as CanvasRef };
 
 export const Canvas = factory<_Canvas, CanvasProps>('Canvas');
+export const Ellipse = factory<_Ellipse, EllipseProps>('Ellipse');
 export const Image = factory<_Image, ImageProps>('Image');
+export const Line = factory<_Line, LineProps>('Line');
 export const Path = factory<_Path, PathProps>('Path');
 export const Rect = factory<_Rect, RectProps>('Rect');
 export const RoundRect = factory<_RoundRect, RoundRectProps>('RoundRect');
