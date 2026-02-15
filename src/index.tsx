@@ -16,6 +16,7 @@ import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect.js';
 import { Arc as _Arc, type ArcProps } from './arc.js';
 import { Path as _Path, type PathProps } from './path.js';
 import { Image as _Image, type ImageProps } from './image.js';
+import { Line as _Line, type LineProps } from './line.js';
 import { Text as _Text, type TextProps as _TextProps } from './text.js';
 import { ICanvas } from './types.js';
 import {
@@ -60,11 +61,13 @@ export {
 	RoundRectProps,
 	PathProps,
 	ImageProps,
+	LineProps,
 };
 export type { _Canvas as CanvasRef };
 
 export const Canvas = factory<_Canvas, CanvasProps>('Canvas');
 export const Image = factory<_Image, ImageProps>('Image');
+export const Line = factory<_Line, LineProps>('Line');
 export const Path = factory<_Path, PathProps>('Path');
 export const Rect = factory<_Rect, RectProps>('Rect');
 export const RoundRect = factory<_RoundRect, RoundRectProps>('RoundRect');

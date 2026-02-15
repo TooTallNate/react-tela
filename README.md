@@ -181,6 +181,22 @@ Draws an SVG path.
 
 ![Path example](./assets/example-path.png)
 
+### `<Line>`
+
+Draws a line or polyline through a series of points.
+
+```tsx
+<Line points={[{ x: 10, y: 80 }, { x: 70, y: 10 }, { x: 140, y: 80 }]} stroke="blue" lineWidth={3} />
+```
+
+![Line example](./assets/example-line.png)
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `points` | `{x: number, y: number}[]` | Array of points to connect |
+
+Width and height are computed automatically from the bounding box of the points. All [shape props](#shape-props) are supported (stroke, lineWidth, fill, etc.).
+
 ### `<Image>`
 
 Renders an image from a URL or file path. The image loads asynchronously — the component renders at the specified (or natural) dimensions once loaded.
@@ -256,7 +272,7 @@ function CustomCanvas() {
 
 ### Shape Props
 
-`<Rect>`, `<RoundRect>`, `<Circle>`, `<Arc>`, and `<Path>` all share these shape-specific props:
+`<Rect>`, `<RoundRect>`, `<Circle>`, `<Arc>`, `<Path>`, and `<Line>` all share these shape-specific props:
 
 | Prop | Type | Description |
 |------|------|-------------|
@@ -461,7 +477,7 @@ For text within a flex layout, use `Flex.Text` — it measures the text and crea
 
 | Entry Point | Exports |
 |------------|---------|
-| `react-tela` | `Rect`, `RoundRect`, `Circle`, `Arc`, `Path`, `Image`, `Text`, `Group`, `Canvas`, `useDimensions`, `useLayout`, `useParent`, `useTextMetrics`, `LayoutContext` |
+| `react-tela` | `Rect`, `RoundRect`, `Circle`, `Arc`, `Path`, `Line`, `Image`, `Text`, `Group`, `Canvas`, `useDimensions`, `useLayout`, `useParent`, `useTextMetrics`, `LayoutContext` |
 | `react-tela/render` | `render` |
 | `react-tela/flex` | `createFlex` |
 
