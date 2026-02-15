@@ -140,6 +140,25 @@ Draws a circle. Shorthand for `<Arc>` with `startAngle={0}` and `endAngle={360}`
 
 ![Circle example](./assets/example-circle.png)
 
+### `<Ellipse>`
+
+Draws an ellipse with separate X and Y radii.
+
+```tsx
+<Ellipse x={10} y={10} radiusX={80} radiusY={40} fill="purple" stroke="white" lineWidth={2} />
+```
+
+![Ellipse example](./assets/example-ellipse.png)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `radiusX` | `number` | — | Horizontal radius |
+| `radiusY` | `number` | — | Vertical radius |
+| `ellipseRotation` | `number` | `0` | Ellipse rotation in degrees |
+| `startAngle` | `number` | `0` | Start angle in degrees |
+| `endAngle` | `number` | `360` | End angle in degrees |
+| `counterclockwise` | `boolean` | `false` | Draw counterclockwise |
+
 ### `<Arc>`
 
 Draws an arc or partial circle.
@@ -272,7 +291,7 @@ function CustomCanvas() {
 
 ### Shape Props
 
-`<Rect>`, `<RoundRect>`, `<Circle>`, `<Arc>`, `<Path>`, and `<Line>` all share these shape-specific props:
+`<Rect>`, `<RoundRect>`, `<Circle>`, `<Ellipse>`, `<Arc>`, `<Path>`, and `<Line>` all share these shape-specific props:
 
 | Prop | Type | Description |
 |------|------|-------------|
@@ -477,7 +496,7 @@ For text within a flex layout, use `Flex.Text` — it measures the text and crea
 
 | Entry Point | Exports |
 |------------|---------|
-| `react-tela` | `Rect`, `RoundRect`, `Circle`, `Arc`, `Path`, `Line`, `Image`, `Text`, `Group`, `Canvas`, `useDimensions`, `useLayout`, `useParent`, `useTextMetrics`, `LayoutContext` |
+| `react-tela` | `Rect`, `RoundRect`, `Circle`, `Ellipse`, `Arc`, `Path`, `Line`, `Image`, `Text`, `Group`, `Canvas`, `useDimensions`, `useLayout`, `useParent`, `useTextMetrics`, `LayoutContext` |
 | `react-tela/render` | `render` |
 | `react-tela/flex` | `createFlex` |
 
