@@ -18,23 +18,35 @@ import { Path as _Path, type PathProps } from './path.js';
 import { Image as _Image, type ImageProps } from './image.js';
 import { Text as _Text, type TextProps as _TextProps } from './text.js';
 import { ICanvas } from './types.js';
-import { LayoutContext, useLayout } from './hooks/use-layout.js';
+import {
+	DEFAULT_LAYOUT,
+	LayoutContext,
+	useLayout,
+} from './hooks/use-layout.js';
 import { EntityProps } from './entity.js';
 
 type MaybeArray<T> = T | T[];
 
 function useAdjustedLayout(props: any) {
-	let { x, y, width, height } = useLayout();
-	x += props.x ?? 0;
-	y += props.y ?? 0;
-	width += props.width ?? 0;
-	height += props.height ?? 0;
-	return { x, y, width, height };
+	const layout = useLayout();
+	// Fast path: when no Flex layout is active, the context is the
+	// default frozen singleton. Skip the object spread entirely.
+	if (layout === DEFAULT_LAYOUT) {
+		return props;
+	}
+	return {
+		...props,
+		x: layout.x + (props.x ?? 0),
+		y: layout.y + (props.y ?? 0),
+		width: layout.width + (props.width ?? 0),
+		height: layout.height + (props.height ?? 0),
+	};
 }
 
 const factory = <Ref, Props extends EntityProps>(type: string) => {
 	const c = forwardRef<Ref, Props>((props, ref) => {
-		return createElement(type, { ...props, ...useAdjustedLayout(props), ref });
+		const adjusted = useAdjustedLayout(props);
+		return createElement(type, adjusted === props ? { ...props, ref } : { ...adjusted, ref });
 	});
 	c.displayName = type;
 	return c;
@@ -62,14 +74,17 @@ export type TextProps = Omit<_TextProps, 'value'> & {
 };
 export const Text = factory<_Text, TextProps>('Text');
 
-//export const Arc = factory<_Arc, ArcProps>('Arc');
 export const Arc = forwardRef<_Arc, ArcProps>((props, ref) => {
-	const layout = useAdjustedLayout(props);
-	const radius = props.radius ?? Math.min(layout.width, layout.height) / 2;
+	const adjusted = useAdjustedLayout(props);
+	const x = adjusted === props ? (props.x ?? 0) : adjusted.x;
+	const y = adjusted === props ? (props.y ?? 0) : adjusted.y;
+	const w = adjusted === props ? 0 : adjusted.width;
+	const h = adjusted === props ? 0 : adjusted.height;
+	const radius = props.radius ?? Math.min(w, h) / 2;
 	return createElement('Arc', {
 		...props,
-		x: layout.x,
-		y: layout.y,
+		x,
+		y,
 		radius,
 		ref,
 	});
@@ -90,30 +105,30 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 	const root = useParent();
 	const rootRef = useRef<GroupRoot>();
 	let canvas: ICanvas;
-	const layout = useAdjustedLayout(props);
+	const adjusted = useAdjustedLayout(props);
+	const w = adjusted === props ? (props.width ?? 0) : adjusted.width;
+	const h = adjusted === props ? (props.height ?? 0) : adjusted.height;
 	if (rootRef.current) {
 		canvas = rootRef.current.ctx.canvas;
 	} else {
-		canvas = new root.Canvas(layout.width || 300, layout.height || 150);
+		canvas = new root.Canvas(w || 300, h || 150);
 		const ctx = canvas.getContext('2d');
 		if (!ctx) {
 			throw new Error('Could not get "2d" canvas context');
 		}
 		rootRef.current = new GroupRoot(ctx, root);
 	}
-	if (layout.width > 0 && layout.width !== canvas.width) {
-		canvas.width = layout.width;
+	if (w > 0 && w !== canvas.width) {
+		canvas.width = w;
 	}
-	if (layout.height > 0 && layout.height !== canvas.height) {
-		canvas.height = layout.height;
+	if (h > 0 && h !== canvas.height) {
+		canvas.height = h;
 	}
-	//console.log({ props })
 	return (
 		<ParentContext.Provider value={rootRef.current}>
-			<LayoutContext.Provider value={{ x: 0, y: 0, width: 0, height: 0 }}>
+			<LayoutContext.Provider value={DEFAULT_LAYOUT}>
 				{createElement('Group', {
-					...props,
-					...layout,
+					...(adjusted === props ? props : adjusted),
 					root: rootRef.current,
 					ref,
 				})}
