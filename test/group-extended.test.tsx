@@ -1,0 +1,68 @@
+import './helpers/font';
+import React from 'react';
+import { test, expect } from 'vitest';
+import config, { Canvas } from '@napi-rs/canvas';
+import { Group, Rect, Text, useDimensions } from '../src';
+import { render } from '../src/render';
+
+test('should render nested <Group> components', async () => {
+	const canvas = new Canvas(300, 200);
+	await render(
+		<Group x={10} y={10} width={280} height={180}>
+			<Rect fill='#2c3e50' />
+			<Group x={20} y={20} width={100} height={60}>
+				<Rect fill='#e74c3c' />
+			</Group>
+			<Group x={140} y={20} width={100} height={60}>
+				<Rect fill='#3498db' />
+			</Group>
+		</Group>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render <Group> with alpha', async () => {
+	const canvas = new Canvas(200, 150);
+	await render(
+		<>
+			<Rect x={20} y={20} width={100} height={100} fill='red' />
+			<Group x={60} y={40} width={120} height={100} alpha={0.5}>
+				<Rect fill='blue' />
+			</Group>
+		</>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render <Group> with scale', async () => {
+	const canvas = new Canvas(300, 200);
+	await render(
+		<Group x={20} y={20} width={100} height={80} scaleX={2} scaleY={1.5}>
+			<Rect fill='seagreen' />
+		</Group>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should correctly report useDimensions inside <Group>', async () => {
+	const canvas = new Canvas(200, 100);
+	let dims: { width: number; height: number };
+	function Inner() {
+		dims = useDimensions();
+		return <Rect fill='orange' />;
+	}
+	await render(
+		<Group x={10} y={10} width={150} height={60}>
+			<Inner />
+		</Group>,
+		canvas,
+		config,
+	);
+	expect(dims!).toEqual({ width: 150, height: 60 });
+});
