@@ -196,7 +196,7 @@ export function App() {
               enabled={vimMode}
               onToggle={() => setVimMode((v) => !v)}
             />
-            <span id="vim-status" style={{ color: '#6366f1', fontFamily: 'monospace', minWidth: 60 }} />
+            <span id="vim-status" style={{ color: '#6366f1', fontFamily: 'monospace', minWidth: vimMode ? 60 : 0 }} />
           </span>
         </div>
         <Editor
