@@ -2,11 +2,23 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Editor, { loader, type Monaco } from '@monaco-editor/react';
 import * as monacoAll from 'monaco-editor';
 import type { editor as MonacoEditor } from 'monaco-editor';
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import { configureMonaco } from './monaco-setup';
 
 // Use locally installed monaco-editor instead of CDN.
 // This ensures monaco-vim's KeyCode imports match the editor instance.
 loader.config({ monaco: monacoAll });
+
+// Configure Monaco workers for IntelliSense (required when using local bundle)
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'typescript' || label === 'javascript') {
+      return new tsWorker();
+    }
+    return new editorWorker();
+  },
+};
 import * as ReactModule from 'react';
 import * as reactTela from 'react-tela';
 import * as reactTelaRender from 'react-tela/render';
