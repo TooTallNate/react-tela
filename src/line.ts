@@ -1,12 +1,21 @@
 import { Shape, type ShapeProps } from './shape.js';
-import type { Point } from './types.js';
+import type { IPath2D, Point } from './types.js';
 
 export type LineProps = Omit<ShapeProps, 'width' | 'height'> & {
 	points: Point[];
 };
 
 export class Line extends Shape {
-	points: Point[];
+	#points: Point[];
+
+	get points() {
+		return this.#points;
+	}
+
+	set points(v: Point[]) {
+		this.#points = v;
+		this._pathDirty = true;
+	}
 
 	constructor(opts: LineProps) {
 		const points = opts.points;
@@ -27,12 +36,12 @@ export class Line extends Shape {
 			width,
 			height,
 		});
-		this.points = points;
+		this.#points = points;
 	}
 
-	get path() {
+	_buildPath(): IPath2D {
 		const p = new this.root.Path2D();
-		const points = this.points;
+		const points = this.#points;
 		if (points.length > 0) {
 			p.moveTo(points[0].x, points[0].y);
 			for (let i = 1; i < points.length; i++) {

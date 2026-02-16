@@ -1,6 +1,6 @@
 import { TelaEventTarget } from './event-target.js';
 import type { Root } from './root.js';
-import type { TelaMouseEvent } from './types.js';
+import type { IDOMMatrix, IPath2D, TelaMouseEvent } from './types.js';
 
 export type EntityProps = {
 	/**
@@ -83,14 +83,26 @@ export type EntityProps = {
 };
 
 export class Entity extends TelaEventTarget {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
+	// Backing fields for cached properties
+	#x: number;
+	#y: number;
+	#width: number;
+	#height: number;
+	#rotate: number;
+	#scaleX?: number;
+	#scaleY?: number;
+
+	// Matrix caching
+	#matrixDirty = true;
+	#cachedMatrix: IDOMMatrix | null = null;
+	#inverseMatrixDirty = true;
+	#cachedInverseMatrix: IDOMMatrix | null = null;
+
+	// Path caching (underscore for subclass access)
+	_pathDirty = true;
+	_cachedPath: IPath2D | null = null;
+
 	alpha: number;
-	rotate: number;
-	scaleX?: number;
-	scaleY?: number;
 	shadowColor?: string;
 	shadowBlur?: number;
 	shadowOffsetX?: number;
@@ -113,14 +125,14 @@ export class Entity extends TelaEventTarget {
 		super();
 		this._root = null;
 		this._hidden = false;
-		this.x = opts.x ?? 0;
-		this.y = opts.y ?? 0;
-		this.width = opts.width ?? 0;
-		this.height = opts.height ?? 0;
+		this.#x = opts.x ?? 0;
+		this.#y = opts.y ?? 0;
+		this.#width = opts.width ?? 0;
+		this.#height = opts.height ?? 0;
 		this.alpha = opts.alpha ?? 1;
-		this.rotate = opts.rotate ?? 0;
-		this.scaleX = opts.scaleX;
-		this.scaleY = opts.scaleY;
+		this.#rotate = opts.rotate ?? 0;
+		this.#scaleX = opts.scaleX;
+		this.#scaleY = opts.scaleY;
 		this.shadowColor = opts.shadowColor;
 		this.shadowBlur = opts.shadowBlur;
 		this.shadowOffsetX = opts.shadowOffsetX;
@@ -135,6 +147,94 @@ export class Entity extends TelaEventTarget {
 		this.ontouchstart = opts.onTouchStart ?? null;
 		this.ontouchmove = opts.onTouchMove ?? null;
 		this.ontouchend = opts.onTouchEnd ?? null;
+	}
+
+	// --- Getter/setter pairs for matrix- and path-affecting properties ---
+
+	get x() {
+		return this.#x;
+	}
+
+	set x(v: number) {
+		if (this.#x !== v) {
+			this.#x = v;
+			this.#matrixDirty = true;
+			this.#inverseMatrixDirty = true;
+		}
+	}
+
+	get y() {
+		return this.#y;
+	}
+
+	set y(v: number) {
+		if (this.#y !== v) {
+			this.#y = v;
+			this.#matrixDirty = true;
+			this.#inverseMatrixDirty = true;
+		}
+	}
+
+	get width() {
+		return this.#width;
+	}
+
+	set width(v: number) {
+		if (this.#width !== v) {
+			this.#width = v;
+			this.#matrixDirty = true;
+			this.#inverseMatrixDirty = true;
+			this._pathDirty = true;
+		}
+	}
+
+	get height() {
+		return this.#height;
+	}
+
+	set height(v: number) {
+		if (this.#height !== v) {
+			this.#height = v;
+			this.#matrixDirty = true;
+			this.#inverseMatrixDirty = true;
+			this._pathDirty = true;
+		}
+	}
+
+	get rotate() {
+		return this.#rotate;
+	}
+
+	set rotate(v: number) {
+		if (this.#rotate !== v) {
+			this.#rotate = v;
+			this.#matrixDirty = true;
+			this.#inverseMatrixDirty = true;
+		}
+	}
+
+	get scaleX() {
+		return this.#scaleX;
+	}
+
+	set scaleX(v: number | undefined) {
+		if (this.#scaleX !== v) {
+			this.#scaleX = v;
+			this.#matrixDirty = true;
+			this.#inverseMatrixDirty = true;
+		}
+	}
+
+	get scaleY() {
+		return this.#scaleY;
+	}
+
+	set scaleY(v: number | undefined) {
+		if (this.#scaleY !== v) {
+			this.#scaleY = v;
+			this.#matrixDirty = true;
+			this.#inverseMatrixDirty = true;
+		}
 	}
 
 	get parentNode() {
@@ -152,54 +252,69 @@ export class Entity extends TelaEventTarget {
 	}
 
 	get calculatedX() {
-		return this.x + this.width / 2;
+		return this.#x + this.#width / 2;
 	}
 
 	get calculatedY() {
-		return this.y + this.height / 2;
+		return this.#y + this.#height / 2;
 	}
 
 	get offsetX() {
-		return -this.width / 2;
+		return -this.#width / 2;
 	}
 
 	get offsetY() {
-		return -this.height / 2;
+		return -this.#height / 2;
 	}
 
 	get matrix() {
-		// TODO: add caching
-		const { DOMMatrix } = this.root;
-		const m = new DOMMatrix();
-		m.translateSelf(this.calculatedX, this.calculatedY);
-		if (typeof this.rotate === 'number') {
-			m.rotateSelf(this.rotate);
+		if (this.#matrixDirty || !this.#cachedMatrix) {
+			const m = new this.root.DOMMatrix();
+			m.translateSelf(this.calculatedX, this.calculatedY);
+			if (typeof this.#rotate === 'number') {
+				m.rotateSelf(this.#rotate);
+			}
+			if (this.#scaleX || this.#scaleY) {
+				m.scaleSelf(this.#scaleX ?? 1, this.#scaleY ?? 1);
+			}
+			m.translateSelf(this.offsetX, this.offsetY);
+			this.#cachedMatrix = m;
+			this.#matrixDirty = false;
 		}
-		if (this.scaleX || this.scaleY) {
-			m.scaleSelf(this.scaleX ?? 1, this.scaleY ?? 1);
-		}
-		m.translateSelf(this.offsetX, this.offsetY);
-		return m;
+		return this.#cachedMatrix;
 	}
 
 	get inverseMatrix() {
-		// TODO: add caching
-		return this.matrix.inverse();
+		if (this.#inverseMatrixDirty || !this.#cachedInverseMatrix) {
+			this.#cachedInverseMatrix = this.matrix.inverse();
+			this.#inverseMatrixDirty = false;
+		}
+		return this.#cachedInverseMatrix;
 	}
 
 	isPointInPath(x: number, y: number) {
 		const { ctx } = this.root;
-		//const prevMatrix = ctx.getTransform();
 		ctx.setTransform(this.matrix);
 		const result = ctx.isPointInPath(this.path, x, y);
-		//ctx.setTransform(prevMatrix);
 		return result;
 	}
 
-	get path() {
+	/**
+	 * Override in subclasses to build the Path2D for this entity.
+	 * Called by the cached `path` getter when the path is dirty.
+	 */
+	_buildPath(): IPath2D {
 		const p = new this.root.Path2D();
-		p.rect(0, 0, this.width, this.height);
+		p.rect(0, 0, this.#width, this.#height);
 		return p;
+	}
+
+	get path(): IPath2D {
+		if (this._pathDirty || !this._cachedPath) {
+			this._cachedPath = this._buildPath();
+			this._pathDirty = false;
+		}
+		return this._cachedPath;
 	}
 
 	render() {

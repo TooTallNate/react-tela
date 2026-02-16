@@ -1,5 +1,6 @@
 import { Shape, type ShapeProps } from './shape.js';
 import { degreesToRadians } from './util.js';
+import type { IPath2D } from './types.js';
 
 export type ArcProps = Omit<ShapeProps, 'width' | 'height'> & {
 	startAngle: number;
@@ -9,9 +10,9 @@ export type ArcProps = Omit<ShapeProps, 'width' | 'height'> & {
 };
 
 export class Arc extends Shape {
-	startAngle: number;
-	endAngle: number;
-	counterclockwise?: boolean;
+	#startAngle: number;
+	#endAngle: number;
+	#counterclockwise?: boolean;
 	#radius: number;
 
 	get radius() {
@@ -19,8 +20,44 @@ export class Arc extends Shape {
 	}
 
 	set radius(v: number) {
-		this.width = this.height = v * 2;
-		this.#radius = v;
+		if (this.#radius !== v) {
+			this.width = this.height = v * 2;
+			this.#radius = v;
+			this._pathDirty = true;
+		}
+	}
+
+	get startAngle() {
+		return this.#startAngle;
+	}
+
+	set startAngle(v: number) {
+		if (this.#startAngle !== v) {
+			this.#startAngle = v;
+			this._pathDirty = true;
+		}
+	}
+
+	get endAngle() {
+		return this.#endAngle;
+	}
+
+	set endAngle(v: number) {
+		if (this.#endAngle !== v) {
+			this.#endAngle = v;
+			this._pathDirty = true;
+		}
+	}
+
+	get counterclockwise() {
+		return this.#counterclockwise;
+	}
+
+	set counterclockwise(v: boolean | undefined) {
+		if (this.#counterclockwise !== v) {
+			this.#counterclockwise = v;
+			this._pathDirty = true;
+		}
 	}
 
 	constructor(opts: ArcProps) {
@@ -30,21 +67,21 @@ export class Arc extends Shape {
 			width: r2,
 			height: r2,
 		});
-		this.startAngle = opts.startAngle;
-		this.endAngle = opts.endAngle;
-		this.counterclockwise = opts.counterclockwise;
+		this.#startAngle = opts.startAngle;
+		this.#endAngle = opts.endAngle;
+		this.#counterclockwise = opts.counterclockwise;
 		this.#radius = opts.radius;
 	}
 
-	get path() {
+	_buildPath(): IPath2D {
 		const p = new this.root.Path2D();
 		p.arc(
 			this.#radius,
 			this.#radius,
-			this.radius,
-			degreesToRadians(this.startAngle),
-			degreesToRadians(this.endAngle),
-			this.counterclockwise,
+			this.#radius,
+			degreesToRadians(this.#startAngle),
+			degreesToRadians(this.#endAngle),
+			this.#counterclockwise,
 		);
 		return p;
 	}
