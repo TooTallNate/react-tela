@@ -1,18 +1,11 @@
 import { useMemo } from 'react';
-import {
-	linearGradient,
-	radialGradient,
-	conicGradient,
-	type ColorStop,
-	type LinearGradientDescriptor,
-	type RadialGradientDescriptor,
-	type ConicGradientDescriptor,
-} from '../gradient.js';
+import { useParent } from './use-parent.js';
+import type { ColorStop } from '../gradient.js';
 
 /**
- * Create a memoized linear gradient descriptor. The returned object is
- * referentially stable across re-renders as long as the parameters don't
- * change, enabling efficient caching in the render pipeline.
+ * Create a memoized `CanvasGradient` for a linear gradient.
+ * The gradient is created once via `useMemo` and only recreated
+ * when the parameters change.
  */
 export function useLinearGradient(
 	x0: number,
@@ -20,13 +13,20 @@ export function useLinearGradient(
 	x1: number,
 	y1: number,
 	stops: ColorStop[],
-): LinearGradientDescriptor {
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	return useMemo(() => linearGradient(x0, y0, x1, y1, stops), [x0, y0, x1, y1, stops]);
+): CanvasGradient {
+	const { ctx } = useParent();
+	return useMemo(() => {
+		const g = ctx.createLinearGradient(x0, y0, x1, y1);
+		for (const [offset, color] of stops) {
+			g.addColorStop(offset, color);
+		}
+		return g;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ctx, x0, y0, x1, y1, stops]);
 }
 
 /**
- * Create a memoized radial gradient descriptor.
+ * Create a memoized `CanvasGradient` for a radial gradient.
  */
 export function useRadialGradient(
 	x0: number,
@@ -36,20 +36,34 @@ export function useRadialGradient(
 	y1: number,
 	r1: number,
 	stops: ColorStop[],
-): RadialGradientDescriptor {
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	return useMemo(() => radialGradient(x0, y0, r0, x1, y1, r1, stops), [x0, y0, r0, x1, y1, r1, stops]);
+): CanvasGradient {
+	const { ctx } = useParent();
+	return useMemo(() => {
+		const g = ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+		for (const [offset, color] of stops) {
+			g.addColorStop(offset, color);
+		}
+		return g;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ctx, x0, y0, r0, x1, y1, r1, stops]);
 }
 
 /**
- * Create a memoized conic gradient descriptor.
+ * Create a memoized `CanvasGradient` for a conic gradient.
  */
 export function useConicGradient(
 	startAngle: number,
 	x: number,
 	y: number,
 	stops: ColorStop[],
-): ConicGradientDescriptor {
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	return useMemo(() => conicGradient(startAngle, x, y, stops), [startAngle, x, y, stops]);
+): CanvasGradient {
+	const { ctx } = useParent();
+	return useMemo(() => {
+		const g = ctx.createConicGradient(startAngle, x, y);
+		for (const [offset, color] of stops) {
+			g.addColorStop(offset, color);
+		}
+		return g;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ctx, startAngle, x, y, stops]);
 }

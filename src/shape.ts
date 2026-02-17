@@ -1,9 +1,6 @@
 import { Entity, type EntityProps } from './entity.js';
-import {
-	type FillStrokeStyle,
-	isGradientDescriptor,
-	resolveGradient,
-} from './gradient.js';
+
+export type FillStrokeStyle = string | CanvasGradient;
 
 export interface ShapeProps extends EntityProps {
 	clip?: boolean;
@@ -111,15 +108,11 @@ export abstract class Shape extends Entity {
 			ctx.clip(path, clipRule);
 		}
 		if (fill) {
-			ctx.fillStyle = isGradientDescriptor(fill)
-				? resolveGradient(ctx, fill)
-				: fill;
+			ctx.fillStyle = fill;
 			ctx.fill(path, fillRule);
 		}
 		if (stroke) {
-			ctx.strokeStyle = isGradientDescriptor(stroke)
-				? resolveGradient(ctx, stroke)
-				: stroke;
+			ctx.strokeStyle = stroke;
 			ctx.stroke(path);
 		}
 	}

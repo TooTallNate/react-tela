@@ -1,9 +1,5 @@
 import { Entity, EntityProps } from './entity.js';
-import {
-	type FillStrokeStyle,
-	isGradientDescriptor,
-	resolveGradient,
-} from './gradient.js';
+import type { FillStrokeStyle } from './shape.js';
 
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	value: string;
@@ -78,15 +74,11 @@ export class Text extends Entity {
 			ctx.lineWidth = lineWidth;
 		}
 		if (fill) {
-			ctx.fillStyle = isGradientDescriptor(fill)
-				? resolveGradient(ctx, fill)
-				: fill;
+			ctx.fillStyle = fill;
 			ctx.fillText(value, 0, 0);
 		}
 		if (stroke) {
-			ctx.strokeStyle = isGradientDescriptor(stroke)
-				? resolveGradient(ctx, stroke)
-				: stroke;
+			ctx.strokeStyle = stroke;
 			ctx.strokeText(value, 0, 0);
 		}
 	}

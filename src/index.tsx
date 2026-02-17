@@ -144,14 +144,8 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 });
 Group.displayName = 'Group';
 
-export {
-	linearGradient,
-	radialGradient,
-	conicGradient,
-	type GradientDescriptor,
-	type ColorStop,
-	type FillStrokeStyle,
-} from './gradient.js';
+export { type ColorStop } from './gradient.js';
+export { type FillStrokeStyle } from './shape.js';
 export {
 	useLinearGradient,
 	useRadialGradient,
