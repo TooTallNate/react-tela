@@ -255,3 +255,5 @@ export interface TelaMouseEvent extends MouseEvent {
 	layerX: number;
 	layerY: number;
 }
+
+export type ColorStop = [offset: number, color: string];

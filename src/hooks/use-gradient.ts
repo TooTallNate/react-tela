@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useParent } from './use-parent.js';
-import type { ColorStop } from '../gradient.js';
+import type { ColorStop } from '../types.js';
 
 /**
  * Create a memoized `CanvasGradient` for a linear gradient.
