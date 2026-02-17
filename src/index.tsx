@@ -155,12 +155,12 @@ export const Pattern = forwardRef<_Pattern, PatternProps>(
 		const rootRef = useRef<GroupRoot>();
 		let canvas: ICanvas;
 		const adjusted = useAdjustedLayout(props);
-		const w = adjusted === props ? (props.width ?? 0) : adjusted.width;
-		const h = adjusted === props ? (props.height ?? 0) : adjusted.height;
+		const w = adjusted === props ? props.width : adjusted.width;
+		const h = adjusted === props ? props.height : adjusted.height;
 		if (rootRef.current) {
 			canvas = rootRef.current.ctx.canvas;
 		} else {
-			canvas = new root.Canvas(w || 300, h || 150);
+			canvas = new root.Canvas(w, h);
 			const ctx = canvas.getContext('2d');
 			if (!ctx) {
 				throw new Error('Could not get "2d" canvas context');

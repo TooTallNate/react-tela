@@ -4,6 +4,8 @@ import { Group, GroupRoot, type GroupProps } from './group.js';
 export type PatternRepetition = 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
 
 export interface PatternProps extends GroupProps {
+	width: number;
+	height: number;
 	repetition?: PatternRepetition;
 }
 
