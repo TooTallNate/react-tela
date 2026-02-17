@@ -137,7 +137,7 @@ export interface ICanvasRenderingContext2D {
 	): CanvasGradient;
 
 	createPattern(
-		image: any,
+		image: ICanvas | IImage | CanvasImageSource,
 		repetition: string | null,
 	): CanvasPattern | null;
 

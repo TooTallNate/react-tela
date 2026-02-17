@@ -13,7 +13,7 @@ export function resolveFillStroke(v: FillStrokeInput | undefined): FillStrokeSty
 	if (typeof v === 'object' && 'current' in v) {
 		const c = v.current;
 		if (c && typeof c === 'object' && 'pattern' in c) {
-			return (c as any).pattern ?? undefined;
+			return (c as { pattern: CanvasPattern | null }).pattern ?? undefined;
 		}
 		return c ?? undefined;
 	}

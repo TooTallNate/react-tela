@@ -25,7 +25,7 @@ export class Pattern extends Group {
 		this.subroot.render();
 		// Create pattern from the sub-canvas instead of drawImage
 		this.pattern = this.root.ctx.createPattern(
-			this.subroot.ctx.canvas as any,
+			this.subroot.ctx.canvas,
 			this.repetition,
 		);
 	}

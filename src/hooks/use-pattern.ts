@@ -19,7 +19,7 @@ export function usePattern(
 		setPattern(null);
 		parent.loadImage(source).then((img) => {
 			if (cancelled) return;
-			const p = parent.ctx.createPattern(img as any, repetition);
+			const p = parent.ctx.createPattern(img, repetition);
 			setPattern(p);
 			parent.queueRender();
 		});
