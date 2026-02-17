@@ -147,8 +147,6 @@ function GradientDemo() {
 
 Each `stops` parameter is an array of `[offset, color]` tuples where `offset` is between `0` and `1`.
 
-The plain factory functions `linearGradient()`, `radialGradient()`, and `conicGradient()` are also exported for use outside of components (e.g. in constants or tests).
-
 ## Components
 
 All components accept these common props:
