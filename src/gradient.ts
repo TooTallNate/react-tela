@@ -81,8 +81,20 @@ export function isGradientDescriptor(
 
 const gradientCache = new WeakMap<
 	ICanvasRenderingContext2D,
-	WeakMap<GradientDescriptor, CanvasGradient>
+	Map<string, CanvasGradient>
 >();
+
+function descriptorKey(desc: GradientDescriptor): string {
+	const stops = desc.stops.map((s) => `${s[0]}:${s[1]}`).join(',');
+	switch (desc.type) {
+		case 'linear-gradient':
+			return `l:${desc.x0}:${desc.y0}:${desc.x1}:${desc.y1}|${stops}`;
+		case 'radial-gradient':
+			return `r:${desc.x0}:${desc.y0}:${desc.r0}:${desc.x1}:${desc.y1}:${desc.r1}|${stops}`;
+		case 'conic-gradient':
+			return `c:${desc.startAngle}:${desc.x}:${desc.y}|${stops}`;
+	}
+}
 
 function createGradient(
 	ctx: ICanvasRenderingContext2D,
@@ -128,13 +140,14 @@ export function resolveGradient(
 ): CanvasGradient {
 	let ctxCache = gradientCache.get(ctx);
 	if (!ctxCache) {
-		ctxCache = new WeakMap();
+		ctxCache = new Map();
 		gradientCache.set(ctx, ctxCache);
 	}
-	let gradient = ctxCache.get(desc);
+	const key = descriptorKey(desc);
+	let gradient = ctxCache.get(key);
 	if (!gradient) {
 		gradient = createGradient(ctx, desc);
-		ctxCache.set(desc, gradient);
+		ctxCache.set(key, gradient);
 	}
 	return gradient;
 }
