@@ -6,11 +6,16 @@ export type FillStrokeInput = FillStrokeStyle | { current?: FillStrokeStyle | nu
 
 /**
  * Resolve a fill/stroke value, unwrapping React ref objects if needed.
+ * If the ref points to a Pattern instance, read its `.pattern` property.
  */
 export function resolveFillStroke(v: FillStrokeInput | undefined): FillStrokeStyle | undefined {
 	if (!v) return undefined;
 	if (typeof v === 'object' && 'current' in v) {
-		return v.current ?? undefined;
+		const c = v.current;
+		if (c && typeof c === 'object' && 'pattern' in c) {
+			return (c as any).pattern ?? undefined;
+		}
+		return c ?? undefined;
 	}
 	return v as FillStrokeStyle;
 }

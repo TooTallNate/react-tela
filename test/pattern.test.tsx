@@ -8,7 +8,7 @@ test('should render <Rect> with pattern fill (checkerboard)', async () => {
 	const canvas = new Canvas(100, 100);
 
 	function Checkerboard() {
-		const pattern = useRef<CanvasPattern>(null);
+		const pattern = useRef(null);
 		return (
 			<>
 				<Pattern ref={pattern} width={20} height={20} repetition="repeat">
@@ -28,7 +28,7 @@ test('should render <Rect> with pattern stroke', async () => {
 	const canvas = new Canvas(100, 100);
 
 	function PatternStroke() {
-		const pattern = useRef<CanvasPattern>(null);
+		const pattern = useRef(null);
 		return (
 			<>
 				<Pattern ref={pattern} width={10} height={10} repetition="repeat">
@@ -48,7 +48,7 @@ test('pattern with repeat-x', async () => {
 	const canvas = new Canvas(100, 100);
 
 	function RepeatX() {
-		const pattern = useRef<CanvasPattern>(null);
+		const pattern = useRef(null);
 		return (
 			<>
 				<Pattern ref={pattern} width={20} height={20} repetition="repeat-x">
@@ -67,7 +67,7 @@ test('pattern children are not drawn to main canvas (hidden)', async () => {
 	const canvas = new Canvas(100, 100);
 
 	function App() {
-		const pattern = useRef<CanvasPattern>(null);
+		const pattern = useRef(null);
 		return (
 			<>
 				<Rect width={100} height={100} fill="white" />

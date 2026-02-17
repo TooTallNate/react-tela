@@ -1,7 +1,6 @@
 import React, {
 	createElement,
 	forwardRef,
-	useImperativeHandle,
 	useRef,
 	type PropsWithChildren,
 } from 'react';
@@ -150,11 +149,10 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 });
 Group.displayName = 'Group';
 
-export const Pattern = forwardRef<CanvasPattern | null, PatternProps>(
+export const Pattern = forwardRef<_Pattern, PatternProps>(
 	(props, ref) => {
 		const root = useParent();
 		const rootRef = useRef<GroupRoot>();
-		const patternRef = useRef<_Pattern>();
 		let canvas: ICanvas;
 		const adjusted = useAdjustedLayout(props);
 		const w = adjusted === props ? (props.width ?? 0) : adjusted.width;
@@ -175,14 +173,13 @@ export const Pattern = forwardRef<CanvasPattern | null, PatternProps>(
 		if (h > 0 && h !== canvas.height) {
 			canvas.height = h;
 		}
-		useImperativeHandle(ref, () => patternRef.current?.pattern ?? (null as unknown as CanvasPattern));
 		return (
 			<ParentContext.Provider value={rootRef.current}>
 				<LayoutContext.Provider value={DEFAULT_LAYOUT}>
 					{createElement('Pattern', {
 						...(adjusted === props ? props : adjusted),
 						root: rootRef.current,
-						ref: patternRef,
+						ref,
 					})}
 				</LayoutContext.Provider>
 			</ParentContext.Provider>
