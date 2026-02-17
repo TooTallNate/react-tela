@@ -1,3 +1,4 @@
+import './helpers/font';
 import React from 'react';
 import { test, expect } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
@@ -63,6 +64,7 @@ test('should render <Text> with linearGradient fill', async () => {
 	const canvas = new Canvas(300, 60);
 	await render(
 		<Text
+			fontFamily="Geist Sans"
 			fontSize={48}
 			fill={linearGradient(0, 0, 300, 0, [
 				[0, 'red'],
