@@ -58,6 +58,15 @@ declare module "react" {
 
   export namespace JSX {
     type Element = any;
+    interface IntrinsicAttributes {
+      key?: string | number | null;
+    }
+    interface ElementAttributesProperty {
+      props: {};
+    }
+    interface ElementChildrenAttribute {
+      children: {};
+    }
   }
 
   export default React;
@@ -76,6 +85,23 @@ declare module "react" {
 }
 `,
 		'file:///node_modules/@types/react/index.d.ts',
+	);
+
+	// Global JSX namespace — TypeScript's JSX resolution looks here for
+	// IntrinsicAttributes (provides `key`) and element type checking
+	ts.addExtraLib(
+		`
+declare namespace JSX {
+  type Element = any;
+  interface IntrinsicAttributes {
+    key?: string | number | null;
+  }
+  interface ElementChildrenAttribute {
+    children: {};
+  }
+}
+`,
+		'file:///global-jsx.d.ts',
 	);
 
 	// Add react-tela types — auto-generated from source

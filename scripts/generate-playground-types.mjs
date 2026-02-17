@@ -47,13 +47,69 @@ for (const { entry, module: moduleName } of entries) {
   content = content
     .replace(/^import .*;\n/gm, '')
     .replace(/\nexport \{\};?\s*$/, '')
-    .replace(/React\$1/g, 'React')
-    .trim();
+    .replace(/React\$1/g, 'React');
+
+  // Remove internal class declarations that conflict with exported React component
+  // consts (e.g. `declare class Text$1` vs `declare const Text$1`). TypeScript's JSX
+  // resolution would pick the class constructor signature over the function type,
+  // causing false type errors.
+  content = stripConflictingClasses(content);
+
+  content = content.trim();
 
   // Wrap in declare module
   const wrapped = `declare module "${moduleName}" {\n  import React from "react";\n  import { PropsWithChildren, ReactNode } from "react";\n${indent(content)}\n}`;
 
   results[moduleName] = wrapped;
+}
+
+/**
+ * Remove `declare class Foo` blocks when a `declare const Foo` also exists.
+ * dts-bundle-generator emits both the internal class (e.g. Text$1 with
+ * constructor(opts: TextProps)) and the React component wrapper (e.g.
+ * const Text$1: ForwardRefExoticComponent<...>). The class confuses
+ * TypeScript's JSX resolution because it picks the class constructor
+ * props (which may require different fields) over the function type.
+ */
+function stripConflictingClasses(content) {
+  const lines = content.split('\n');
+
+  // Collect names that have both a class and a const declaration
+  const classNames = new Set();
+  const constNames = new Set();
+  for (const line of lines) {
+    const cm = line.match(/^(?:export\s+)?declare\s+class\s+(\w+)/);
+    if (cm) classNames.add(cm[1]);
+    const vm = line.match(/^(?:export\s+)?declare\s+const\s+(\w+)/);
+    if (vm) constNames.add(vm[1]);
+  }
+  const conflicts = new Set([...classNames].filter((n) => constNames.has(n)));
+  if (conflicts.size === 0) return content;
+
+  // Remove class blocks for conflicting names
+  const result = [];
+  let skip = 0;
+  for (const line of lines) {
+    if (skip > 0) {
+      // Track brace depth to find end of class block
+      for (const ch of line) {
+        if (ch === '{') skip++;
+        else if (ch === '}') skip--;
+      }
+      continue;
+    }
+    const cm = line.match(/^(?:export\s+)?declare\s+(?:abstract\s+)?class\s+(\w+)/);
+    if (cm && conflicts.has(cm[1])) {
+      // Start skipping this class block
+      for (const ch of line) {
+        if (ch === '{') skip++;
+        else if (ch === '}') skip--;
+      }
+      continue;
+    }
+    result.push(line);
+  }
+  return result.join('\n');
 }
 
 function indent(text) {
