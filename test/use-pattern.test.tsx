@@ -16,16 +16,32 @@ function PatternRect({
 	return <Rect width={150} height={100} fill={pattern} />;
 }
 
+/** Wait for the next render event after async work (e.g. image load) */
+function waitForRender(root: any): Promise<void> {
+	return new Promise((resolve) => {
+		const renderCount = root.renderCount;
+		const check = () => {
+			if (root.renderCount > renderCount) {
+				resolve();
+			} else {
+				setTimeout(check, 10);
+			}
+		};
+		check();
+	});
+}
+
 test('should render <Rect> with usePattern fill', async () => {
 	const canvas = new Canvas(150, 100);
 	const src = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
 
 	const root = render(<PatternRect src={src} />, canvas, config);
 
-	// First render: image not loaded yet, pattern is null, rect has no fill
+	// First render: pattern is null (image not loaded yet)
 	await root;
+	// Wait for image load → state update → re-render
+	await waitForRender(root);
 
-	// After image loads, pattern should be applied
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
@@ -39,6 +55,7 @@ test('usePattern with no-repeat', async () => {
 		config,
 	);
 	await root;
+	await waitForRender(root);
 
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
