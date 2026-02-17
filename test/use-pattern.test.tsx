@@ -33,7 +33,7 @@ function waitForRender(root: any): Promise<void> {
 
 test('should render <Rect> with usePattern fill', async () => {
 	const canvas = new Canvas(150, 100);
-	const src = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
+	const src = join(__dirname, 'pexels-small.jpg');
 
 	const root = render(<PatternRect src={src} />, canvas, config);
 
@@ -47,7 +47,7 @@ test('should render <Rect> with usePattern fill', async () => {
 
 test('usePattern with no-repeat', async () => {
 	const canvas = new Canvas(150, 100);
-	const src = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
+	const src = join(__dirname, 'pexels-small.jpg');
 
 	const root = render(
 		<PatternRect src={src} repetition="no-repeat" />,
