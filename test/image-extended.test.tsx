@@ -5,7 +5,7 @@ import config, { Canvas } from '@napi-rs/canvas';
 import { Image, Rect } from '../src';
 import { render } from '../src/render';
 
-const SRC = join(__dirname, 'pexels-small.jpg');
+const SRC = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
 
 test('should render <Image> with alpha transparency', async () => {
 	const canvas = new Canvas(200, 150);
