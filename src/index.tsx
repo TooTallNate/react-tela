@@ -203,3 +203,4 @@ export { useParent } from './hooks/use-parent.js';
 export { useLayout, LayoutContext, type Layout } from './hooks/use-layout.js';
 export { useDimensions } from './hooks/use-dimensions.js';
 export { useTextMetrics } from './hooks/use-text-metrics.js';
+export { usePattern } from './hooks/use-pattern.js';

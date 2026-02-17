@@ -180,6 +180,27 @@ function Checkerboard() {
 
 The `<Pattern>` component also accepts all `<Group>` props. Pass the `ref` to `fill` or `stroke` on any shape or text component to apply the pattern.
 
+### `usePattern()` Hook
+
+For image URL-based patterns, use the `usePattern()` hook. It loads the image asynchronously and returns a `CanvasPattern` (or `null` while loading):
+
+```tsx
+import { Rect, usePattern } from 'react-tela';
+
+function TiledBackground() {
+  const pattern = usePattern('https://example.com/tile.png', 'repeat');
+
+  return <Rect width={400} height={300} fill={pattern} />;
+}
+```
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `source` | `string` | — | Image URL or path to load |
+| `repetition` | `'repeat' \| 'repeat-x' \| 'repeat-y' \| 'no-repeat'` | `'repeat'` | How the pattern repeats |
+
+Returns `CanvasPattern | null` — `null` while the image is loading.
+
 ## Components
 
 All components accept these common props:

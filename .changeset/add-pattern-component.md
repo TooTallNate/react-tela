@@ -2,4 +2,4 @@
 'react-tela': minor
 ---
 
-Add `<Pattern>` component for creating repeating pattern fills and strokes
+Add `<Pattern>` component for creating repeating pattern fills and strokes, and `usePattern()` hook for image URL-based patterns
