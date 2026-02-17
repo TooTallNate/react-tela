@@ -5,7 +5,7 @@
 import React, { useRef } from 'react';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, unlinkSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,9 +45,17 @@ try {
 	GlobalFonts.registerFromPath(fontPath, 'Geist Sans');
 } catch {}
 
-async function saveExample(name: string, width: number, height: number, element: React.JSX.Element) {
+async function saveExample(name: string, width: number, height: number, element: React.JSX.Element, { waitForAsync = false } = {}) {
 	const canvas = new NativeCanvas(width, height);
-	await render(element, canvas, nodeConfig);
+	const root = render(element, canvas, nodeConfig);
+	if (waitForAsync) {
+		// Wait for async effects (e.g. usePattern image loading) to settle
+		// Give time for promises to resolve and re-renders to flush
+		await new Promise(r => setTimeout(r, 500));
+		// Force a final render
+		root.dirty = true;
+		root.render();
+	}
 	const buffer = canvas.toBuffer('image/png');
 	const path = join(assetsDir, `${name}.png`);
 	writeFileSync(path, buffer);
@@ -272,19 +280,24 @@ async function main() {
 	await saveExample('example-pattern', 200, 120, <CheckerboardDemo />);
 
 	// usePattern: image-based tiling
+	// First, generate a small tile image for usePattern to load
+	const tileCanvas = new NativeCanvas(24, 24);
+	const tileCtx = tileCanvas.getContext('2d');
+	tileCtx.fillStyle = '#3498db';
+	tileCtx.fillRect(0, 0, 24, 24);
+	tileCtx.fillStyle = '#2ecc71';
+	tileCtx.beginPath();
+	tileCtx.arc(12, 12, 8, 0, Math.PI * 2);
+	tileCtx.fill();
+	const tilePath = join(assetsDir, '_tile.png');
+	writeFileSync(tilePath, tileCanvas.toBuffer('image/png'));
+
 	function UsePatternDemo() {
-		const pattern = useRef<CanvasPattern>(null);
-		return (
-			<>
-				<Pattern ref={pattern} width={24} height={24} repetition="repeat">
-					<Rect width={24} height={24} fill="#3498db" />
-					<Circle x={0} y={0} radius={8} fill="#2ecc71" />
-				</Pattern>
-				<Rect width={200} height={120} fill={pattern} />
-			</>
-		);
+		const pattern = usePattern(tilePath, 'repeat');
+		return <Rect width={200} height={120} fill={pattern} />;
 	}
-	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />);
+	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />, { waitForAsync: true });
+	unlinkSync(tilePath);
 
 	console.log('\nDone! All example images generated.');
 }
