@@ -91,6 +91,60 @@ import { App } from "./App";
 render(<App />, screen);
 ```
 
+## Gradients
+
+The `fill` and `stroke` props on shapes and text accept gradient descriptors in addition to CSS color strings. Use the factory functions to create gradients:
+
+```tsx
+import { Rect, Text, linearGradient, radialGradient, conicGradient } from 'react-tela';
+
+// Linear gradient
+<Rect
+  width={200} height={100}
+  fill={linearGradient(0, 0, 200, 0, [
+    [0, 'red'],
+    [0.5, 'yellow'],
+    [1, 'blue'],
+  ])}
+/>
+
+// Radial gradient
+<Rect
+  width={200} height={200}
+  fill={radialGradient(100, 100, 10, 100, 100, 100, [
+    [0, 'white'],
+    [1, 'black'],
+  ])}
+/>
+
+// Conic gradient
+<Rect
+  width={200} height={200}
+  fill={conicGradient(0, 100, 100, [
+    [0, 'red'],
+    [0.25, 'yellow'],
+    [0.5, 'green'],
+    [0.75, 'blue'],
+    [1, 'red'],
+  ])}
+/>
+
+// Gradient on text
+<Text fontSize={48} fill={linearGradient(0, 0, 300, 0, [[0, 'red'], [1, 'blue']])}>
+  Gradient Text
+</Text>
+```
+
+### Gradient Functions
+
+| Function | Parameters | Description |
+|----------|-----------|-------------|
+| `linearGradient` | `(x0, y0, x1, y1, stops)` | Linear gradient between two points |
+| `radialGradient` | `(x0, y0, r0, x1, y1, r1, stops)` | Radial gradient between two circles |
+| `conicGradient` | `(startAngle, x, y, stops)` | Conic (sweep) gradient around a point |
+
+Each `stops` parameter is an array of `[offset, color]` tuples where `offset` is between `0` and `1`.
+
 ## Components
 
 All components accept these common props:

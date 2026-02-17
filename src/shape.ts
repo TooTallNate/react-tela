@@ -1,11 +1,16 @@
 import { Entity, type EntityProps } from './entity.js';
+import {
+	type FillStrokeStyle,
+	isGradientDescriptor,
+	resolveGradient,
+} from './gradient.js';
 
 export interface ShapeProps extends EntityProps {
 	clip?: boolean;
 	clipRule?: CanvasFillRule;
-	fill?: string;
+	fill?: FillStrokeStyle;
 	fillRule?: CanvasFillRule;
-	stroke?: string;
+	stroke?: FillStrokeStyle;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
@@ -22,9 +27,9 @@ export interface ShapeProps extends EntityProps {
 export abstract class Shape extends Entity {
 	clip?: boolean;
 	clipRule?: CanvasFillRule;
-	fill?: string;
+	fill?: FillStrokeStyle;
 	fillRule?: CanvasFillRule;
-	stroke?: string;
+	stroke?: FillStrokeStyle;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
@@ -106,11 +111,15 @@ export abstract class Shape extends Entity {
 			ctx.clip(path, clipRule);
 		}
 		if (fill) {
-			ctx.fillStyle = fill;
+			ctx.fillStyle = isGradientDescriptor(fill)
+				? resolveGradient(ctx, fill)
+				: fill;
 			ctx.fill(path, fillRule);
 		}
 		if (stroke) {
-			ctx.strokeStyle = stroke;
+			ctx.strokeStyle = isGradientDescriptor(stroke)
+				? resolveGradient(ctx, stroke)
+				: stroke;
 			ctx.stroke(path);
 		}
 	}

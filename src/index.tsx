@@ -144,6 +144,14 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 });
 Group.displayName = 'Group';
 
+export {
+	linearGradient,
+	radialGradient,
+	conicGradient,
+	type GradientDescriptor,
+	type ColorStop,
+	type FillStrokeStyle,
+} from './gradient.js';
 export { useParent } from './hooks/use-parent.js';
 export { useLayout, LayoutContext, type Layout } from './hooks/use-layout.js';
 export { useDimensions } from './hooks/use-dimensions.js';
