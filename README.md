@@ -170,6 +170,8 @@ function Checkerboard() {
 }
 ```
 
+![Pattern example](./assets/example-pattern.png)
+
 ### Pattern Props
 
 | Prop | Type | Default | Description |
@@ -193,6 +195,8 @@ function TiledBackground() {
   return <Rect width={400} height={300} fill={pattern} />;
 }
 ```
+
+![usePattern example](./assets/example-usepattern.png)
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|

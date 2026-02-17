@@ -2,7 +2,7 @@
  * Generate README example images.
  * Run with: npx tsx scripts/generate-readme-assets.tsx
  */
-import React from 'react';
+import React, { useRef } from 'react';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { writeFileSync, mkdirSync } from 'fs';
@@ -20,12 +20,14 @@ import {
 	Text,
 	Group,
 	Canvas,
+	Pattern,
 	useDimensions,
 	useParent,
 	useTextMetrics,
 	useLinearGradient,
 	useRadialGradient,
 	useConicGradient,
+	usePattern,
 } from '../src/index';
 import initYoga from 'yoga-wasm-web/asm';
 import { createFlex } from '../src/flex';
@@ -253,6 +255,36 @@ async function main() {
 		);
 	}
 	await saveExample('example-gradient', 300, 560, <GradientDemo />);
+
+	// Pattern: checkerboard
+	function CheckerboardDemo() {
+		const pattern = useRef<CanvasPattern>(null);
+		return (
+			<>
+				<Pattern ref={pattern} width={20} height={20} repetition="repeat">
+					<Rect width={10} height={10} fill="#ccc" />
+					<Rect x={10} y={10} width={10} height={10} fill="#ccc" />
+				</Pattern>
+				<Rect width={200} height={120} fill={pattern} />
+			</>
+		);
+	}
+	await saveExample('example-pattern', 200, 120, <CheckerboardDemo />);
+
+	// usePattern: image-based tiling
+	function UsePatternDemo() {
+		const pattern = useRef<CanvasPattern>(null);
+		return (
+			<>
+				<Pattern ref={pattern} width={24} height={24} repetition="repeat">
+					<Rect width={24} height={24} fill="#3498db" />
+					<Circle x={0} y={0} radius={8} fill="#2ecc71" />
+				</Pattern>
+				<Rect width={200} height={120} fill={pattern} />
+			</>
+		);
+	}
+	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />);
 
 	console.log('\nDone! All example images generated.');
 }
