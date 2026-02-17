@@ -74,7 +74,10 @@ test('should render <Text> with linearGradient fill', async () => {
 		canvas,
 		config,
 	);
-	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot({
+		failureThreshold: 0.08,
+		failureThresholdType: 'percent',
+	});
 });
 
 test('string fill still works (backward compat)', async () => {

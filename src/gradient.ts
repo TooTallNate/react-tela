@@ -79,14 +79,19 @@ export function isGradientDescriptor(
 	);
 }
 
-export function resolveGradient(
+const gradientCache = new WeakMap<
+	ICanvasRenderingContext2D,
+	WeakMap<GradientDescriptor, CanvasGradient>
+>();
+
+function createGradient(
 	ctx: ICanvasRenderingContext2D,
 	desc: GradientDescriptor,
 ): CanvasGradient {
 	let gradient: CanvasGradient;
 	switch (desc.type) {
 		case 'linear-gradient':
-			gradient = (ctx as any).createLinearGradient(
+			gradient = ctx.createLinearGradient(
 				desc.x0,
 				desc.y0,
 				desc.x1,
@@ -94,7 +99,7 @@ export function resolveGradient(
 			);
 			break;
 		case 'radial-gradient':
-			gradient = (ctx as any).createRadialGradient(
+			gradient = ctx.createRadialGradient(
 				desc.x0,
 				desc.y0,
 				desc.r0,
@@ -104,7 +109,7 @@ export function resolveGradient(
 			);
 			break;
 		case 'conic-gradient':
-			gradient = (ctx as any).createConicGradient(
+			gradient = ctx.createConicGradient(
 				desc.startAngle,
 				desc.x,
 				desc.y,
@@ -113,6 +118,23 @@ export function resolveGradient(
 	}
 	for (const [offset, color] of desc.stops) {
 		gradient.addColorStop(offset, color);
+	}
+	return gradient;
+}
+
+export function resolveGradient(
+	ctx: ICanvasRenderingContext2D,
+	desc: GradientDescriptor,
+): CanvasGradient {
+	let ctxCache = gradientCache.get(ctx);
+	if (!ctxCache) {
+		ctxCache = new WeakMap();
+		gradientCache.set(ctx, ctxCache);
+	}
+	let gradient = ctxCache.get(desc);
+	if (!gradient) {
+		gradient = createGradient(ctx, desc);
+		ctxCache.set(desc, gradient);
 	}
 	return gradient;
 }
