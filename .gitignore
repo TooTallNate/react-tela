@@ -7,3 +7,6 @@
 /test/__image_snapshots__/__diff_output__
 /playground/dist
 /playground/node_modules
+
+# Generated playground types (build-time artifact)
+playground/src/generated-types.ts
