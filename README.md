@@ -147,6 +147,39 @@ function GradientDemo() {
 
 Each `stops` parameter is an array of `[offset, color]` tuples where `offset` is between `0` and `1`.
 
+## Patterns
+
+The `<Pattern>` component creates a repeating pattern that can be used as a `fill` or `stroke` on shapes and text. It works like a `<Group>` but renders its children into an offscreen canvas and exposes a `CanvasPattern` via `ref`:
+
+```tsx
+import { Rect, Pattern } from 'react-tela';
+import { useRef } from 'react';
+
+function Checkerboard() {
+  const pattern = useRef<CanvasPattern>(null);
+
+  return (
+    <>
+      <Pattern ref={pattern} width={20} height={20} repetition="repeat">
+        <Rect width={10} height={10} fill="#ccc" />
+        <Rect x={10} y={10} width={10} height={10} fill="#ccc" />
+      </Pattern>
+      <Rect width={400} height={400} fill={pattern} />
+    </>
+  );
+}
+```
+
+### Pattern Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `repetition` | `'repeat' \| 'repeat-x' \| 'repeat-y' \| 'no-repeat'` | `'repeat'` | How the pattern repeats |
+| `width` | `number` | — | Width of the pattern tile |
+| `height` | `number` | — | Height of the pattern tile |
+
+The `<Pattern>` component also accepts all `<Group>` props. Pass the `ref` to `fill` or `stroke` on any shape or text component to apply the pattern.
+
 ## Components
 
 All components accept these common props:

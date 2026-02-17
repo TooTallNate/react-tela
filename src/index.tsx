@@ -1,6 +1,7 @@
 import React, {
 	createElement,
 	forwardRef,
+	useImperativeHandle,
 	useRef,
 	type PropsWithChildren,
 } from 'react';
@@ -11,6 +12,10 @@ import {
 	Group as _Group,
 	type GroupProps as _GroupProps,
 } from './group.js';
+import {
+	Pattern as _Pattern,
+	type PatternProps as _PatternProps,
+} from './pattern.js';
 import { Rect as _Rect, type RectProps } from './rect.js';
 import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect.js';
 import { Arc as _Arc, type ArcProps } from './arc.js';
@@ -55,6 +60,7 @@ const factory = <Ref, Props extends EntityProps>(type: string) => {
 };
 
 export type GroupProps = PropsWithChildren<_GroupProps>;
+export type PatternProps = PropsWithChildren<_PatternProps>;
 export {
 	ArcProps,
 	CanvasProps,
@@ -144,8 +150,50 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 });
 Group.displayName = 'Group';
 
+export const Pattern = forwardRef<CanvasPattern | null, PatternProps>(
+	(props, ref) => {
+		const root = useParent();
+		const rootRef = useRef<GroupRoot>();
+		const patternRef = useRef<_Pattern>();
+		let canvas: ICanvas;
+		const adjusted = useAdjustedLayout(props);
+		const w = adjusted === props ? (props.width ?? 0) : adjusted.width;
+		const h = adjusted === props ? (props.height ?? 0) : adjusted.height;
+		if (rootRef.current) {
+			canvas = rootRef.current.ctx.canvas;
+		} else {
+			canvas = new root.Canvas(w || 300, h || 150);
+			const ctx = canvas.getContext('2d');
+			if (!ctx) {
+				throw new Error('Could not get "2d" canvas context');
+			}
+			rootRef.current = new GroupRoot(ctx, root);
+		}
+		if (w > 0 && w !== canvas.width) {
+			canvas.width = w;
+		}
+		if (h > 0 && h !== canvas.height) {
+			canvas.height = h;
+		}
+		useImperativeHandle(ref, () => patternRef.current?.pattern ?? (null as unknown as CanvasPattern));
+		return (
+			<ParentContext.Provider value={rootRef.current}>
+				<LayoutContext.Provider value={DEFAULT_LAYOUT}>
+					{createElement('Pattern', {
+						...(adjusted === props ? props : adjusted),
+						root: rootRef.current,
+						ref: patternRef,
+					})}
+				</LayoutContext.Provider>
+			</ParentContext.Provider>
+		);
+	},
+);
+Pattern.displayName = 'Pattern';
+
 export { type ColorStop } from './types.js';
-export { type FillStrokeStyle } from './shape.js';
+export { type FillStrokeStyle, type FillStrokeInput } from './shape.js';
+export { type PatternRepetition } from './pattern.js';
 export {
 	useLinearGradient,
 	useRadialGradient,

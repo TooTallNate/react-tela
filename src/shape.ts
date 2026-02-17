@@ -1,13 +1,26 @@
 import { Entity, type EntityProps } from './entity.js';
 
-export type FillStrokeStyle = string | CanvasGradient;
+export type FillStrokeStyle = string | CanvasGradient | CanvasPattern;
+
+export type FillStrokeInput = FillStrokeStyle | { current?: FillStrokeStyle | null };
+
+/**
+ * Resolve a fill/stroke value, unwrapping React ref objects if needed.
+ */
+export function resolveFillStroke(v: FillStrokeInput | undefined): FillStrokeStyle | undefined {
+	if (!v) return undefined;
+	if (typeof v === 'object' && 'current' in v) {
+		return v.current ?? undefined;
+	}
+	return v as FillStrokeStyle;
+}
 
 export interface ShapeProps extends EntityProps {
 	clip?: boolean;
 	clipRule?: CanvasFillRule;
-	fill?: FillStrokeStyle;
+	fill?: FillStrokeInput;
 	fillRule?: CanvasFillRule;
-	stroke?: FillStrokeStyle;
+	stroke?: FillStrokeInput;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
@@ -24,9 +37,9 @@ export interface ShapeProps extends EntityProps {
 export abstract class Shape extends Entity {
 	clip?: boolean;
 	clipRule?: CanvasFillRule;
-	fill?: FillStrokeStyle;
+	fill?: FillStrokeInput;
 	fillRule?: CanvasFillRule;
-	stroke?: FillStrokeStyle;
+	stroke?: FillStrokeInput;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
@@ -55,7 +68,9 @@ export abstract class Shape extends Entity {
 
 	isPointInPath(x: number, y: number): boolean {
 		const { ctx } = this.root;
-		const { lineWidth, stroke, fill, matrix, path } = this;
+		const { lineWidth, matrix, path } = this;
+		const stroke = resolveFillStroke(this.stroke);
+		const fill = resolveFillStroke(this.fill);
 		ctx.setTransform(matrix);
 		if (stroke) {
 			ctx.lineWidth = lineWidth;
@@ -107,12 +122,14 @@ export abstract class Shape extends Entity {
 		if (clip || clipRule) {
 			ctx.clip(path, clipRule);
 		}
-		if (fill) {
-			ctx.fillStyle = fill;
+		const resolvedFill = resolveFillStroke(fill);
+		const resolvedStroke = resolveFillStroke(stroke);
+		if (resolvedFill) {
+			ctx.fillStyle = resolvedFill;
 			ctx.fill(path, fillRule);
 		}
-		if (stroke) {
-			ctx.strokeStyle = stroke;
+		if (resolvedStroke) {
+			ctx.strokeStyle = resolvedStroke;
 			ctx.stroke(path);
 		}
 	}

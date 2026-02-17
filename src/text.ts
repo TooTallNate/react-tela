@@ -1,13 +1,13 @@
 import { Entity, EntityProps } from './entity.js';
-import type { FillStrokeStyle } from './shape.js';
+import { resolveFillStroke, type FillStrokeInput } from './shape.js';
 
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	value: string;
 	fontFamily?: string;
 	fontWeight?: string;
 	fontSize?: number;
-	fill?: FillStrokeStyle;
-	stroke?: FillStrokeStyle;
+	fill?: FillStrokeInput;
+	stroke?: FillStrokeInput;
 	lineWidth?: number;
 	textAlign?: CanvasTextAlign;
 	textBaseline?: CanvasTextBaseline;
@@ -18,8 +18,8 @@ export class Text extends Entity {
 	fontWeight?: string;
 	fontSize?: number;
 	#value!: string;
-	fill?: FillStrokeStyle;
-	stroke?: FillStrokeStyle;
+	fill?: FillStrokeInput;
+	stroke?: FillStrokeInput;
 	lineWidth?: number;
 	textAlign: CanvasTextAlign;
 	textBaseline: CanvasTextBaseline;
@@ -73,12 +73,14 @@ export class Text extends Entity {
 		if (typeof lineWidth === 'number') {
 			ctx.lineWidth = lineWidth;
 		}
-		if (fill) {
-			ctx.fillStyle = fill;
+		const resolvedFill = resolveFillStroke(fill);
+		const resolvedStroke = resolveFillStroke(stroke);
+		if (resolvedFill) {
+			ctx.fillStyle = resolvedFill;
 			ctx.fillText(value, 0, 0);
 		}
-		if (stroke) {
-			ctx.strokeStyle = stroke;
+		if (resolvedStroke) {
+			ctx.strokeStyle = resolvedStroke;
 			ctx.strokeText(value, 0, 0);
 		}
 	}

@@ -136,6 +136,11 @@ export interface ICanvasRenderingContext2D {
 		y: number,
 	): CanvasGradient;
 
+	createPattern(
+		image: any,
+		repetition: string | null,
+	): CanvasPattern | null;
+
 	shadowColor: string;
 	shadowBlur: number;
 	shadowOffsetX: number;
