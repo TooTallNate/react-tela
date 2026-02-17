@@ -5,6 +5,7 @@ import { Arc } from './arc.js';
 import { Canvas } from './canvas.js';
 import { Ellipse } from './ellipse.js';
 import { Group } from './group.js';
+import { Pattern } from './pattern.js';
 import { Line } from './line.js';
 import { Rect } from './rect.js';
 import { RoundRect } from './round-rect.js';
@@ -21,6 +22,7 @@ type Components = {
 	Canvas: C.CanvasProps;
 	Ellipse: C.EllipseProps;
 	Group: C.GroupProps;
+	Pattern: C.PatternProps;
 	Image: C.ImageProps;
 	Line: C.LineProps;
 	Path: C.PathProps;
@@ -88,6 +90,10 @@ const reconciler = ReactReconciler<
 	createInstance(type, props, root) {
 		const t = { type, props };
 		//console.log('createInstance', t, root);
+		if (is('Pattern', t)) {
+			// @ts-expect-error "root" is missing from the type, but definitely gets passed in from the <Pattern> component
+			return new Pattern(t.props);
+		}
 		if (is('Group', t)) {
 			// @ts-expect-error "root" is missing from the type, but definitely gets passed in from the <Group> component
 			return new Group(t.props);
