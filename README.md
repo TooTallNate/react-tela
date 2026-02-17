@@ -93,57 +93,59 @@ render(<App />, screen);
 
 ## Gradients
 
-The `fill` and `stroke` props on shapes and text accept gradient descriptors in addition to CSS color strings. Use the factory functions to create gradients:
+The `fill` and `stroke` props on shapes and text accept gradient descriptors in addition to CSS color strings. Use the gradient hooks inside components for optimal performance — they memoize the descriptor so the underlying `CanvasGradient` is cached across re-renders:
 
 ```tsx
-import { Rect, Text, linearGradient, radialGradient, conicGradient } from 'react-tela';
+import { Rect, Text, useLinearGradient, useRadialGradient, useConicGradient } from 'react-tela';
 
-// Linear gradient
-<Rect
-  width={200} height={100}
-  fill={linearGradient(0, 0, 200, 0, [
+function GradientDemo() {
+  // Linear gradient (memoized)
+  const linear = useLinearGradient(0, 0, 200, 0, [
     [0, 'red'],
     [0.5, 'yellow'],
     [1, 'blue'],
-  ])}
-/>
+  ]);
 
-// Radial gradient
-<Rect
-  width={200} height={200}
-  fill={radialGradient(100, 100, 10, 100, 100, 100, [
+  // Radial gradient (memoized)
+  const radial = useRadialGradient(100, 100, 10, 100, 100, 100, [
     [0, 'white'],
     [1, 'black'],
-  ])}
-/>
+  ]);
 
-// Conic gradient
-<Rect
-  width={200} height={200}
-  fill={conicGradient(0, 100, 100, [
+  // Conic gradient (memoized)
+  const conic = useConicGradient(0, 100, 100, [
     [0, 'red'],
     [0.25, 'yellow'],
     [0.5, 'green'],
     [0.75, 'blue'],
     [1, 'red'],
-  ])}
-/>
+  ]);
 
-// Gradient on text
-<Text fontSize={48} fill={linearGradient(0, 0, 300, 0, [[0, 'red'], [1, 'blue']])}>
-  Gradient Text
-</Text>
+  // Gradient on text
+  const textGradient = useLinearGradient(0, 0, 300, 0, [[0, 'red'], [1, 'blue']]);
+
+  return (
+    <>
+      <Rect width={200} height={100} fill={linear} />
+      <Rect y={100} width={200} height={200} fill={radial} />
+      <Rect y={300} width={200} height={200} fill={conic} />
+      <Text y={500} fontSize={48} fill={textGradient}>Gradient Text</Text>
+    </>
+  );
+}
 ```
 
-### Gradient Functions
+### Gradient Hooks
 
-| Function | Parameters | Description |
-|----------|-----------|-------------|
-| `linearGradient` | `(x0, y0, x1, y1, stops)` | Linear gradient between two points |
-| `radialGradient` | `(x0, y0, r0, x1, y1, r1, stops)` | Radial gradient between two circles |
-| `conicGradient` | `(startAngle, x, y, stops)` | Conic (sweep) gradient around a point |
+| Hook | Parameters | Description |
+|------|-----------|-------------|
+| `useLinearGradient` | `(x0, y0, x1, y1, stops)` | Memoized linear gradient between two points |
+| `useRadialGradient` | `(x0, y0, r0, x1, y1, r1, stops)` | Memoized radial gradient between two circles |
+| `useConicGradient` | `(startAngle, x, y, stops)` | Memoized conic (sweep) gradient around a point |
 
 Each `stops` parameter is an array of `[offset, color]` tuples where `offset` is between `0` and `1`.
+
+The plain factory functions `linearGradient()`, `radialGradient()`, and `conicGradient()` are also exported for use outside of components (e.g. in constants or tests).
 
 ## Components
 

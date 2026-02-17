@@ -152,6 +152,11 @@ export {
 	type ColorStop,
 	type FillStrokeStyle,
 } from './gradient.js';
+export {
+	useLinearGradient,
+	useRadialGradient,
+	useConicGradient,
+} from './hooks/use-gradient.js';
 export { useParent } from './hooks/use-parent.js';
 export { useLayout, LayoutContext, type Layout } from './hooks/use-layout.js';
 export { useDimensions } from './hooks/use-dimensions.js';
