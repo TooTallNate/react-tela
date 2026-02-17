@@ -116,6 +116,26 @@ export interface ICanvasRenderingContext2D {
 	fillStyle: string | CanvasGradient | CanvasPattern;
 	strokeStyle: string | CanvasGradient | CanvasPattern;
 
+	createLinearGradient(
+		x0: number,
+		y0: number,
+		x1: number,
+		y1: number,
+	): CanvasGradient;
+	createRadialGradient(
+		x0: number,
+		y0: number,
+		r0: number,
+		x1: number,
+		y1: number,
+		r1: number,
+	): CanvasGradient;
+	createConicGradient(
+		startAngle: number,
+		x: number,
+		y: number,
+	): CanvasGradient;
+
 	shadowColor: string;
 	shadowBlur: number;
 	shadowOffsetX: number;
@@ -235,3 +255,5 @@ export interface TelaMouseEvent extends MouseEvent {
 	layerX: number;
 	layerY: number;
 }
+
+export type ColorStop = [offset: number, color: string];

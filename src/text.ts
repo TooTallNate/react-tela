@@ -1,12 +1,13 @@
 import { Entity, EntityProps } from './entity.js';
+import type { FillStrokeStyle } from './shape.js';
 
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	value: string;
 	fontFamily?: string;
 	fontWeight?: string;
 	fontSize?: number;
-	fill?: string;
-	stroke?: string;
+	fill?: FillStrokeStyle;
+	stroke?: FillStrokeStyle;
 	lineWidth?: number;
 	textAlign?: CanvasTextAlign;
 	textBaseline?: CanvasTextBaseline;
@@ -17,8 +18,8 @@ export class Text extends Entity {
 	fontWeight?: string;
 	fontSize?: number;
 	#value!: string;
-	fill?: string;
-	stroke?: string;
+	fill?: FillStrokeStyle;
+	stroke?: FillStrokeStyle;
 	lineWidth?: number;
 	textAlign: CanvasTextAlign;
 	textBaseline: CanvasTextBaseline;

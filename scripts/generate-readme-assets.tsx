@@ -23,6 +23,9 @@ import {
 	useDimensions,
 	useParent,
 	useTextMetrics,
+	useLinearGradient,
+	useRadialGradient,
+	useConicGradient,
 } from '../src/index';
 import initYoga from 'yoga-wasm-web/asm';
 import { createFlex } from '../src/flex';
@@ -220,6 +223,36 @@ async function main() {
 			</Flex.Text>
 		</Flex>
 	));
+
+	// Gradient demo
+	function GradientDemo() {
+		const linear = useLinearGradient(0, 0, 200, 0, [
+			[0, 'red'],
+			[0.5, 'yellow'],
+			[1, 'blue'],
+		]);
+		const radial = useRadialGradient(100, 100, 10, 100, 100, 100, [
+			[0, 'white'],
+			[1, 'black'],
+		]);
+		const conic = useConicGradient(0, 100, 100, [
+			[0, 'red'],
+			[0.25, 'yellow'],
+			[0.5, 'green'],
+			[0.75, 'blue'],
+			[1, 'red'],
+		]);
+		const textGradient = useLinearGradient(0, 0, 300, 0, [[0, 'red'], [1, 'blue']]);
+		return (
+			<>
+				<Rect width={200} height={100} fill={linear} />
+				<Rect y={100} width={200} height={200} fill={radial} />
+				<Rect y={300} width={200} height={200} fill={conic} />
+				<Text y={500} fontSize={48} fontFamily='Geist' fill={textGradient}>Gradient Text</Text>
+			</>
+		);
+	}
+	await saveExample('example-gradient', 300, 560, <GradientDemo />);
 
 	console.log('\nDone! All example images generated.');
 }

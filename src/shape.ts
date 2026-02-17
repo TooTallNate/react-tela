@@ -1,11 +1,13 @@
 import { Entity, type EntityProps } from './entity.js';
 
+export type FillStrokeStyle = string | CanvasGradient;
+
 export interface ShapeProps extends EntityProps {
 	clip?: boolean;
 	clipRule?: CanvasFillRule;
-	fill?: string;
+	fill?: FillStrokeStyle;
 	fillRule?: CanvasFillRule;
-	stroke?: string;
+	stroke?: FillStrokeStyle;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
@@ -22,9 +24,9 @@ export interface ShapeProps extends EntityProps {
 export abstract class Shape extends Entity {
 	clip?: boolean;
 	clipRule?: CanvasFillRule;
-	fill?: string;
+	fill?: FillStrokeStyle;
 	fillRule?: CanvasFillRule;
-	stroke?: string;
+	stroke?: FillStrokeStyle;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
 	lineDash?: number[];
