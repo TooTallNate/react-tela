@@ -135,6 +135,8 @@ function GradientDemo() {
 }
 ```
 
+![Gradient example](./assets/example-gradient.png)
+
 ### Gradient Hooks
 
 | Hook | Parameters | Description |
