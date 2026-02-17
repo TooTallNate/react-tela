@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "generate:types": "node ../scripts/generate-playground-types.mjs",
+    "dev": "pnpm generate:types && vite",
+    "build": "pnpm generate:types && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

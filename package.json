@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
+    "generate:types": "node scripts/generate-playground-types.mjs",
     "dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
     "format": "biome format --write src examples test",
     "node": "tsx examples/node.tsx",
@@ -37,13 +38,14 @@
     "react-reconciler": "^0.29.0"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
     "@biomejs/biome": "^1.5.3",
+    "@changesets/cli": "^2.29.8",
     "@napi-rs/canvas": "^0.1.48",
     "@types/jest-image-snapshot": "^6.4.0",
     "@types/node": "^20.8.6",
     "@types/react": "^18.2.28",
     "@types/react-reconciler": "^0.28.5",
+    "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.19.4",
     "jest-image-snapshot": "^6.4.0",
     "react": "^18.2.0",
