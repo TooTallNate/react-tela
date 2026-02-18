@@ -210,10 +210,13 @@ Returns `CanvasPattern | null` — `null` while the image is loading.
 All entities support the `filter` prop, which maps directly to [`CanvasRenderingContext2D.filter`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter). Pass any valid CSS filter string:
 
 ```tsx
-import { Rect, Image } from 'react-tela';
+import { Rect, Circle, Text } from 'react-tela';
 
-<Image src="photo.jpg" filter="blur(4px) brightness(1.2)" />
-<Rect width={100} height={100} fill="red" filter="drop-shadow(4px 4px 4px black)" />
+<Rect width={100} height={100} fill="red" filter="blur(3px)" />
+<Circle x={200} y={50} radius={40} fill="blue" filter="drop-shadow(4px 4px 4px black)" />
+<Text x={300} y={60} fill="green" fontSize={32} filter="brightness(1.5) saturate(2)">
+  Hello
+</Text>
 ```
 
 ![Filter example](./assets/example-filter.png)
