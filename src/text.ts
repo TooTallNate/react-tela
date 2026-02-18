@@ -1,23 +1,53 @@
 import { Entity, EntityProps } from './entity.js';
 import { resolveFillStroke, type FillStrokeInput } from './shape.js';
 
+/**
+ * Controls how text overflows when it exceeds `maxWidth`.
+ *
+ * - `'wrap'` — word-wrap to multiple lines (default)
+ * - `'ellipsis'` — truncate with "…"
+ * - `'clip'` — hard clip at `maxWidth`
+ */
 export type TextOverflow = 'wrap' | 'ellipsis' | 'clip';
 
+/**
+ * Props for the {@link Text} component.
+ *
+ * Supports font styling, multiline text with word wrapping, ellipsis truncation,
+ * and all Canvas 2D text rendering options.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillText | MDN fillText()}
+ */
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
+	/** The text content to render. */
 	value: string;
+	/** The font family name. @default "sans-serif" */
 	fontFamily?: string;
+	/** The font weight (e.g. `"bold"`, `"700"`). */
 	fontWeight?: string;
+	/** The font size in pixels. @default 24 */
 	fontSize?: number;
+	/** The fill color, gradient, or pattern for the text. */
 	fill?: FillStrokeInput;
+	/** The stroke color, gradient, or pattern for the text outline. */
 	stroke?: FillStrokeInput;
+	/** The stroke width for text outline. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineWidth | MDN lineWidth} */
 	lineWidth?: number;
+	/** Horizontal text alignment. @default "start" @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign | MDN textAlign} */
 	textAlign?: CanvasTextAlign;
+	/** Vertical text baseline. @default "top" @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textBaseline | MDN textBaseline} */
 	textBaseline?: CanvasTextBaseline;
-letterSpacing?: number;
+	/** Extra spacing between characters in pixels. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/letterSpacing | MDN letterSpacing} */
+	letterSpacing?: number;
+	/** Extra spacing between words in pixels. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/wordSpacing | MDN wordSpacing} */
 	wordSpacing?: number;
+	/** Text direction. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/direction | MDN direction} */
 	direction?: CanvasDirection;
+	/** Font kerning behavior. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fontKerning | MDN fontKerning} */
 	fontKerning?: CanvasFontKerning;
+	/** Font stretch value. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fontStretch | MDN fontStretch} */
 	fontStretch?: CanvasFontStretch;
+	/** Font variant caps. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fontVariantCaps | MDN fontVariantCaps} */
 	fontVariantCaps?: CanvasFontVariantCaps;
 	/**
 	 * Maximum width (in pixels) before text wraps or is truncated.
@@ -38,6 +68,19 @@ letterSpacing?: number;
 	overflow?: TextOverflow;
 }
 
+/**
+ * Renders text on the canvas with support for font styling, multiline wrapping,
+ * ellipsis truncation, and clipping.
+ *
+ * @example
+ * ```tsx
+ * <Text x={10} y={10} fontSize={32} fontFamily="Arial" fill="black">
+ *   Hello, World!
+ * </Text>
+ * ```
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillText | MDN fillText()}
+ */
 export class Text extends Entity {
 	fontFamily?: string;
 	fontWeight?: string;

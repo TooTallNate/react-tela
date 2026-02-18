@@ -9,6 +9,12 @@ import type {
 } from './types.js';
 import { proxyEvents } from './events.js';
 
+/**
+ * Configuration options for creating a {@link Root}.
+ *
+ * Provide custom implementations of Canvas, DOMMatrix, Path2D, and image loading
+ * to support non-browser environments (e.g. node-canvas, skia-canvas).
+ */
 export interface RootParams {
 	Canvas?: new (w: number, h: number) => ICanvas;
 	DOMMatrix?: new (init?: string | number[]) => IDOMMatrix;
@@ -25,6 +31,13 @@ function createOffscreenCanvas(doc: Document) {
 	};
 }
 
+/**
+ * The root rendering context for a react-tela canvas.
+ *
+ * Manages the entity tree, batches renders via microtasks, proxies DOM events
+ * to entities, and provides factory constructors (`Canvas`, `DOMMatrix`, `Path2D`)
+ * for platform-agnostic rendering.
+ */
 export class Root extends TelaEventTarget {
 	ctx: ICanvasRenderingContext2D;
 	dirty: boolean;

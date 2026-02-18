@@ -2,16 +2,38 @@ import { Shape, type ShapeProps } from './shape.js';
 import { degreesToRadians } from './util.js';
 import type { IPath2D } from './types.js';
 
+/**
+ * Props for the {@link Ellipse} component.
+ *
+ * Defines an ellipse with separate x and y radii. Angles are in **degrees**.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse | MDN ellipse()}
+ */
 export type EllipseProps = Omit<ShapeProps, 'width' | 'height'> & {
+	/** The horizontal radius. */
 	radiusX: number;
+	/** The vertical radius. */
 	radiusY: number;
 	/** Rotation of the ellipse in degrees. Named to avoid collision with Entity's `rotate`. */
 	ellipseRotation?: number;
+	/** The start angle in degrees. @default 0 */
 	startAngle?: number;
+	/** The end angle in degrees. @default 360 */
 	endAngle?: number;
+	/** If `true`, draw counterclockwise. @default false */
 	counterclockwise?: boolean;
 };
 
+/**
+ * Renders an ellipse on the canvas.
+ *
+ * @example
+ * ```tsx
+ * <Ellipse x={100} y={75} radiusX={50} radiusY={30} fill="purple" />
+ * ```
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse | MDN ellipse()}
+ */
 export class Ellipse extends Shape {
 	#radiusX: number;
 	#radiusY: number;

@@ -2,11 +2,24 @@ import { Entity, type EntityProps } from './entity.js';
 import type { Root } from './root.js';
 import type { IImage } from './types.js';
 
+/**
+ * Props for the {@link Image} component.
+ *
+ * Supports loading an image from a URL and drawing it (or a sub-rectangle of it)
+ * on the canvas. Width and height default to the image's natural dimensions.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage | MDN drawImage()}
+ */
 export interface ImageProps extends EntityProps {
+	/** The image URL to load and display. */
 	src: string;
+	/** The x-coordinate of the source sub-rectangle. */
 	sx?: number;
+	/** The y-coordinate of the source sub-rectangle. */
 	sy?: number;
+	/** The width of the source sub-rectangle. */
 	sw?: number;
+	/** The height of the source sub-rectangle. */
 	sh?: number;
 	/**
 	 * Whether image smoothing is enabled when scaling. Set to `false` for pixel art or crisp scaling.
@@ -22,6 +35,19 @@ export interface ImageProps extends EntityProps {
 	imageSmoothingQuality?: ImageSmoothingQuality;
 }
 
+/**
+ * Renders an image loaded from a URL on the canvas.
+ *
+ * The image is loaded asynchronously. If `width`/`height` are not specified,
+ * they default to the image's natural dimensions once loaded.
+ *
+ * @example
+ * ```tsx
+ * <Image src="https://example.com/photo.png" x={10} y={10} width={200} height={150} />
+ * ```
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage | MDN drawImage()}
+ */
 export class Image extends Entity {
 	#root: Root;
 	#src: string;

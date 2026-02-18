@@ -325,6 +325,25 @@ reconciler.injectIntoDevTools({
 	version: '0.0.0',
 });
 
+/**
+ * Mount a react-tela application onto a canvas element.
+ *
+ * This is the main entry point for react-tela. It creates a React reconciler
+ * root backed by the given canvas and renders the provided JSX tree.
+ *
+ * @param app - The root JSX element to render.
+ * @param canvas - The canvas element (or any {@link ICanvas}-compatible object) to render into.
+ * @param opts - Optional configuration for the root (custom `Canvas`, `DOMMatrix`, `Path2D`, `loadImage`).
+ * @returns The {@link Root} instance managing the render tree.
+ *
+ * @example
+ * ```tsx
+ * import { render, Rect } from 'react-tela';
+ *
+ * const canvas = document.getElementById('my-canvas');
+ * render(<Rect x={10} y={10} width={100} height={100} fill="red" />, canvas);
+ * ```
+ */
 export function render(
 	app: React.JSX.Element,
 	canvas: ICanvas,

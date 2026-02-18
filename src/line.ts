@@ -1,10 +1,30 @@
 import { Shape, type ShapeProps } from './shape.js';
 import type { IPath2D, Point } from './types.js';
 
+/**
+ * Props for the {@link Line} component.
+ *
+ * Draws a polyline (series of connected line segments) through the given points.
+ */
 export type LineProps = Omit<ShapeProps, 'width' | 'height'> & {
+	/** Array of points defining the polyline vertices. */
 	points: Point[];
 };
 
+/**
+ * Renders a polyline (connected line segments) on the canvas.
+ *
+ * @example
+ * ```tsx
+ * <Line
+ *   points={[{ x: 0, y: 0 }, { x: 50, y: 100 }, { x: 100, y: 50 }]}
+ *   stroke="black"
+ *   lineWidth={2}
+ * />
+ * ```
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineTo | MDN lineTo()}
+ */
 export class Line extends Shape {
 	#points: Point[];
 
