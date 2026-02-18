@@ -50,7 +50,7 @@ test('usePattern with no-repeat', async () => {
 	const src = join(__dirname, 'pexels-small.jpg');
 
 	const root = render(
-		<PatternRect src={src} repetition='no-repeat' />,
+		<PatternRect src={src} repetition="no-repeat" />,
 		canvas,
 		config,
 	);

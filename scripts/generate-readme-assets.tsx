@@ -9,10 +9,7 @@ import { writeFileSync, mkdirSync, unlinkSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-import nodeConfig, {
-	Canvas as NativeCanvas,
-	GlobalFonts,
-} from '@napi-rs/canvas';
+import nodeConfig, { Canvas as NativeCanvas, GlobalFonts } from '@napi-rs/canvas';
 import { render } from '../src/render';
 import {
 	Rect,
@@ -48,21 +45,15 @@ try {
 	GlobalFonts.registerFromPath(fontPath, 'Geist Sans');
 } catch {}
 
-async function saveExample(
-	name: string,
-	width: number,
-	height: number,
-	element: React.JSX.Element,
-	{ waitForAsync = false } = {},
-) {
+async function saveExample(name: string, width: number, height: number, element: React.JSX.Element, { waitForAsync = false } = {}) {
 	const canvas = new NativeCanvas(width, height);
 	const root = render(element, canvas, nodeConfig);
 	// Wait for React reconciler to flush the initial render
-	await new Promise((r) => setTimeout(r, 50));
+	await new Promise(r => setTimeout(r, 50));
 	if (waitForAsync) {
 		// Wait for async effects (e.g. usePattern image loading) to settle
 		// Give time for promises to resolve and re-renders to flush
-		await new Promise((r) => setTimeout(r, 500));
+		await new Promise(r => setTimeout(r, 500));
 		// Force a final render
 		root.dirty = true;
 		root.render();
@@ -105,68 +96,35 @@ function CenteredText({ children }: { children: string }) {
 
 async function main() {
 	// Quick Start (update existing example.png too)
-	await saveExample(
-		'example',
-		300,
-		100,
+	await saveExample('example', 300, 100, (
 		<Group x={5} y={15} width={180} height={30} rotate={0.1}>
 			<QuickStartContents />
-		</Group>,
-	);
+		</Group>
+	));
 
 	// Rect
-	await saveExample(
-		'example-rect',
-		130,
-		70,
-		<Rect
-			x={5}
-			y={5}
-			width={100}
-			height={50}
-			fill='red'
-			stroke='black'
-			lineWidth={2}
-		/>,
-	);
+	await saveExample('example-rect', 130, 70, (
+		<Rect x={5} y={5} width={100} height={50} fill='red' stroke='black' lineWidth={2} />
+	));
 
 	// RoundRect
-	await saveExample(
-		'example-roundrect',
-		130,
-		70,
-		<RoundRect x={5} y={5} width={100} height={50} fill='blue' radii={10} />,
-	);
+	await saveExample('example-roundrect', 130, 70, (
+		<RoundRect x={5} y={5} width={100} height={50} fill='blue' radii={10} />
+	));
 
 	// Circle
-	await saveExample(
-		'example-circle',
-		100,
-		100,
-		<Circle x={10} y={10} radius={40} fill='green' />,
-	);
+	await saveExample('example-circle', 100, 100, (
+		<Circle x={10} y={10} radius={40} fill='green' />
+	));
 
 	// Arc — radius=50, half-circle needs 100×60 plus padding
-	await saveExample(
-		'example-arc',
-		120,
-		120,
-		<Arc
-			x={10}
-			y={10}
-			radius={50}
-			startAngle={0}
-			endAngle={180}
-			fill='orange'
-		/>,
-	);
+	await saveExample('example-arc', 120, 120, (
+		<Arc x={10} y={10} radius={50} startAngle={0} endAngle={180} fill='orange' />
+	));
 
 	// Path (star) — 47.94×47.94 at 2x scale = ~96×96, centered at (x+w/2, y+h/2)
 	// Extends ±48 from center, plus stroke. Need center at ~55 in a 115×115 canvas.
-	await saveExample(
-		'example-path',
-		115,
-		115,
+	await saveExample('example-path', 115, 115, (
 		<Path
 			x={31}
 			y={31}
@@ -178,25 +136,15 @@ async function main() {
 			lineWidth={3}
 			scaleX={2}
 			scaleY={2}
-		/>,
-	);
+		/>
+	));
 
 	// Text
-	await saveExample(
-		'example-text',
-		220,
-		45,
-		<Text
-			x={10}
-			y={10}
-			fontSize={24}
-			fontFamily='Geist'
-			fill='#333'
-			stroke='rgba(0,0,0,0.1)'
-		>
+	await saveExample('example-text', 220, 45, (
+		<Text x={10} y={10} fontSize={24} fontFamily='Geist' fill='#333' stroke='rgba(0,0,0,0.1)'>
 			Hello world!
-		</Text>,
-	);
+		</Text>
+	));
 
 	// Canvas (imperative drawing)
 	function ImperativeCanvas() {
@@ -225,55 +173,39 @@ async function main() {
 			/>
 		);
 	}
-	await saveExample('example-canvas', 120, 80, <ImperativeCanvas />);
+	await saveExample('example-canvas', 120, 80, (
+		<ImperativeCanvas />
+	));
 
 	// Group
-	await saveExample(
-		'example-group',
-		300,
-		120,
+	await saveExample('example-group', 300, 120, (
 		<Group x={50} y={20} width={200} height={80} rotate={5}>
 			<Rect width={200} height={80} fill='purple' alpha={0.5} />
 			<Text fontSize={24} fontFamily='Geist' fill='white'>
 				Inside a group
 			</Text>
-		</Group>,
-	);
+		</Group>
+	));
 
 	// useTextMetrics: CenteredText — wider canvas to avoid clipping
-	await saveExample(
-		'example-centered-text',
-		400,
-		60,
+	await saveExample('example-centered-text', 400, 60, (
 		<Group x={0} y={0} width={400} height={60}>
 			<Rect width={400} height={60} fill='#2c3e50' />
 			<CenteredText>Centered with useTextMetrics</CenteredText>
-		</Group>,
-	);
+		</Group>
+	));
 
 	// Flex: basic row
-	await saveExample(
-		'example-flex-row',
-		300,
-		100,
+	await saveExample('example-flex-row', 300, 100, (
 		<Flex width={300} height={100} flexDirection='row' gap={10}>
-			<Flex flex={1}>
-				<Rect fill='#e74c3c' />
-			</Flex>
-			<Flex flex={1}>
-				<Rect fill='#2ecc71' />
-			</Flex>
-			<Flex flex={1}>
-				<Rect fill='#3498db' />
-			</Flex>
-		</Flex>,
-	);
+			<Flex flex={1}><Rect fill='#e74c3c' /></Flex>
+			<Flex flex={1}><Rect fill='#2ecc71' /></Flex>
+			<Flex flex={1}><Rect fill='#3498db' /></Flex>
+		</Flex>
+	));
 
 	// Flex: app layout
-	await saveExample(
-		'example-flex-layout',
-		400,
-		300,
+	await saveExample('example-flex-layout', 400, 300, (
 		<Flex width={400} height={300} flexDirection='column' gap={4}>
 			<Flex height={40}>
 				<Rect fill='#2c3e50' />
@@ -289,30 +221,20 @@ async function main() {
 			<Flex height={30}>
 				<Rect fill='#2c3e50' />
 			</Flex>
-		</Flex>,
-	);
+		</Flex>
+	));
 
 	// Flex.Text
-	await saveExample(
-		'example-flex-text',
-		300,
-		80,
-		<Flex
-			width={300}
-			height={80}
-			flexDirection='row'
-			alignItems='center'
-			justifyContent='center'
-			gap={10}
-		>
+	await saveExample('example-flex-text', 300, 80, (
+		<Flex width={300} height={80} flexDirection='row' alignItems='center' justifyContent='center' gap={10}>
 			<Flex width={40} height={40}>
 				<Circle fill='#3498db' radius={20} />
 			</Flex>
 			<Flex.Text fontSize={24} fontFamily='Geist' fill='#333'>
 				Hello Flex!
 			</Flex.Text>
-		</Flex>,
-	);
+		</Flex>
+	));
 
 	// Gradient demo
 	function GradientDemo() {
@@ -332,18 +254,13 @@ async function main() {
 			[0.75, 'blue'],
 			[1, 'red'],
 		]);
-		const textGradient = useLinearGradient(0, 0, 300, 0, [
-			[0, 'red'],
-			[1, 'blue'],
-		]);
+		const textGradient = useLinearGradient(0, 0, 300, 0, [[0, 'red'], [1, 'blue']]);
 		return (
 			<>
 				<Rect width={200} height={100} fill={linear} />
 				<Rect y={100} width={200} height={200} fill={radial} />
 				<Rect y={300} width={200} height={200} fill={conic} />
-				<Text y={500} fontSize={48} fontFamily='Geist' fill={textGradient}>
-					Gradient Text
-				</Text>
+				<Text y={500} fontSize={48} fontFamily='Geist' fill={textGradient}>Gradient Text</Text>
 			</>
 		);
 	}
@@ -354,9 +271,9 @@ async function main() {
 		const pattern = useRef<CanvasPattern>(null);
 		return (
 			<>
-				<Pattern ref={pattern} width={20} height={20} repetition='repeat'>
-					<Rect width={10} height={10} fill='#ccc' />
-					<Rect x={10} y={10} width={10} height={10} fill='#ccc' />
+				<Pattern ref={pattern} width={20} height={20} repetition="repeat">
+					<Rect width={10} height={10} fill="#ccc" />
+					<Rect x={10} y={10} width={10} height={10} fill="#ccc" />
 				</Pattern>
 				<Rect width={200} height={120} fill={pattern} />
 			</>
@@ -381,45 +298,19 @@ async function main() {
 		const pattern = usePattern(tilePath, 'repeat');
 		return <Rect width={200} height={120} fill={pattern} />;
 	}
-	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />, {
-		waitForAsync: true,
-	});
+	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />, { waitForAsync: true });
 	unlinkSync(tilePath);
 
 	// Filter demo
-	await saveExample(
-		'example-filter',
-		300,
-		100,
+	await saveExample('example-filter', 300, 100, (
 		<>
-			<Rect
-				x={10}
-				y={10}
-				width={80}
-				height={80}
-				fill='red'
-				filter='blur(3px)'
-			/>
-			<Rect
-				x={110}
-				y={10}
-				width={80}
-				height={80}
-				fill='blue'
-				filter='drop-shadow(4px 4px 4px rgba(0,0,0,0.5))'
-			/>
-			<Rect
-				x={210}
-				y={10}
-				width={80}
-				height={80}
-				fill='green'
-				filter='brightness(1.5) saturate(2)'
-			/>
-		</>,
-	);
+			<Rect x={10} y={10} width={80} height={80} fill="red" filter="blur(3px)" />
+			<Rect x={110} y={10} width={80} height={80} fill="blue" filter="drop-shadow(4px 4px 4px rgba(0,0,0,0.5))" />
+			<Rect x={210} y={10} width={80} height={80} fill="green" filter="brightness(1.5) saturate(2)" />
+		</>
+	));
 
-	console.log('\nDone! All example images generated.');
+console.log('\nDone! All example images generated.');
 }
 
 main().catch(console.error);

@@ -65,9 +65,17 @@ test('should render <Text> with textAlign end', async () => {
 test('should render <Text> with multiple children (concatenated)', async () => {
 	const canvas = new Canvas(300, 80);
 	await render(
-		<Text x={10} y={10} fontSize={30} fontFamily='Geist Sans' fill='teal'>
+		<Text
+			x={10}
+			y={10}
+			fontSize={30}
+			fontFamily='Geist Sans'
+			fill='teal'
+		>
 			{'Hello '}
-			{'World'} {42}
+			{'World'}
+			{' '}
+			{42}
 		</Text>,
 		canvas,
 		config,
@@ -124,14 +132,7 @@ test('should render <Text> with alpha', async () => {
 			<Text x={10} y={10} fontSize={50} fontFamily='Geist Sans' fill='red'>
 				Behind
 			</Text>
-			<Text
-				x={30}
-				y={10}
-				fontSize={50}
-				fontFamily='Geist Sans'
-				fill='blue'
-				alpha={0.4}
-			>
+			<Text x={30} y={10} fontSize={50} fontFamily='Geist Sans' fill='blue' alpha={0.4}>
 				Front
 			</Text>
 		</>,

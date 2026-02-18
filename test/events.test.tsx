@@ -19,12 +19,8 @@ test('should receive "mousedown" and "mouseup" events', async () => {
 				width={50}
 				height={50}
 				fill='blue'
-				onMouseDown={(e) => {
-					downEvent = e;
-				}}
-				onMouseUp={(e) => {
-					upEvent = e;
-				}}
+				onMouseDown={(e) => { downEvent = e; }}
+				onMouseUp={(e) => { upEvent = e; }}
 			/>
 		);
 	}
@@ -61,9 +57,7 @@ test('should receive "mousemove" events', async () => {
 				width={100}
 				height={80}
 				fill='green'
-				onMouseMove={(e) => {
-					moves.push(e);
-				}}
+				onMouseMove={(e) => { moves.push(e); }}
 			/>
 		);
 	}
@@ -74,10 +68,7 @@ test('should receive "mousemove" events', async () => {
 	for (let i = 0; i < 3; i++) {
 		dispatchEvent(
 			canvas,
-			Object.assign(new Event('mousemove'), {
-				layerX: 20 + i * 20,
-				layerY: 30,
-			}),
+			Object.assign(new Event('mousemove'), { layerX: 20 + i * 20, layerY: 30 }),
 		);
 	}
 	expect(moves.length).toBe(3);
@@ -97,12 +88,8 @@ test('should receive "mouseenter" and "mouseleave" events', async () => {
 				width={50}
 				height={50}
 				fill='orange'
-				onMouseEnter={() => {
-					entered = true;
-				}}
-				onMouseLeave={() => {
-					left = true;
-				}}
+				onMouseEnter={() => { entered = true; }}
+				onMouseLeave={() => { left = true; }}
 			/>
 		);
 	}
@@ -138,9 +125,7 @@ test('should NOT receive events when pointerEvents is false', async () => {
 				height={50}
 				fill='red'
 				pointerEvents={false}
-				onClick={() => {
-					clicked = true;
-				}}
+				onClick={() => { clicked = true; }}
 			/>
 		);
 	}
@@ -170,9 +155,7 @@ test('click should target topmost entity (z-order)', async () => {
 					width={80}
 					height={80}
 					fill='red'
-					onClick={() => {
-						clickedBottom = true;
-					}}
+					onClick={() => { clickedBottom = true; }}
 				/>
 				<Rect
 					x={30}
@@ -180,9 +163,7 @@ test('click should target topmost entity (z-order)', async () => {
 					width={80}
 					height={60}
 					fill='blue'
-					onClick={() => {
-						clickedTop = true;
-					}}
+					onClick={() => { clickedTop = true; }}
 				/>
 			</>
 		);
