@@ -11,6 +11,12 @@ export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	lineWidth?: number;
 	textAlign?: CanvasTextAlign;
 	textBaseline?: CanvasTextBaseline;
+	letterSpacing?: number;
+	wordSpacing?: number;
+	direction?: CanvasDirection;
+	fontKerning?: CanvasFontKerning;
+	fontStretch?: CanvasFontStretch;
+	fontVariantCaps?: CanvasFontVariantCaps;
 }
 
 export class Text extends Entity {
@@ -23,6 +29,12 @@ export class Text extends Entity {
 	lineWidth?: number;
 	textAlign: CanvasTextAlign;
 	textBaseline: CanvasTextBaseline;
+	letterSpacing?: number;
+	wordSpacing?: number;
+	direction?: CanvasDirection;
+	fontKerning?: CanvasFontKerning;
+	fontStretch?: CanvasFontStretch;
+	fontVariantCaps?: CanvasFontVariantCaps;
 
 	get value() {
 		return this.#value;
@@ -47,6 +59,12 @@ export class Text extends Entity {
 		this.lineWidth = opts.lineWidth;
 		this.textAlign = opts.textAlign || 'start';
 		this.textBaseline = opts.textBaseline || 'top';
+		this.letterSpacing = opts.letterSpacing;
+		this.wordSpacing = opts.wordSpacing;
+		this.direction = opts.direction;
+		this.fontKerning = opts.fontKerning;
+		this.fontStretch = opts.fontStretch;
+		this.fontVariantCaps = opts.fontVariantCaps;
 	}
 
 	render(): void {
@@ -60,10 +78,34 @@ export class Text extends Entity {
 			textBaseline,
 			fill,
 			stroke,
+			letterSpacing,
+			wordSpacing,
+			direction,
+			fontKerning,
+			fontStretch,
+			fontVariantCaps,
 			root,
 		} = this;
 		const { ctx } = root;
 		ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
+		if (typeof letterSpacing === 'number') {
+			ctx.letterSpacing = `${letterSpacing}px`;
+		}
+		if (typeof wordSpacing === 'number') {
+			ctx.wordSpacing = `${wordSpacing}px`;
+		}
+		if (direction) {
+			ctx.direction = direction;
+		}
+		if (fontKerning) {
+			ctx.fontKerning = fontKerning;
+		}
+		if (fontStretch) {
+			ctx.fontStretch = fontStretch;
+		}
+		if (fontVariantCaps) {
+			ctx.fontVariantCaps = fontVariantCaps;
+		}
 		const bounds = ctx.measureText(value);
 		this.width = bounds.width;
 		this.height = fontSize;
