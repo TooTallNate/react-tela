@@ -26,6 +26,13 @@ export type EntityProps = {
 	 */
 	alpha?: number;
 	/**
+	 * Alias for `alpha`. Sets the opacity of the entity. The value `0` is fully transparent. The value `1` is fully opaque.
+	 * When both `alpha` and `opacity` are specified, `opacity` takes precedence.
+	 *
+	 * @default 1.0
+	 */
+	opacity?: number;
+	/**
 	 * The rotation of the entity in degrees.
 	 *
 	 * @default 0
@@ -145,7 +152,7 @@ export class Entity extends TelaEventTarget {
 		this.#y = opts.y ?? 0;
 		this.#width = opts.width ?? 0;
 		this.#height = opts.height ?? 0;
-		this.alpha = opts.alpha ?? 1;
+		this.alpha = opts.opacity ?? opts.alpha ?? 1;
 		this.filter = opts.filter;
 		this.#rotate = opts.rotate ?? 0;
 		this.#scaleX = opts.scaleX;

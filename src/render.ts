@@ -206,7 +206,7 @@ const reconciler = ReactReconciler<
 			// @ts-expect-error
 			if (oldProps[k] !== newProps[k]) {
 				if (!payload) payload = {};
-				const prop = /^on[A-Z]/.test(k) ? k.toLowerCase() : k;
+				const prop = k === 'opacity' ? 'alpha' : /^on[A-Z]/.test(k) ? k.toLowerCase() : k;
 				// @ts-expect-error
 				payload[prop] = newProps[k];
 			}

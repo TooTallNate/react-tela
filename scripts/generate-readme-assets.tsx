@@ -351,6 +351,14 @@ async function main() {
 		</>
 	));
 
+	// Opacity demo
+	await saveExample('example-opacity', 200, 140, (
+		<>
+			<Rect x={20} y={20} width={100} height={80} fill="red" />
+			<Rect x={80} y={40} width={100} height={80} fill="blue" opacity={0.5} />
+		</>
+	));
+
 console.log('\nDone! All example images generated.');
 }
 

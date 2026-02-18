@@ -236,6 +236,17 @@ Set the `blendMode` prop on any entity to control how it composites with the con
 
 Common values include `"multiply"`, `"screen"`, `"overlay"`, `"darken"`, `"lighten"`, `"destination-out"`, and more. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation) for the full list.
 
+## Opacity
+
+Use the `opacity` prop (or its alias `alpha`) on any entity to control transparency. The value ranges from `0` (fully transparent) to `1` (fully opaque). This maps to [`ctx.globalAlpha`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalAlpha).
+
+```tsx
+<Rect x={20} y={20} width={100} height={80} fill="red" />
+<Rect x={80} y={40} width={100} height={80} fill="blue" opacity={0.5} />
+```
+
+![Opacity example](./assets/example-opacity.png)
+
 ## Components
 
 All components accept these common props:
@@ -247,6 +258,7 @@ All components accept these common props:
 | `width` | `number` | `0` | Width in pixels |
 | `height` | `number` | `0` | Height in pixels |
 | `alpha` | `number` | `1` | Opacity (`0` = transparent, `1` = opaque) |
+| `opacity` | `number` | `1` | Alias for `alpha`. When both are set, `opacity` takes precedence |
 | `rotate` | `number` | `0` | Rotation in degrees |
 | `scaleX` | `number` | `1` | Horizontal scale |
 | `scaleY` | `number` | `1` | Vertical scale |
