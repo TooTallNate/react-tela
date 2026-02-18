@@ -66,6 +66,13 @@ export type EntityProps = {
 	 */
 	shadowOffsetY?: number;
 	/**
+	 * CSS filter string to apply to this entity.
+	 * Maps to `ctx.filter`.
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter
+	 */
+	filter?: string;
+	/**
 	 * The composite operation to apply when drawing this entity.
 	 * Maps to `ctx.globalCompositeOperation`.
 	 *
@@ -110,6 +117,7 @@ export class Entity extends TelaEventTarget {
 	_cachedPath: IPath2D | null = null;
 
 	alpha: number;
+	filter?: string;
 	shadowColor?: string;
 	shadowBlur?: number;
 	shadowOffsetX?: number;
@@ -138,6 +146,7 @@ export class Entity extends TelaEventTarget {
 		this.#width = opts.width ?? 0;
 		this.#height = opts.height ?? 0;
 		this.alpha = opts.alpha ?? 1;
+		this.filter = opts.filter;
 		this.#rotate = opts.rotate ?? 0;
 		this.#scaleX = opts.scaleX;
 		this.#scaleY = opts.scaleY;
@@ -334,6 +343,9 @@ export class Entity extends TelaEventTarget {
 		}
 		const { ctx } = this.root;
 		ctx.globalAlpha = this.alpha;
+		if (this.filter) {
+			ctx.filter = this.filter;
+		}
 		if (this.blendMode) {
 			ctx.globalCompositeOperation = this.blendMode;
 		}

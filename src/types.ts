@@ -146,7 +146,14 @@ export interface ICanvasRenderingContext2D {
 	shadowOffsetX: number;
 	shadowOffsetY: number;
 
+	filter: string;
 	globalCompositeOperation: GlobalCompositeOperation;
+	imageSmoothingEnabled: boolean;
+	imageSmoothingQuality: ImageSmoothingQuality;
+	letterSpacing: string;
+	wordSpacing: string;
+	fontStretch: string;
+	fontVariantCaps: string;
 }
 
 export interface IDOMMatrix {
