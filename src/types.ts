@@ -145,6 +145,11 @@ export interface ICanvasRenderingContext2D {
 	shadowBlur: number;
 	shadowOffsetX: number;
 	shadowOffsetY: number;
+
+	letterSpacing: string;
+	wordSpacing: string;
+	fontStretch: string;
+	fontVariantCaps: string;
 }
 
 export interface IDOMMatrix {

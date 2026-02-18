@@ -368,6 +368,12 @@ Renders text.
 | `lineWidth` | `number` | — | Stroke width |
 | `textAlign` | `CanvasTextAlign` | `"start"` | Horizontal alignment |
 | `textBaseline` | `CanvasTextBaseline` | `"top"` | Vertical baseline |
+| `letterSpacing` | `number` | — | Extra spacing between letters (px) |
+| `wordSpacing` | `number` | — | Extra spacing between words (px) |
+| `direction` | `CanvasDirection` | — | Text direction (`"ltr"`, `"rtl"`, `"inherit"`) |
+| `fontKerning` | `CanvasFontKerning` | — | Font kerning (`"auto"`, `"normal"`, `"none"`) |
+| `fontStretch` | `CanvasFontStretch` | — | Font stretch (e.g. `"condensed"`, `"expanded"`) |
+| `fontVariantCaps` | `CanvasFontVariantCaps` | — | Font variant caps (e.g. `"small-caps"`, `"all-petite-caps"`) |
 
 ![Text example](./assets/example-text.png)
 
