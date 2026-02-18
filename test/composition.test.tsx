@@ -18,9 +18,24 @@ test('should render a scene with mixed shape types', async () => {
 			{/* House body */}
 			<Rect x={100} y={150} width={120} height={70} fill='#e74c3c' />
 			{/* Door */}
-			<RoundRect x={140} y={180} width={40} height={40} fill='#8b4513' radii={[5, 5, 0, 0]} />
+			<RoundRect
+				x={140}
+				y={180}
+				width={40}
+				height={40}
+				fill='#8b4513'
+				radii={[5, 5, 0, 0]}
+			/>
 			{/* Window */}
-			<Rect x={200} y={165} width={15} height={15} fill='lightyellow' stroke='#333' lineWidth={1} />
+			<Rect
+				x={200}
+				y={165}
+				width={15}
+				height={15}
+				fill='lightyellow'
+				stroke='#333'
+				lineWidth={1}
+			/>
 			{/* Roof line */}
 			<Line
 				points={[
@@ -42,7 +57,14 @@ test('should render text over shapes', async () => {
 	const canvas = new Canvas(300, 100);
 	await render(
 		<>
-			<RoundRect x={10} y={10} width={280} height={80} fill='#3498db' radii={10} />
+			<RoundRect
+				x={10}
+				y={10}
+				width={280}
+				height={80}
+				fill='#3498db'
+				radii={10}
+			/>
 			<Text x={30} y={30} fontSize={32} fontFamily='Geist Sans' fill='white'>
 				Button Text
 			</Text>

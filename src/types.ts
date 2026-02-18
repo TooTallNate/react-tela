@@ -130,11 +130,7 @@ export interface ICanvasRenderingContext2D {
 		y1: number,
 		r1: number,
 	): CanvasGradient;
-	createConicGradient(
-		startAngle: number,
-		x: number,
-		y: number,
-	): CanvasGradient;
+	createConicGradient(startAngle: number, x: number, y: number): CanvasGradient;
 
 	createPattern(
 		image: ICanvas | IImage | CanvasImageSource,

@@ -27,14 +27,7 @@ test('should render <Rect> with scaleX and scaleY', async () => {
 test('should render <Rect> with scaleX only (horizontal stretch)', async () => {
 	const canvas = new Canvas(200, 100);
 	await render(
-		<Rect
-			x={30}
-			y={20}
-			width={30}
-			height={30}
-			fill='coral'
-			scaleX={3}
-		/>,
+		<Rect x={30} y={20} width={30} height={30} fill='coral' scaleX={3} />,
 		canvas,
 		config,
 	);

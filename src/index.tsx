@@ -52,7 +52,10 @@ function useAdjustedLayout(props: any) {
 const factory = <Ref, Props extends EntityProps>(type: string) => {
 	const c = forwardRef<Ref, Props>((props, ref) => {
 		const adjusted = useAdjustedLayout(props);
-		return createElement(type, adjusted === props ? { ...props, ref } : { ...adjusted, ref });
+		return createElement(
+			type,
+			adjusted === props ? { ...props, ref } : { ...adjusted, ref },
+		);
 	});
 	c.displayName = type;
 	return c;
@@ -149,43 +152,41 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 });
 Group.displayName = 'Group';
 
-export const Pattern = forwardRef<_Pattern, PatternProps>(
-	(props, ref) => {
-		const root = useParent();
-		const rootRef = useRef<GroupRoot>();
-		let canvas: ICanvas;
-		const adjusted = useAdjustedLayout(props);
-		const w = adjusted === props ? props.width : adjusted.width;
-		const h = adjusted === props ? props.height : adjusted.height;
-		if (rootRef.current) {
-			canvas = rootRef.current.ctx.canvas;
-		} else {
-			canvas = new root.Canvas(w, h);
-			const ctx = canvas.getContext('2d');
-			if (!ctx) {
-				throw new Error('Could not get "2d" canvas context');
-			}
-			rootRef.current = new GroupRoot(ctx, root);
+export const Pattern = forwardRef<_Pattern, PatternProps>((props, ref) => {
+	const root = useParent();
+	const rootRef = useRef<GroupRoot>();
+	let canvas: ICanvas;
+	const adjusted = useAdjustedLayout(props);
+	const w = adjusted === props ? props.width : adjusted.width;
+	const h = adjusted === props ? props.height : adjusted.height;
+	if (rootRef.current) {
+		canvas = rootRef.current.ctx.canvas;
+	} else {
+		canvas = new root.Canvas(w, h);
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			throw new Error('Could not get "2d" canvas context');
 		}
-		if (w > 0 && w !== canvas.width) {
-			canvas.width = w;
-		}
-		if (h > 0 && h !== canvas.height) {
-			canvas.height = h;
-		}
-		return (
-			<ParentContext.Provider value={rootRef.current}>
-				<LayoutContext.Provider value={DEFAULT_LAYOUT}>
-					{createElement('Pattern', {
-						...(adjusted === props ? props : adjusted),
-						root: rootRef.current,
-						ref,
-					})}
-				</LayoutContext.Provider>
-			</ParentContext.Provider>
-		);
-	},
-);
+		rootRef.current = new GroupRoot(ctx, root);
+	}
+	if (w > 0 && w !== canvas.width) {
+		canvas.width = w;
+	}
+	if (h > 0 && h !== canvas.height) {
+		canvas.height = h;
+	}
+	return (
+		<ParentContext.Provider value={rootRef.current}>
+			<LayoutContext.Provider value={DEFAULT_LAYOUT}>
+				{createElement('Pattern', {
+					...(adjusted === props ? props : adjusted),
+					root: rootRef.current,
+					ref,
+				})}
+			</LayoutContext.Provider>
+		</ParentContext.Provider>
+	);
+});
 Pattern.displayName = 'Pattern';
 
 export { type ColorStop } from './types.js';

@@ -96,7 +96,15 @@ async function main() {
 		'Single Rect (stroke + fill)',
 		800,
 		600,
-		<Rect x={10} y={10} width={100} height={100} fill='red' stroke='blue' lineWidth={3} />,
+		<Rect
+			x={10}
+			y={10}
+			width={100}
+			height={100}
+			fill='red'
+			stroke='blue'
+			lineWidth={3}
+		/>,
 		RERENDERS,
 	);
 
@@ -171,7 +179,14 @@ async function main() {
 			{Array.from({ length: 5 }, (_, g) => (
 				<Group key={g} x={0} y={g * 120} width={800} height={100}>
 					{Array.from({ length: 10 }, (_, i) => (
-						<Rect key={i} x={i * 75} y={10} width={60} height={60} fill='blue' />
+						<Rect
+							key={i}
+							x={i * 75}
+							y={10}
+							width={60}
+							height={60}
+							fill='blue'
+						/>
 					))}
 				</Group>
 			))}

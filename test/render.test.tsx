@@ -6,7 +6,11 @@ import { render } from '../src/render';
 
 test('render() returns a Root with renderCount tracking', async () => {
 	const canvas = new Canvas(100, 100);
-	const root = render(<Rect width={100} height={100} fill='blue' />, canvas, config);
+	const root = render(
+		<Rect width={100} height={100} fill='blue' />,
+		canvas,
+		config,
+	);
 	expect(root.renderCount).toBe(0);
 	await root;
 	expect(root.renderCount).toBe(1);

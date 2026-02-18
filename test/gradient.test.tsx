@@ -100,7 +100,7 @@ function LinearGradientText({
 }) {
 	const gradient = useLinearGradient(0, 0, 300, 0, stops);
 	return (
-		<Text fontFamily="Geist Sans" fontSize={48} fill={gradient}>
+		<Text fontFamily='Geist Sans' fontSize={48} fill={gradient}>
 			Gradient
 		</Text>
 	);
@@ -195,10 +195,6 @@ test('should render <Text> with linearGradient fill', async () => {
 
 test('string fill still works (backward compat)', async () => {
 	const canvas = new Canvas(100, 100);
-	await render(
-		<Rect width={100} height={100} fill="red" />,
-		canvas,
-		config,
-	);
+	await render(<Rect width={100} height={100} fill='red' />, canvas, config);
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
