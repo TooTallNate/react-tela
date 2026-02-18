@@ -48,6 +48,8 @@ try {
 async function saveExample(name: string, width: number, height: number, element: React.JSX.Element, { waitForAsync = false } = {}) {
 	const canvas = new NativeCanvas(width, height);
 	const root = render(element, canvas, nodeConfig);
+	// Wait for React reconciler to flush the initial render
+	await new Promise(r => setTimeout(r, 50));
 	if (waitForAsync) {
 		// Wait for async effects (e.g. usePattern image loading) to settle
 		// Give time for promises to resolve and re-renders to flush
@@ -299,7 +301,7 @@ async function main() {
 	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />, { waitForAsync: true });
 	unlinkSync(tilePath);
 
-		// Filter demo
+	// Filter demo
 	await saveExample('example-filter', 300, 100, (
 		<>
 			<Rect x={10} y={10} width={80} height={80} fill="red" filter="blur(3px)" />

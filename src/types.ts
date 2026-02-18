@@ -147,8 +147,6 @@ export interface ICanvasRenderingContext2D {
 	shadowOffsetY: number;
 
 	filter: string;
-
-	filter: string;
 	globalCompositeOperation: GlobalCompositeOperation;
 	imageSmoothingEnabled: boolean;
 	imageSmoothingQuality: ImageSmoothingQuality;
