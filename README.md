@@ -236,6 +236,27 @@ Set the `blendMode` prop on any entity to control how it composites with the con
 
 Common values include `"multiply"`, `"screen"`, `"overlay"`, `"darken"`, `"lighten"`, `"destination-out"`, and more. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation) for the full list.
 
+## Shadows
+
+All entities support shadow props that map directly to the [Canvas shadow properties](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowColor):
+
+```tsx
+import { Rect, Circle, Text } from 'react-tela';
+
+<Rect x={10} y={10} width={100} height={80} fill="blue"
+  shadowColor="rgba(0, 0, 0, 0.5)" shadowBlur={10} shadowOffsetX={5} shadowOffsetY={5} />
+<Circle x={180} y={20} radius={40} fill="red"
+  shadowColor="rgba(0, 0, 0, 0.6)" shadowBlur={15} shadowOffsetX={4} shadowOffsetY={4} />
+<Text x={270} y={40} fill="green" fontSize={32}
+  shadowColor="rgba(0, 0, 0, 0.7)" shadowBlur={3} shadowOffsetX={2} shadowOffsetY={2}>
+  Hello
+</Text>
+```
+
+![Shadow example](./assets/example-shadow.png)
+
+The `shadowColor` prop accepts any CSS color string. `shadowBlur` controls the blur radius, while `shadowOffsetX` and `shadowOffsetY` control the horizontal and vertical offset of the shadow.
+
 ## Components
 
 All components accept these common props:

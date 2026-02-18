@@ -351,6 +351,18 @@ async function main() {
 		</>
 	));
 
+	// Shadow demo
+	await saveExample('example-shadow', 400, 120, (
+		<>
+			<Rect x={10} y={10} width={100} height={80} fill="blue"
+				shadowColor="rgba(0, 0, 0, 0.5)" shadowBlur={10} shadowOffsetX={5} shadowOffsetY={5} />
+			<Circle x={180} y={20} radius={40} fill="red"
+				shadowColor="rgba(0, 0, 0, 0.6)" shadowBlur={15} shadowOffsetX={4} shadowOffsetY={4} />
+			<Text x={270} y={40} fill="green" fontSize={32} fontFamily="Geist"
+				shadowColor="rgba(0, 0, 0, 0.7)" shadowBlur={3} shadowOffsetX={2} shadowOffsetY={2}>Hello</Text>
+		</>
+	));
+
 console.log('\nDone! All example images generated.');
 }
 
