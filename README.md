@@ -205,6 +205,24 @@ function TiledBackground() {
 
 Returns `CanvasPattern | null` — `null` while the image is loading.
 
+## Filters
+
+All entities support the `filter` prop, which maps directly to [`CanvasRenderingContext2D.filter`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter). Pass any valid CSS filter string:
+
+```tsx
+import { Rect, Circle, Text } from 'react-tela';
+
+<Rect x={10} y={20} width={80} height={80} fill="red" filter="blur(3px)" />
+<Circle x={115} y={25} radius={35} fill="blue" filter="drop-shadow(4px 4px 4px black)" />
+<Text x={220} y={44} fill="green" fontSize={32} filter="drop-shadow(3px 3px 0 rgba(0,0,0,0.7))">
+  Hello
+</Text>
+```
+
+![Filter example](./assets/example-filter.png)
+
+Supported filter functions include `blur()`, `brightness()`, `contrast()`, `drop-shadow()`, `grayscale()`, `hue-rotate()`, `invert()`, `opacity()`, `saturate()`, and `sepia()`. Multiple filters can be chained in a single string.
+
 ## Components
 
 All components accept these common props:
