@@ -46,18 +46,23 @@ declare module "react" {
   export function createContext<T>(defaultValue: T): Context<T>;
   export function useContext<T>(context: Context<T>): T;
   export function createElement(type: any, props?: any, ...children: any[]): any;
-  export function forwardRef<T, P>(fn: (props: P, ref: any) => any): any;
+  export function forwardRef<T, P>(fn: (props: P, ref: any) => any): ForwardRefExoticComponent<P & RefAttributes<T>>;
 
   export type ReactNode = any;
+  export type ReactElement = { type: any; props: any; key: any };
   export type PropsWithChildren<P = {}> = P & { children?: ReactNode };
-  export type FC<P = {}> = (props: P) => any;
+  export type FC<P = {}> = (props: P) => ReactElement | null;
   export type ComponentType<P = {}> = FC<P>;
   export type RefAttributes<T> = { ref?: any };
-  export type ForwardRefExoticComponent<P> = (props: P) => any;
+  export interface ForwardRefExoticComponent<P> {
+    (props: P): ReactElement | null;
+    readonly $$typeof: symbol;
+    displayName?: string;
+  }
   export type Context<T> = { Provider: any; Consumer: any };
 
   export namespace JSX {
-    type Element = any;
+    type Element = ReactElement;
     interface IntrinsicAttributes {
       key?: string | number | null;
     }
@@ -92,7 +97,7 @@ declare module "react" {
 	ts.addExtraLib(
 		`
 declare namespace JSX {
-  type Element = any;
+  type Element = { type: any; props: any; key: any };
   interface IntrinsicAttributes {
     key?: string | number | null;
   }
