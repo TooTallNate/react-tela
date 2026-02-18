@@ -458,6 +458,32 @@ Renders text.
 | `fontKerning` | `CanvasFontKerning` | — | Font kerning (`"auto"`, `"normal"`, `"none"`) |
 | `fontStretch` | `CanvasFontStretch` | — | Font stretch (e.g. `"condensed"`, `"expanded"`) |
 | `fontVariantCaps` | `CanvasFontVariantCaps` | — | Font variant caps (e.g. `"small-caps"`, `"all-petite-caps"`) |
+| `maxWidth` | `number` | — | Maximum width before wrapping/truncating |
+| `lineHeight` | `number` | `1.2` | Line height as a multiplier of `fontSize` |
+| `overflow` | `'wrap' \| 'ellipsis' \| 'clip'` | `'wrap'` | How to handle text exceeding `maxWidth` |
+
+#### Multiline / Word Wrap
+
+When `maxWidth` is set, text automatically wraps to fit. Use `overflow` to control behavior:
+
+```tsx
+{/* Word wrap (default) */}
+<Text x={10} y={10} fontSize={16} fill="black" maxWidth={200} lineHeight={1.4}>
+  This is a long paragraph that will automatically wrap to fit within 200 pixels.
+</Text>
+
+{/* Ellipsis truncation */}
+<Text x={10} y={10} fontSize={16} fill="black" maxWidth={200} overflow="ellipsis">
+  This text will be truncated with an ellipsis…
+</Text>
+
+{/* Hard clip */}
+<Text x={10} y={10} fontSize={16} fill="black" maxWidth={200} overflow="clip">
+  This text will be hard-clipped at the boundary.
+</Text>
+```
+
+Explicit newline characters (`\n`) are always respected, even without `maxWidth`.
 
 ![Text example](./assets/example-text.png)
 

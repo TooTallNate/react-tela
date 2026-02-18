@@ -1,6 +1,8 @@
 import { Entity, EntityProps } from './entity.js';
 import { resolveFillStroke, type FillStrokeInput } from './shape.js';
 
+export type TextOverflow = 'wrap' | 'ellipsis' | 'clip';
+
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	value: string;
 	fontFamily?: string;
@@ -11,12 +13,29 @@ export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	lineWidth?: number;
 	textAlign?: CanvasTextAlign;
 	textBaseline?: CanvasTextBaseline;
-	letterSpacing?: number;
+letterSpacing?: number;
 	wordSpacing?: number;
 	direction?: CanvasDirection;
 	fontKerning?: CanvasFontKerning;
 	fontStretch?: CanvasFontStretch;
 	fontVariantCaps?: CanvasFontVariantCaps;
+	/**
+	 * Maximum width (in pixels) before text wraps or is truncated.
+	 * When set, enables multiline text layout.
+	 */
+	maxWidth?: number;
+	/**
+	 * Line height as a multiplier of `fontSize`. Default is `1.2`.
+	 */
+	lineHeight?: number;
+	/**
+	 * Controls what happens when text exceeds `maxWidth`.
+	 * - `'wrap'` — word-wrap to multiple lines (default when `maxWidth` is set)
+	 * - `'ellipsis'` — truncate with "…"
+	 * - `'clip'` — hard clip at `maxWidth`
+	 * @default 'wrap'
+	 */
+	overflow?: TextOverflow;
 }
 
 export class Text extends Entity {
@@ -29,12 +48,15 @@ export class Text extends Entity {
 	lineWidth?: number;
 	textAlign: CanvasTextAlign;
 	textBaseline: CanvasTextBaseline;
-	letterSpacing?: number;
+letterSpacing?: number;
 	wordSpacing?: number;
 	direction?: CanvasDirection;
 	fontKerning?: CanvasFontKerning;
 	fontStretch?: CanvasFontStretch;
 	fontVariantCaps?: CanvasFontVariantCaps;
+	maxWidth?: number;
+	lineHeight?: number;
+	overflow?: TextOverflow;
 
 	get value() {
 		return this.#value;
@@ -59,12 +81,67 @@ export class Text extends Entity {
 		this.lineWidth = opts.lineWidth;
 		this.textAlign = opts.textAlign || 'start';
 		this.textBaseline = opts.textBaseline || 'top';
-		this.letterSpacing = opts.letterSpacing;
+this.letterSpacing = opts.letterSpacing;
 		this.wordSpacing = opts.wordSpacing;
 		this.direction = opts.direction;
 		this.fontKerning = opts.fontKerning;
 		this.fontStretch = opts.fontStretch;
 		this.fontVariantCaps = opts.fontVariantCaps;
+		this.maxWidth = opts.maxWidth;
+		this.lineHeight = opts.lineHeight;
+		this.overflow = opts.overflow;
+	}
+
+	/**
+	 * Split text into lines that fit within `maxWidth` using word wrapping.
+	 */
+	#wrapText(
+		ctx: { measureText(text: string): TextMetrics },
+		text: string,
+		maxWidth: number,
+	): string[] {
+		const lines: string[] = [];
+		const paragraphs = text.split('\n');
+		for (const paragraph of paragraphs) {
+			const words = paragraph.split(/\s+/);
+			if (words.length === 0 || (words.length === 1 && words[0] === '')) {
+				lines.push('');
+				continue;
+			}
+			let currentLine = words[0];
+			for (let i = 1; i < words.length; i++) {
+				const testLine = `${currentLine} ${words[i]}`;
+				const metrics = ctx.measureText(testLine);
+				if (metrics.width > maxWidth) {
+					lines.push(currentLine);
+					currentLine = words[i];
+				} else {
+					currentLine = testLine;
+				}
+			}
+			lines.push(currentLine);
+		}
+		return lines;
+	}
+
+	/**
+	 * Truncate text to fit within `maxWidth`, appending "…" if truncated.
+	 */
+	#ellipsisText(
+		ctx: { measureText(text: string): TextMetrics },
+		text: string,
+		maxWidth: number,
+	): string {
+		if (ctx.measureText(text).width <= maxWidth) return text;
+		const ellipsis = '…';
+		let truncated = text;
+		while (truncated.length > 0) {
+			truncated = truncated.slice(0, -1);
+			if (ctx.measureText(truncated + ellipsis).width <= maxWidth) {
+				return truncated + ellipsis;
+			}
+		}
+		return ellipsis;
 	}
 
 	render(): void {
@@ -85,10 +162,13 @@ export class Text extends Entity {
 			fontStretch,
 			fontVariantCaps,
 			root,
+			maxWidth,
+			lineHeight = 1.2,
+			overflow = 'wrap',
 		} = this;
 		const { ctx } = root;
 		ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
-		if (typeof letterSpacing === 'number') {
+if (typeof letterSpacing === 'number') {
 			ctx.letterSpacing = `${letterSpacing}px`;
 		}
 		if (typeof wordSpacing === 'number') {
@@ -106,24 +186,75 @@ export class Text extends Entity {
 		if (fontVariantCaps) {
 			ctx.fontVariantCaps = fontVariantCaps;
 		}
-		const bounds = ctx.measureText(value);
-		this.width = bounds.width;
-		this.height = fontSize;
+
+		const lineHeightPx = fontSize * lineHeight;
+		let lines: string[];
+
+		if (maxWidth != null) {
+			switch (overflow) {
+				case 'ellipsis':
+					lines = [this.#ellipsisText(ctx, value, maxWidth)];
+					break;
+				case 'clip':
+					lines = [value];
+					break;
+				case 'wrap':
+				default:
+					lines = this.#wrapText(ctx, value, maxWidth);
+					break;
+			}
+		} else {
+			lines = value.split('\n');
+		}
+
+		// Compute dimensions
+		let maxLineWidth = 0;
+		for (const line of lines) {
+			const w = ctx.measureText(line).width;
+			if (w > maxLineWidth) maxLineWidth = w;
+		}
+		this.width =
+			maxWidth != null
+				? Math.min(maxLineWidth, maxWidth)
+				: maxLineWidth;
+		this.height =
+			lines.length === 1
+				? fontSize
+				: lineHeightPx * (lines.length - 1) + fontSize;
+
 		super.render();
+
 		ctx.textAlign = textAlign;
 		ctx.textBaseline = textBaseline;
 		if (typeof lineWidth === 'number') {
 			ctx.lineWidth = lineWidth;
 		}
+
+		// For 'clip' mode, set up a clipping region
+		if (overflow === 'clip' && maxWidth != null) {
+			ctx.save();
+			ctx.beginPath();
+			ctx.rect(0, 0, maxWidth, this.height);
+			ctx.clip();
+		}
+
 		const resolvedFill = resolveFillStroke(fill);
 		const resolvedStroke = resolveFillStroke(stroke);
-		if (resolvedFill) {
-			ctx.fillStyle = resolvedFill;
-			ctx.fillText(value, 0, 0);
+
+		for (let i = 0; i < lines.length; i++) {
+			const y = i * lineHeightPx;
+			if (resolvedFill) {
+				ctx.fillStyle = resolvedFill;
+				ctx.fillText(lines[i], 0, y);
+			}
+			if (resolvedStroke) {
+				ctx.strokeStyle = resolvedStroke;
+				ctx.strokeText(lines[i], 0, y);
+			}
 		}
-		if (resolvedStroke) {
-			ctx.strokeStyle = resolvedStroke;
-			ctx.strokeText(value, 0, 0);
+
+		if (overflow === 'clip' && maxWidth != null) {
+			ctx.restore();
 		}
 	}
 }
