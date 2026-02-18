@@ -96,39 +96,73 @@ const GUTTER_ALL = 2;
  * Dimensions accept numbers (pixels) or percentage strings (e.g. `"50%"`).
  */
 export interface FlexProps {
+	/** Direction of the main axis. @default `"column"` */
 	flexDirection?: keyof typeof FLEX_DIRECTION;
+	/** Whether children wrap to multiple lines. @default `"no-wrap"` */
 	flexWrap?: keyof typeof WRAP;
+	/** Alignment of children along the main axis. */
 	justifyContent?: keyof typeof JUSTIFY;
+	/** Alignment of children along the cross axis. */
 	alignItems?: keyof typeof ALIGN;
+	/** Override of the parent's `alignItems` for this child. */
 	alignSelf?: keyof typeof ALIGN;
+	/** Shorthand for `flexGrow` and `flexShrink`. */
 	flex?: number;
+	/** How much this child grows to fill available space. */
 	flexGrow?: number;
+	/** How much this child shrinks when space is insufficient. */
 	flexShrink?: number;
+	/** Initial size along the main axis before growing/shrinking. Accepts pixels or a percentage string (e.g. `"50%"`). */
 	flexBasis?: number | string;
+	/** Width of the element. Accepts pixels, a percentage string, or `"auto"`. */
 	width?: number | string;
+	/** Height of the element. Accepts pixels, a percentage string, or `"auto"`. */
 	height?: number | string;
+	/** Minimum width constraint. Accepts pixels or a percentage string. */
 	minWidth?: number | string;
+	/** Maximum width constraint. Accepts pixels or a percentage string. */
 	maxWidth?: number | string;
+	/** Minimum height constraint. Accepts pixels or a percentage string. */
 	minHeight?: number | string;
+	/** Maximum height constraint. Accepts pixels or a percentage string. */
 	maxHeight?: number | string;
+	/** Gap between children (applied to both row and column gutters), in pixels. */
 	gap?: number;
+	/** Margin on all four edges, in pixels. */
 	margin?: number;
+	/** Margin on the top edge, in pixels. Overrides `margin`. */
 	marginTop?: number;
+	/** Margin on the bottom edge, in pixels. Overrides `margin`. */
 	marginBottom?: number;
+	/** Margin on the left edge, in pixels. Overrides `margin`. */
 	marginLeft?: number;
+	/** Margin on the right edge, in pixels. Overrides `margin`. */
 	marginRight?: number;
+	/** Padding on all four edges, in pixels. */
 	padding?: number;
+	/** Padding on the top edge, in pixels. Overrides `padding`. */
 	paddingTop?: number;
+	/** Padding on the bottom edge, in pixels. Overrides `padding`. */
 	paddingBottom?: number;
+	/** Padding on the left edge, in pixels. Overrides `padding`. */
 	paddingLeft?: number;
+	/** Padding on the right edge, in pixels. Overrides `padding`. */
 	paddingRight?: number;
+	/** Positioning type. `"relative"` (default) flows normally; `"absolute"` positions relative to the parent. */
 	position?: keyof typeof POSITION;
+	/** Top offset in pixels (used with `position: "absolute"`). */
 	top?: number;
+	/** Left offset in pixels (used with `position: "absolute"`). */
 	left?: number;
+	/** Right offset in pixels (used with `position: "absolute"`). */
 	right?: number;
+	/** Bottom offset in pixels (used with `position: "absolute"`). */
 	bottom?: number;
+	/** Whether the element participates in layout. `"none"` hides the element. @default `"flex"` */
 	display?: keyof typeof DISPLAY;
+	/** How content overflowing the element's bounds is handled. @default `"visible"` */
 	overflow?: keyof typeof OVERFLOW;
+	/** Aspect ratio of the element (width / height). */
 	aspectRatio?: number;
 }
 
