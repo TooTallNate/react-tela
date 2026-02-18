@@ -8,6 +8,18 @@ export interface ImageProps extends EntityProps {
 	sy?: number;
 	sw?: number;
 	sh?: number;
+	/**
+	 * Whether image smoothing is enabled when scaling. Set to `false` for pixel art or crisp scaling.
+	 *
+	 * @default true (browser default)
+	 */
+	imageSmoothing?: boolean;
+	/**
+	 * The quality of image smoothing. Only applies when `imageSmoothing` is not `false`.
+	 *
+	 * @default "low" (browser default)
+	 */
+	imageSmoothingQuality?: ImageSmoothingQuality;
 }
 
 export class Image extends Entity {
@@ -18,6 +30,8 @@ export class Image extends Entity {
 	sy?: number;
 	sw?: number;
 	sh?: number;
+	imageSmoothing?: boolean;
+	imageSmoothingQuality?: ImageSmoothingQuality;
 
 	constructor(opts: ImageProps, root: Root) {
 		super({
@@ -29,6 +43,8 @@ export class Image extends Entity {
 		this.sy = opts.sy;
 		this.sw = opts.sw;
 		this.sh = opts.sh;
+		this.imageSmoothing = opts.imageSmoothing;
+		this.imageSmoothingQuality = opts.imageSmoothingQuality;
 		this.#root = root;
 		this.#src = opts.src;
 		this.loadImage();
@@ -60,6 +76,12 @@ export class Image extends Entity {
 		const { root } = this;
 		const img = this.#image;
 		if (!img) return;
+		if (typeof this.imageSmoothing === 'boolean') {
+			root.ctx.imageSmoothingEnabled = this.imageSmoothing;
+		}
+		if (this.imageSmoothingQuality) {
+			root.ctx.imageSmoothingQuality = this.imageSmoothingQuality;
+		}
 		root.ctx.drawImage(
 			img,
 			this.sx ?? 0,

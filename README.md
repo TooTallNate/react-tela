@@ -378,6 +378,8 @@ Renders an image from a URL or file path. The image loads asynchronously — the
 |------|------|-------------|
 | `src` | `string` | Image source (URL or file path) |
 | `sx`, `sy`, `sw`, `sh` | `number` | Source crop rectangle (optional) |
+| `imageSmoothing` | `boolean` | Enable/disable image smoothing when scaling (default: `true`). Set to `false` for pixel art. |
+| `imageSmoothingQuality` | `"low" \| "medium" \| "high"` | Quality of image smoothing (default: `"low"`) |
 
 ### `<Text>`
 
