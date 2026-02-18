@@ -197,6 +197,7 @@ Pattern.displayName = 'Pattern';
 export { type ColorStop } from './types.js';
 export { type FillStrokeStyle, type FillStrokeInput } from './shape.js';
 export { type PatternRepetition } from './pattern.js';
+export { type TextOverflow } from './text.js';
 export {
 	useLinearGradient,
 	useRadialGradient,
