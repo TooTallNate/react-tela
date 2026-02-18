@@ -15,6 +15,14 @@ import { proxyEvents } from './events.js';
  * Provide custom implementations of Canvas, DOMMatrix, Path2D, and image loading
  * to support non-browser environments (e.g. node-canvas, skia-canvas).
  */
+/**
+ * Options for {@link Root.loadImage}.
+ */
+export interface LoadImageOptions {
+	/** An `AbortSignal` to cancel the image load. */
+	signal?: AbortSignal;
+}
+
 export interface RootParams {
 	Canvas?: new (w: number, h: number) => ICanvas;
 	DOMMatrix?: new (init?: string | number[]) => IDOMMatrix;
@@ -55,6 +63,8 @@ export class Root extends TelaEventTarget {
 		path?: string,
 	) => IPath2D;
 
+	#loadImageImpl: (src: string) => Promise<IImage>;
+
 	constructor(ctx: ICanvasRenderingContext2D, opts: RootParams = {}) {
 		super();
 		this.ctx = ctx;
@@ -69,13 +79,11 @@ export class Root extends TelaEventTarget {
 			createOffscreenCanvas((ctx.canvas as HTMLCanvasElement).ownerDocument);
 		this.DOMMatrix = opts.DOMMatrix || globalThis.DOMMatrix;
 		this.Path2D = opts.Path2D || globalThis.Path2D;
-		if (opts.loadImage) {
-			this.loadImage = opts.loadImage;
-		}
+		this.#loadImageImpl = opts.loadImage ?? Root.#defaultLoadImage;
 		this.proxyEvents();
 	}
 
-	async loadImage(src: string): Promise<IImage> {
+	static async #defaultLoadImage(src: string): Promise<IImage> {
 		const img = new Image();
 		await new Promise((res, rej) => {
 			img.onload = res;
@@ -83,6 +91,36 @@ export class Root extends TelaEventTarget {
 			img.src = src;
 		});
 		return img;
+	}
+
+	async loadImage(src: string, opts?: LoadImageOptions): Promise<IImage> {
+		const signal = opts?.signal;
+		if (signal?.aborted) {
+			throw signal.reason ?? new DOMException('The operation was aborted.', 'AbortError');
+		}
+		return new Promise<IImage>((resolve, reject) => {
+			let settled = false;
+			const onAbort = () => {
+				if (settled) return;
+				settled = true;
+				reject(signal!.reason ?? new DOMException('The operation was aborted.', 'AbortError'));
+			};
+			signal?.addEventListener('abort', onAbort, { once: true });
+			this.#loadImageImpl(src).then(
+				(img) => {
+					if (settled) return;
+					settled = true;
+					signal?.removeEventListener('abort', onAbort);
+					resolve(img);
+				},
+				(err) => {
+					if (settled) return;
+					settled = true;
+					signal?.removeEventListener('abort', onAbort);
+					reject(err);
+				},
+			);
+		});
 	}
 
 	then(r?: (value: Event) => void) {

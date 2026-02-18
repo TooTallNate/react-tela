@@ -52,6 +52,7 @@ export class Image extends Entity {
 	#root: Root;
 	#src: string;
 	#image?: IImage;
+	#abortController?: AbortController;
 	sx?: number;
 	sy?: number;
 	sw?: number;
@@ -73,6 +74,7 @@ export class Image extends Entity {
 		this.imageSmoothingQuality = opts.imageSmoothingQuality;
 		this.#root = root;
 		this.#src = opts.src;
+		this.addEventListener('remove', () => this.abort(), { once: true });
 		this.loadImage();
 	}
 
@@ -86,15 +88,33 @@ export class Image extends Entity {
 	}
 
 	async loadImage() {
-		const img = await this.#root.loadImage(this.#src);
-		this.#image = img;
-		if (this.width === 0) {
-			this.width = img.naturalWidth;
+		// Abort any in-flight load
+		this.#abortController?.abort();
+		const controller = new AbortController();
+		this.#abortController = controller;
+		try {
+			const img = await this.#root.loadImage(this.#src, { signal: controller.signal });
+			this.#image = img;
+			if (this.width === 0) {
+				this.width = img.naturalWidth;
+			}
+			if (this.height === 0) {
+				this.height = img.naturalHeight;
+			}
+			this.root?.queueRender();
+		} catch (err: unknown) {
+			// Ignore abort errors — they are expected during cleanup
+			if (err instanceof DOMException && err.name === 'AbortError') return;
+			throw err;
 		}
-		if (this.height === 0) {
-			this.height = img.naturalHeight;
-		}
-		this.root?.queueRender();
+	}
+
+	/**
+	 * Cancel any in-flight image load. Called when the entity is removed from the tree.
+	 */
+	abort() {
+		this.#abortController?.abort();
+		this.#abortController = undefined;
 	}
 
 	render(): void {
