@@ -145,6 +145,8 @@ export interface ICanvasRenderingContext2D {
 	shadowBlur: number;
 	shadowOffsetX: number;
 	shadowOffsetY: number;
+
+	globalCompositeOperation: GlobalCompositeOperation;
 }
 
 export interface IDOMMatrix {

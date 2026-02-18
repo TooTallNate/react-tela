@@ -299,7 +299,23 @@ async function main() {
 	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />, { waitForAsync: true });
 	unlinkSync(tilePath);
 
-	console.log('\nDone! All example images generated.');
+		// Blend modes demo
+	await saveExample('example-blend-modes', 360, 120, (
+		<>
+			<Rect width={360} height={120} fill="#222" />
+			{/* multiply */}
+			<Rect x={10} y={10} width={80} height={100} fill="#e74c3c" />
+			<Rect x={50} y={10} width={80} height={100} fill="#3498db" blendMode="multiply" />
+			{/* screen */}
+			<Rect x={140} y={10} width={80} height={100} fill="#e74c3c" />
+			<Rect x={180} y={10} width={80} height={100} fill="#3498db" blendMode="screen" />
+			{/* overlay */}
+			<Rect x={270} y={10} width={80} height={100} fill="#e74c3c" />
+			<Circle x={290} y={30} radius={40} fill="#3498db" blendMode="overlay" />
+		</>
+	));
+
+console.log('\nDone! All example images generated.');
 }
 
 main().catch(console.error);

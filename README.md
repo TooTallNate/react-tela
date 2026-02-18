@@ -205,6 +205,19 @@ function TiledBackground() {
 
 Returns `CanvasPattern | null` — `null` while the image is loading.
 
+## Blend Modes
+
+Set the `blendMode` prop on any entity to control how it composites with the content below it. This maps directly to the Canvas [`globalCompositeOperation`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation) property.
+
+```tsx
+<Rect width={120} height={120} fill="red" />
+<Circle x={60} y={60} radius={60} fill="blue" blendMode="multiply" />
+```
+
+<img src="assets/example-blend-modes.png" width="200" />
+
+Common values include `"multiply"`, `"screen"`, `"overlay"`, `"darken"`, `"lighten"`, `"destination-out"`, and more. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation) for the full list.
+
 ## Components
 
 All components accept these common props:
@@ -219,6 +232,7 @@ All components accept these common props:
 | `rotate` | `number` | `0` | Rotation in degrees |
 | `scaleX` | `number` | `1` | Horizontal scale |
 | `scaleY` | `number` | `1` | Vertical scale |
+| `blendMode` | `GlobalCompositeOperation` | — | Composite operation ([see MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation)) |
 | `shadowColor` | `string` | — | Shadow color (CSS color string) |
 | `shadowBlur` | `number` | `0` | Shadow blur radius |
 | `shadowOffsetX` | `number` | `0` | Shadow horizontal offset |
