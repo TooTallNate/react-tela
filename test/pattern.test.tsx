@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Pattern, Rect } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 test('should render <Rect> with pattern fill (checkerboard)', async () => {
 	const canvas = new Canvas(100, 100);

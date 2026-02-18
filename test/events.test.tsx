@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
-import { render } from '../src/render';
 import { enableEvents, dispatchEvent } from './helpers/event';
+
+const { test, render } = createStrictTest();
 
 test('should receive "mousedown" and "mouseup" events', async () => {
 	const canvas = new Canvas(150, 100);

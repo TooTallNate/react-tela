@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, Ellipse, Circle } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 // ─── Scale ───
 

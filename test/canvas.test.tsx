@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas as NativeCanvas } from '@napi-rs/canvas';
 import { Canvas, Rect, useParent, type CanvasRef } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 test('should render <Canvas> with imperative drawing', async () => {
 	const canvas = new NativeCanvas(150, 100);

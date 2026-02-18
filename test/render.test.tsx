@@ -1,8 +1,10 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 test('render() returns a Root with renderCount tracking', async () => {
 	const canvas = new Canvas(100, 100);

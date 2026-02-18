@@ -1,8 +1,10 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { RoundRect } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 test('should render <RoundRect> with uniform radii', async () => {
 	const canvas = new Canvas(200, 150);

@@ -1,9 +1,11 @@
 import React from 'react';
 import { join } from 'path';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Image, Rect } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 const SRC = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
 

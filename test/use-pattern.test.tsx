@@ -1,9 +1,11 @@
 import React from 'react';
 import { join } from 'path';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, usePattern } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 function PatternRect({
 	src,

@@ -1,13 +1,15 @@
 import React from 'react';
-import { test, expect, describe } from 'vitest';
+import { expect, describe } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, RoundRect, Arc, Ellipse, Line, Path } from '../src';
-import { render } from '../src/render';
 import { Rect as _Rect } from '../src/rect';
 import { Arc as _Arc } from '../src/arc';
 import { Ellipse as _Ellipse } from '../src/ellipse';
 import { Line as _Line } from '../src/line';
 import { RoundRect as _RoundRect } from '../src/round-rect';
+
+const { test, render } = createStrictTest();
 
 describe('Matrix caching', () => {
 	test('entity.matrix returns same reference when properties unchanged', async () => {

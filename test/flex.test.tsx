@@ -1,11 +1,13 @@
 import './helpers/font';
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import initYoga from 'yoga-wasm-web/asm';
 import { Rect, Text, useLayout } from '../src';
-import { render } from '../src/render';
 import { createFlex } from '../src/flex';
+
+const { test, render } = createStrictTest();
 
 const yoga = initYoga();
 const Flex = createFlex(yoga);

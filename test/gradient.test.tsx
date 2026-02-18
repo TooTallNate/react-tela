@@ -1,6 +1,7 @@
 import './helpers/font';
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import {
 	Rect,
@@ -9,7 +10,8 @@ import {
 	useRadialGradient,
 	type ColorStop,
 } from '../src';
-import { render } from '../src/render';
+
+const { test, render } = createStrictTest();
 
 function LinearGradientRect({
 	width,
