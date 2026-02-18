@@ -213,8 +213,8 @@ All entities support the `filter` prop, which maps directly to [`CanvasRendering
 import { Rect, Circle, Text } from 'react-tela';
 
 <Rect width={100} height={100} fill="red" filter="blur(3px)" />
-<Circle x={200} y={50} radius={40} fill="blue" filter="drop-shadow(4px 4px 4px black)" />
-<Text x={300} y={60} fill="green" fontSize={32} filter="brightness(1.5) saturate(2)">
+<Circle x={200} y={55} radius={35} fill="blue" filter="drop-shadow(4px 4px 4px black)" />
+<Text x={300} y={30} fill="green" fontSize={32} filter="drop-shadow(3px 3px 0 rgba(0,0,0,0.7))">
   Hello
 </Text>
 ```
