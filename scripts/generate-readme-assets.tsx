@@ -305,7 +305,7 @@ async function main() {
 	await saveExample('example-filter', 400, 120, (
 		<>
 			<Rect x={10} y={20} width={80} height={80} fill="red" filter="blur(3px)" />
-			<Circle x={150} y={60} radius={35} fill="blue" filter="drop-shadow(4px 4px 4px rgba(0,0,0,0.5))" />
+			<Circle x={150} y={25} radius={35} fill="blue" filter="drop-shadow(4px 4px 4px rgba(0,0,0,0.5))" />
 			<Text x={220} y={44} fontSize={32} fontFamily="Geist" fill="green" filter="drop-shadow(3px 3px 0 rgba(0,0,0,0.7))">Hello</Text>
 		</>
 	));
