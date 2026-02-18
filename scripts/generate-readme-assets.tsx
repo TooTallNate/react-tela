@@ -28,6 +28,8 @@ import {
 	useRadialGradient,
 	useConicGradient,
 	usePattern,
+	BezierCurve,
+	QuadraticCurve,
 } from '../src/index';
 import initYoga from 'yoga-wasm-web/asm';
 import { createFlex } from '../src/flex';
@@ -136,6 +138,29 @@ async function main() {
 			lineWidth={3}
 			scaleX={2}
 			scaleY={2}
+		/>
+	));
+
+	// BezierCurve
+	await saveExample('example-beziercurve', 110, 110, (
+		<BezierCurve
+			x0={10} y0={10}
+			cp1x={40} cp1y={0}
+			cp2x={60} cp2y={100}
+			x1={90} y1={10}
+			stroke="blue"
+			lineWidth={2}
+		/>
+	));
+
+	// QuadraticCurve
+	await saveExample('example-quadraticcurve', 110, 100, (
+		<QuadraticCurve
+			x0={10} y0={80}
+			cpx={50} cpy={10}
+			x1={90} y1={80}
+			stroke="red"
+			lineWidth={2}
 		/>
 	));
 

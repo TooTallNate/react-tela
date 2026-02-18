@@ -356,6 +356,8 @@ Width and height are computed automatically from the bounding box of the points.
 
 Draws a cubic Bézier curve between two points with two control points.
 
+![BezierCurve example](./assets/example-beziercurve.png)
+
 ```tsx
 <BezierCurve
   x0={10} y0={10}
@@ -379,6 +381,8 @@ Width and height are computed automatically from the bounding box. All [shape pr
 ### `<QuadraticCurve>`
 
 Draws a quadratic Bézier curve between two points with one control point.
+
+![QuadraticCurve example](./assets/example-quadraticcurve.png)
 
 ```tsx
 <QuadraticCurve
