@@ -232,7 +232,7 @@ Set the `blendMode` prop on any entity to control how it composites with the con
 <Circle x={60} y={60} radius={60} fill="blue" blendMode="multiply" />
 ```
 
-<img src="assets/example-blend-modes.png" width="200" />
+![Blend modes example](./assets/example-blend-modes.png)
 
 Common values include `"multiply"`, `"screen"`, `"overlay"`, `"darken"`, `"lighten"`, `"destination-out"`, and more. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation) for the full list.
 
