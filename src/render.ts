@@ -6,6 +6,8 @@ import { Canvas } from './canvas.js';
 import { Ellipse } from './ellipse.js';
 import { Group } from './group.js';
 import { Pattern } from './pattern.js';
+import { BezierCurve } from './bezier-curve.js';
+import { QuadraticCurve } from './quadratic-curve.js';
 import { Line } from './line.js';
 import { Rect } from './rect.js';
 import { RoundRect } from './round-rect.js';
@@ -19,6 +21,7 @@ import type { ICanvas } from './types.js';
 
 type Components = {
 	Arc: C.ArcProps;
+	BezierCurve: C.BezierCurveProps;
 	Canvas: C.CanvasProps;
 	Ellipse: C.EllipseProps;
 	Group: C.GroupProps;
@@ -26,6 +29,7 @@ type Components = {
 	Image: C.ImageProps;
 	Line: C.LineProps;
 	Path: C.PathProps;
+	QuadraticCurve: C.QuadraticCurveProps;
 	Rect: C.RectProps;
 	RoundRect: C.RoundRectProps;
 	Text: C.TextProps;
@@ -101,6 +105,9 @@ const reconciler = ReactReconciler<
 		if (is('Arc', t)) {
 			return new Arc(t.props);
 		}
+		if (is('BezierCurve', t)) {
+			return new BezierCurve(t.props);
+		}
 		if (is('Canvas', t)) {
 			return new Canvas(t.props, root);
 		}
@@ -115,6 +122,9 @@ const reconciler = ReactReconciler<
 		}
 		if (is('Path', t)) {
 			return new Path(t.props);
+		}
+		if (is('QuadraticCurve', t)) {
+			return new QuadraticCurve(t.props);
 		}
 		if (is('Rect', t)) {
 			return new Rect(t.props);

@@ -334,6 +334,52 @@ Draws a line or polyline through a series of points.
 
 Width and height are computed automatically from the bounding box of the points. All [shape props](#shape-props) are supported (stroke, lineWidth, fill, etc.).
 
+### `<BezierCurve>`
+
+Draws a cubic Bézier curve between two points with two control points.
+
+```tsx
+<BezierCurve
+  x0={10} y0={10}
+  cp1x={40} cp1y={0}
+  cp2x={60} cp2y={100}
+  x1={90} y1={10}
+  stroke="blue"
+  lineWidth={2}
+/>
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `x0`, `y0` | `number` | Start point |
+| `cp1x`, `cp1y` | `number` | First control point |
+| `cp2x`, `cp2y` | `number` | Second control point |
+| `x1`, `y1` | `number` | End point |
+
+Width and height are computed automatically from the bounding box. All [shape props](#shape-props) are supported.
+
+### `<QuadraticCurve>`
+
+Draws a quadratic Bézier curve between two points with one control point.
+
+```tsx
+<QuadraticCurve
+  x0={10} y0={80}
+  cpx={50} cpy={10}
+  x1={90} y1={80}
+  stroke="red"
+  lineWidth={2}
+/>
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `x0`, `y0` | `number` | Start point |
+| `cpx`, `cpy` | `number` | Control point |
+| `x1`, `y1` | `number` | End point |
+
+Width and height are computed automatically from the bounding box. All [shape props](#shape-props) are supported.
+
 ### `<Image>`
 
 Renders an image from a URL or file path. The image loads asynchronously — the component renders at the specified (or natural) dimensions once loaded.
@@ -409,7 +455,7 @@ function CustomCanvas() {
 
 ### Shape Props
 
-`<Rect>`, `<RoundRect>`, `<Circle>`, `<Ellipse>`, `<Arc>`, `<Path>`, and `<Line>` all share these shape-specific props:
+`<Rect>`, `<RoundRect>`, `<Circle>`, `<Ellipse>`, `<Arc>`, `<Path>`, `<Line>`, `<BezierCurve>`, and `<QuadraticCurve>` all share these shape-specific props:
 
 | Prop | Type | Description |
 |------|------|-------------|

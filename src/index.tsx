@@ -21,7 +21,9 @@ import { Arc as _Arc, type ArcProps } from './arc.js';
 import { Ellipse as _Ellipse, type EllipseProps } from './ellipse.js';
 import { Path as _Path, type PathProps } from './path.js';
 import { Image as _Image, type ImageProps } from './image.js';
+import { BezierCurve as _BezierCurve, type BezierCurveProps } from './bezier-curve.js';
 import { Line as _Line, type LineProps } from './line.js';
+import { QuadraticCurve as _QuadraticCurve, type QuadraticCurveProps } from './quadratic-curve.js';
 import { Text as _Text, type TextProps as _TextProps } from './text.js';
 import { ICanvas } from './types.js';
 import {
@@ -62,6 +64,7 @@ export type GroupProps = PropsWithChildren<_GroupProps>;
 export type PatternProps = PropsWithChildren<_PatternProps>;
 export {
 	ArcProps,
+	BezierCurveProps,
 	CanvasProps,
 	EllipseProps,
 	RectProps,
@@ -69,14 +72,17 @@ export {
 	PathProps,
 	ImageProps,
 	LineProps,
+	QuadraticCurveProps,
 };
 export type { _Canvas as CanvasRef };
 
+export const BezierCurve = factory<_BezierCurve, BezierCurveProps>('BezierCurve');
 export const Canvas = factory<_Canvas, CanvasProps>('Canvas');
 export const Ellipse = factory<_Ellipse, EllipseProps>('Ellipse');
 export const Image = factory<_Image, ImageProps>('Image');
 export const Line = factory<_Line, LineProps>('Line');
 export const Path = factory<_Path, PathProps>('Path');
+export const QuadraticCurve = factory<_QuadraticCurve, QuadraticCurveProps>('QuadraticCurve');
 export const Rect = factory<_Rect, RectProps>('Rect');
 export const RoundRect = factory<_RoundRect, RoundRectProps>('RoundRect');
 
