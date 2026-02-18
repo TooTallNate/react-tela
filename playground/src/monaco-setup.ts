@@ -3,6 +3,8 @@ import {
 	reactTelaTypes,
 	reactTelaRenderTypes,
 	reactTelaFlexTypes,
+	reactIndexDts,
+	reactGlobalDts,
 } from './generated-types';
 
 /**
@@ -33,80 +35,77 @@ export function configureMonaco(monaco: Monaco) {
 		noSyntaxValidation: false,
 	});
 
-	// Add React types (minimal but sufficient for playground use)
+	// Add csstype stub (used by @types/react)
 	ts.addExtraLib(
-		`
-declare module "react" {
-  export function useState<T>(initial: T | (() => T)): [T, (v: T | ((prev: T) => T)) => void];
-  export function useEffect(fn: () => void | (() => void), deps?: any[]): void;
-  export function useRef<T>(initial: T): { current: T };
-  export function useCallback<T extends (...args: any[]) => any>(fn: T, deps: any[]): T;
-  export function useMemo<T>(fn: () => T, deps: any[]): T;
-  export function useLayoutEffect(fn: () => void | (() => void), deps?: any[]): void;
-  export function createContext<T>(defaultValue: T): Context<T>;
-  export function useContext<T>(context: Context<T>): T;
-  export function createElement(type: any, props?: any, ...children: any[]): any;
-  export function forwardRef<T, P>(fn: (props: P, ref: any) => any): ForwardRefExoticComponent<P & RefAttributes<T>>;
-
-  export type ReactNode = any;
-  export type ReactElement = { type: any; props: any; key: any };
-  export type PropsWithChildren<P = {}> = P & { children?: ReactNode };
-  export type FC<P = {}> = (props: P) => ReactElement | null;
-  export type ComponentType<P = {}> = FC<P>;
-  export type RefAttributes<T> = { ref?: any };
-  export interface ForwardRefExoticComponent<P> {
-    (props: P): ReactElement | null;
-    readonly $$typeof: symbol;
-    displayName?: string;
+		`declare module "csstype" {
+  export interface Properties<TLength = (string & {}) | 0, TTime = string & {}> {
+    [key: string]: any;
   }
-  export type Context<T> = { Provider: any; Consumer: any };
-
-  export namespace JSX {
-    type Element = ReactElement;
-    interface IntrinsicAttributes {
-      key?: string | number | null;
-    }
-    interface ElementAttributesProperty {
-      props: {};
-    }
-    interface ElementChildrenAttribute {
-      children: {};
-    }
+  export interface PropertiesHyphen<TLength = (string & {}) | 0, TTime = string & {}> {
+    [key: string]: any;
   }
-
-  export default React;
-  const React: {
-    useState: typeof useState;
-    useEffect: typeof useEffect;
-    useRef: typeof useRef;
-    useCallback: typeof useCallback;
-    useMemo: typeof useMemo;
-    useLayoutEffect: typeof useLayoutEffect;
-    createContext: typeof createContext;
-    useContext: typeof useContext;
-    createElement: typeof createElement;
-    forwardRef: typeof forwardRef;
-  };
-}
-`,
-		'file:///node_modules/@types/react/index.d.ts',
+}`,
+		'file:///node_modules/csstype/index.d.ts',
 	);
 
-	// Global JSX namespace — TypeScript's JSX resolution looks here for
-	// IntrinsicAttributes (provides `key`) and element type checking
+	// Add prop-types stub (used by @types/react)
 	ts.addExtraLib(
-		`
-declare namespace JSX {
-  type Element = { type: any; props: any; key: any };
-  interface IntrinsicAttributes {
-    key?: string | number | null;
+		`declare module "prop-types" {
+  export interface Validator<T> {
+    (props: { [key: string]: any }, propName: string, componentName: string, location: string, propFullyQualifiedName: string): Error | null;
   }
-  interface ElementChildrenAttribute {
-    children: {};
+  export interface Requireable<T> extends Validator<T | undefined | null> {
+    isRequired: Validator<NonNullable<T>>;
   }
-}
-`,
-		'file:///global-jsx.d.ts',
+  export interface ValidationMap<T> {
+    [key: string]: Validator<any>;
+  }
+  export const any: Requireable<any>;
+  export const array: Requireable<any[]>;
+  export const bool: Requireable<boolean>;
+  export const func: Requireable<(...args: any[]) => any>;
+  export const number: Requireable<number>;
+  export const object: Requireable<object>;
+  export const string: Requireable<string>;
+  export const node: Requireable<any>;
+  export const element: Requireable<any>;
+  export const symbol: Requireable<symbol>;
+  export function instanceOf<T>(expectedClass: new (...args: any[]) => T): Requireable<T>;
+  export function oneOf<T>(types: readonly T[]): Requireable<T>;
+  export function oneOfType<T extends Validator<any>>(types: T[]): Requireable<any>;
+  export function arrayOf<T>(type: Validator<T>): Requireable<T[]>;
+  export function objectOf<T>(type: Validator<T>): Requireable<{ [key: string]: T }>;
+  export function shape<P extends ValidationMap<any>>(type: P): Requireable<any>;
+  export function exact<P extends ValidationMap<any>>(type: P): Requireable<any>;
+  export const ReactNodeLike: Requireable<any>;
+  export const ReactElementLike: Requireable<any>;
+  export const ReactComponentLike: Requireable<any>;
+  export function checkPropTypes(typeSpecs: any, values: any, location: string, componentName: string, getStack?: () => any): void;
+  export function resetWarningCache(): void;
+  export interface InferProps<V extends ValidationMap<any>> {
+    [key: string]: any;
+  }
+}`,
+		'file:///node_modules/prop-types/index.d.ts',
+	);
+
+	// Add scheduler/tracing stub (used by @types/react)
+	ts.addExtraLib(
+		`declare module "scheduler/tracing" {
+  export interface Interaction { id: number; name: string; timestamp: number; }
+}`,
+		'file:///node_modules/@types/scheduler/tracing.d.ts',
+	);
+
+	// Add full @types/react (compiled from source)
+	ts.addExtraLib(
+		reactGlobalDts,
+		'file:///node_modules/@types/react/global.d.ts',
+	);
+
+	ts.addExtraLib(
+		reactIndexDts,
+		'file:///node_modules/@types/react/index.d.ts',
 	);
 
 	// Add react-tela types — auto-generated from source

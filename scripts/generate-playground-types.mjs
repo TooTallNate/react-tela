@@ -134,6 +134,15 @@ function varName(mod) {
   );
 }
 
+// --- Bundle @types/react for Monaco intellisense ---
+
+// Resolve @types/react from the playground's node_modules
+const playgroundDir = resolve(root, 'playground');
+const reactTypesDir = resolve(playgroundDir, 'node_modules/@types/react');
+
+const reactIndexDts = readFileSync(resolve(reactTypesDir, 'index.d.ts'), 'utf-8');
+const reactGlobalDts = readFileSync(resolve(reactTypesDir, 'global.d.ts'), 'utf-8');
+
 // Build output file
 const output = `// AUTO-GENERATED — do not edit manually.
 // Run \`pnpm generate:types\` to regenerate from source.
@@ -141,6 +150,10 @@ const output = `// AUTO-GENERATED — do not edit manually.
 ${Object.entries(results)
   .map(([mod, dts]) => `export const ${varName(mod)} = ${JSON.stringify(dts)};`)
   .join('\n\n')}
+
+export const reactIndexDts = ${JSON.stringify(reactIndexDts)};
+
+export const reactGlobalDts = ${JSON.stringify(reactGlobalDts)};
 `;
 
 const outPath = resolve(root, 'playground/src/generated-types.ts');
