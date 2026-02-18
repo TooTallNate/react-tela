@@ -299,7 +299,16 @@ async function main() {
 	await saveExample('example-usepattern', 200, 120, <UsePatternDemo />, { waitForAsync: true });
 	unlinkSync(tilePath);
 
-	console.log('\nDone! All example images generated.');
+		// Filter demo
+	await saveExample('example-filter', 300, 100, (
+		<>
+			<Rect x={10} y={10} width={80} height={80} fill="red" filter="blur(3px)" />
+			<Rect x={110} y={10} width={80} height={80} fill="blue" filter="drop-shadow(4px 4px 4px rgba(0,0,0,0.5))" />
+			<Rect x={210} y={10} width={80} height={80} fill="green" filter="brightness(1.5) saturate(2)" />
+		</>
+	));
+
+console.log('\nDone! All example images generated.');
 }
 
 main().catch(console.error);
