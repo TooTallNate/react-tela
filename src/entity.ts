@@ -72,6 +72,13 @@ export type EntityProps = {
 	 * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter
 	 */
 	filter?: string;
+	/**
+	 * The composite operation to apply when drawing this entity.
+	 * Maps to `ctx.globalCompositeOperation`.
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+	 */
+	blendMode?: GlobalCompositeOperation;
 	pointerEvents?: boolean;
 	/**
 	 * Fires when the user clicks the left mouse button on the entity.
@@ -115,6 +122,7 @@ export class Entity extends TelaEventTarget {
 	shadowBlur?: number;
 	shadowOffsetX?: number;
 	shadowOffsetY?: number;
+	blendMode?: GlobalCompositeOperation;
 	pointerEvents: boolean;
 	_root: Root | null;
 	_hidden: boolean;
@@ -146,6 +154,7 @@ export class Entity extends TelaEventTarget {
 		this.shadowBlur = opts.shadowBlur;
 		this.shadowOffsetX = opts.shadowOffsetX;
 		this.shadowOffsetY = opts.shadowOffsetY;
+		this.blendMode = opts.blendMode;
 		this.pointerEvents = opts.pointerEvents !== false;
 		this.onclick = opts.onClick ?? null;
 		this.onmousemove = opts.onMouseMove ?? null;
@@ -336,6 +345,9 @@ export class Entity extends TelaEventTarget {
 		ctx.globalAlpha = this.alpha;
 		if (this.filter) {
 			ctx.filter = this.filter;
+		}
+		if (this.blendMode) {
+			ctx.globalCompositeOperation = this.blendMode;
 		}
 		if (this.shadowColor) {
 			ctx.shadowColor = this.shadowColor;

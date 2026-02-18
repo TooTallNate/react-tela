@@ -307,6 +307,22 @@ async function main() {
 			<Rect x={10} y={20} width={80} height={80} fill="red" filter="blur(3px)" />
 			<Circle x={115} y={25} radius={35} fill="blue" filter="drop-shadow(4px 4px 4px rgba(0,0,0,0.5))" />
 			<Text x={220} y={44} fontSize={32} fontFamily="Geist" fill="green" filter="drop-shadow(3px 3px 0 rgba(0,0,0,0.7))">Hello</Text>
+	</>
+	));
+
+		// Blend modes demo
+	await saveExample('example-blend-modes', 360, 120, (
+		<>
+			<Rect width={360} height={120} fill="#222" />
+			{/* multiply */}
+			<Rect x={10} y={10} width={80} height={100} fill="#e74c3c" />
+			<Rect x={50} y={10} width={80} height={100} fill="#3498db" blendMode="multiply" />
+			{/* screen */}
+			<Rect x={140} y={10} width={80} height={100} fill="#e74c3c" />
+			<Rect x={180} y={10} width={80} height={100} fill="#3498db" blendMode="screen" />
+			{/* overlay */}
+			<Rect x={270} y={10} width={80} height={100} fill="#e74c3c" />
+			<Circle x={290} y={30} radius={40} fill="#3498db" blendMode="overlay" />
 		</>
 	));
 
