@@ -1,6 +1,11 @@
 const PATCHED_EVENT = new WeakSet<Event>();
 const STOP_PROPAGATION = new WeakSet<Event>();
 
+/**
+ * Extended `EventTarget` that adds `on${type}` handler support and manual
+ * event bubbling through `parentNode`. All react-tela entities and roots
+ * extend this class.
+ */
 export class TelaEventTarget extends EventTarget {
 	get parentNode(): EventTarget | null {
 		return null;

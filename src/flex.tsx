@@ -89,6 +89,12 @@ const GUTTER_ALL = 2;
 
 // ─── Props ───
 
+/**
+ * Flexbox layout properties for the `<Flex>` component.
+ *
+ * These map to Yoga layout properties and support the same values as CSS Flexbox.
+ * Dimensions accept numbers (pixels) or percentage strings (e.g. `"50%"`).
+ */
 export interface FlexProps {
 	flexDirection?: keyof typeof FLEX_DIRECTION;
 	flexWrap?: keyof typeof WRAP;
@@ -372,12 +378,23 @@ function FlexNode({
 
 // ─── Public API ───
 
+/**
+ * The Flex component type returned by {@link createFlex}.
+ *
+ * Includes a `Flex.Text` subcomponent for auto-measured text within Flex layouts.
+ */
 export interface FlexComponent {
 	(props: PropsWithChildren<FlexProps>): React.JSX.Element;
 	Text: (props: FlexTextProps) => React.JSX.Element;
 	displayName: string;
 }
 
+/**
+ * Props for the `<Flex.Text>` component.
+ *
+ * Automatically measures text width via `useTextMetrics` and sets the Flex
+ * node's width accordingly.
+ */
 export type FlexTextProps = Omit<_TextProps, 'value'> & {
 	children?: string | number | (string | number)[];
 	fontFamily?: string;

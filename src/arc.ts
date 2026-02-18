@@ -2,13 +2,36 @@ import { Shape, type ShapeProps } from './shape.js';
 import { degreesToRadians } from './util.js';
 import type { IPath2D } from './types.js';
 
+/**
+ * Props for the {@link Arc} component.
+ *
+ * Defines a circular arc with a center point, radius, and angular range.
+ * Angles are specified in **degrees** (converted internally to radians).
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc | MDN arc()}
+ */
 export type ArcProps = Omit<ShapeProps, 'width' | 'height'> & {
+	/** The start angle of the arc in degrees. */
 	startAngle: number;
+	/** The end angle of the arc in degrees. */
 	endAngle: number;
+	/** The radius of the arc in pixels. */
 	radius: number;
+	/** If `true`, the arc is drawn counterclockwise. @default false */
 	counterclockwise?: boolean;
 };
 
+/**
+ * Renders a circular arc on the canvas.
+ *
+ * @example
+ * ```tsx
+ * // Draw a semicircle
+ * <Arc x={50} y={50} radius={40} startAngle={0} endAngle={180} fill="red" />
+ * ```
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc | MDN arc()}
+ */
 export class Arc extends Shape {
 	#startAngle: number;
 	#endAngle: number;

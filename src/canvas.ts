@@ -2,8 +2,27 @@ import { Root } from './root.js';
 import { Entity, EntityProps } from './entity.js';
 import type { ICanvas, ICanvasRenderingContext2D } from './types.js';
 
+/**
+ * Props for the {@link Canvas} component.
+ *
+ * A `<Canvas>` creates an offscreen sub-canvas that you can draw to via
+ * its 2D rendering context, then composites the result into the parent canvas.
+ */
 export interface CanvasProps extends EntityProps {}
 
+/**
+ * An entity that manages its own offscreen sub-canvas and composites
+ * it into the parent rendering context during render.
+ *
+ * Use the ref to access `getContext('2d')` for imperative drawing.
+ *
+ * @example
+ * ```tsx
+ * const canvasRef = useRef<CanvasRef>(null);
+ * // Draw imperatively via canvasRef.current.getContext('2d')
+ * <Canvas ref={canvasRef} x={0} y={0} width={200} height={200} />
+ * ```
+ */
 export class Canvas extends Entity {
 	subcanvas: ICanvas;
 

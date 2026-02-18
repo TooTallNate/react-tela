@@ -1,7 +1,17 @@
 import { Entity, type EntityProps } from './entity.js';
 
+/**
+ * A valid fill or stroke style: a CSS color string, a `CanvasGradient`, or a `CanvasPattern`.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle | MDN fillStyle}
+ */
 export type FillStrokeStyle = string | CanvasGradient | CanvasPattern;
 
+/**
+ * Input type for fill/stroke props. Accepts a direct {@link FillStrokeStyle}
+ * or a React ref object (`{ current: FillStrokeStyle | null }`), which is
+ * useful for patterns created via the `usePattern` hook.
+ */
 export type FillStrokeInput = FillStrokeStyle | { current?: FillStrokeStyle | null };
 
 /**
@@ -20,11 +30,22 @@ export function resolveFillStroke(v: FillStrokeInput | undefined): FillStrokeSty
 	return v as FillStrokeStyle;
 }
 
+/**
+ * Props for shape entities that support fill, stroke, and clipping.
+ *
+ * Extends {@link EntityProps} with drawing style properties that map to the
+ * Canvas 2D API stroke and fill operations.
+ */
 export interface ShapeProps extends EntityProps {
+	/** When `true`, the shape's path is used as a clipping region. */
 	clip?: boolean;
+	/** The fill rule for clipping: `"nonzero"` or `"evenodd"`. */
 	clipRule?: CanvasFillRule;
+	/** The fill color, gradient, or pattern. Accepts a CSS color string, `CanvasGradient`, `CanvasPattern`, or a React ref to one. */
 	fill?: FillStrokeInput;
+	/** The fill rule: `"nonzero"` or `"evenodd"`. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fill | MDN fill()} */
 	fillRule?: CanvasFillRule;
+	/** The stroke color, gradient, or pattern. */
 	stroke?: FillStrokeInput;
 	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/lineCap) */
 	lineCap?: CanvasLineCap;
@@ -39,6 +60,12 @@ export interface ShapeProps extends EntityProps {
 	miterLimit?: number;
 }
 
+/**
+ * Abstract base class for filled/stroked shapes.
+ *
+ * Extends {@link Entity} with fill, stroke, line style, and clipping support.
+ * Subclasses must implement `_buildPath()` to define the shape geometry.
+ */
 export abstract class Shape extends Entity {
 	clip?: boolean;
 	clipRule?: CanvasFillRule;

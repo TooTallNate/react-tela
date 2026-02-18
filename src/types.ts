@@ -1,3 +1,11 @@
+/**
+ * Minimal interface for a Canvas 2D rendering context.
+ *
+ * This abstraction allows react-tela to work with any Canvas 2D-compatible
+ * implementation (browser `CanvasRenderingContext2D`, node-canvas, skia-canvas, etc.).
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D | MDN CanvasRenderingContext2D}
+ */
 export interface ICanvasRenderingContext2D {
 	globalAlpha: number;
 	canvas: ICanvas;
@@ -156,6 +164,11 @@ export interface ICanvasRenderingContext2D {
 	fontVariantCaps: string;
 }
 
+/**
+ * Minimal interface for a DOMMatrix, used for 2D transformations.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix | MDN DOMMatrix}
+ */
 export interface IDOMMatrix {
 	a?: number;
 	b?: number;
@@ -202,6 +215,11 @@ export interface IDOMMatrix {
 	translateSelf(tx?: number, ty?: number, tz?: number): IDOMMatrix;
 }
 
+/**
+ * Minimal interface for an HTML Canvas element or equivalent offscreen canvas.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement | MDN HTMLCanvasElement}
+ */
 export type ICanvas = Partial<EventTarget> & {
 	width: number;
 	height: number;
@@ -210,6 +228,11 @@ export type ICanvas = Partial<EventTarget> & {
 	getContext: (type: '2d') => ICanvasRenderingContext2D | null;
 };
 
+/**
+ * Minimal interface for an image that can be drawn on a canvas.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement | MDN HTMLImageElement}
+ */
 export interface IImage {
 	src: any;
 	onload?: any;
@@ -217,6 +240,11 @@ export interface IImage {
 	naturalHeight: number;
 }
 
+/**
+ * Minimal interface for a Path2D object used to declare paths for later drawing.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Path2D | MDN Path2D}
+ */
 export interface IPath2D {
 	addPath(path: IPath2D, transform?: DOMMatrix2DInit): void;
 	arc(
@@ -260,14 +288,35 @@ export interface IPath2D {
 	): void;
 }
 
+/**
+ * A 2D point with x and y coordinates.
+ */
 export interface Point {
 	x: number;
 	y: number;
 }
 
+/**
+ * Extended mouse event that includes `layerX` and `layerY` coordinates
+ * relative to the canvas element.
+ */
 export interface TelaMouseEvent extends MouseEvent {
 	layerX: number;
 	layerY: number;
 }
 
+/**
+ * A color stop for use with gradient hooks.
+ *
+ * The first element is the offset (0–1) and the second is a CSS color string.
+ *
+ * @example
+ * ```ts
+ * const stops: ColorStop[] = [
+ *   [0, 'red'],
+ *   [0.5, 'green'],
+ *   [1, 'blue'],
+ * ];
+ * ```
+ */
 export type ColorStop = [offset: number, color: string];

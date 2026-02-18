@@ -2,6 +2,12 @@ import { TelaEventTarget } from './event-target.js';
 import type { Root } from './root.js';
 import type { IDOMMatrix, IPath2D, TelaMouseEvent } from './types.js';
 
+/**
+ * Base props shared by all react-tela entities (shapes, images, text, groups, etc.).
+ *
+ * Controls position, dimensions, transform, opacity, shadow, blend mode,
+ * pointer events, and event handlers.
+ */
 export type EntityProps = {
 	/**
 	 * The x (horizontal) coordinate of the entity from the top-left corner of the context.
@@ -79,6 +85,11 @@ export type EntityProps = {
 	 * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
 	 */
 	blendMode?: GlobalCompositeOperation;
+	/**
+	 * Whether this entity responds to pointer (mouse/touch) events.
+	 *
+	 * @default true
+	 */
 	pointerEvents?: boolean;
 	/**
 	 * Fires when the user clicks the left mouse button on the entity.
@@ -86,16 +97,31 @@ export type EntityProps = {
 	 * @param ev The mouse event.
 	 */
 	onClick?: (ev: TelaMouseEvent) => any;
+	/** Fires when a mouse button is pressed on the entity. */
 	onMouseDown?: (ev: TelaMouseEvent) => any;
+	/** Fires when a mouse button is released on the entity. */
 	onMouseUp?: (ev: TelaMouseEvent) => any;
+	/** Fires when the mouse moves over the entity. */
 	onMouseMove?: (ev: TelaMouseEvent) => any;
+	/** Fires when the mouse enters the entity's bounds. Does not bubble. */
 	onMouseEnter?: (ev: TelaMouseEvent) => any;
+	/** Fires when the mouse leaves the entity's bounds. Does not bubble. */
 	onMouseLeave?: (ev: TelaMouseEvent) => any;
+	/** Fires when a touch point is placed on the entity. */
 	onTouchStart?: (ev: TouchEvent) => any;
+	/** Fires when a touch point moves on the entity. */
 	onTouchMove?: (ev: TouchEvent) => any;
+	/** Fires when a touch point is removed from the entity. */
 	onTouchEnd?: (ev: TouchEvent) => any;
 };
 
+/**
+ * Base class for all renderable objects in react-tela.
+ *
+ * Manages position, dimensions, transform matrices (with caching),
+ * path caching, opacity, shadow, and pointer event handling.
+ * All visual components (shapes, images, text, groups) extend this class.
+ */
 export class Entity extends TelaEventTarget {
 	// Backing fields for cached properties
 	#x: number;
