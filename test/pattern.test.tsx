@@ -1,10 +1,12 @@
 import React, { useRef } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Pattern, Rect } from '../src';
-import { render } from '../src/render';
 
-test('should render <Rect> with pattern fill (checkerboard)', async () => {
+const test = createStrictTest();
+
+test('should render <Rect> with pattern fill (checkerboard)', async (render) => {
 	const canvas = new Canvas(100, 100);
 
 	function Checkerboard() {
@@ -24,7 +26,7 @@ test('should render <Rect> with pattern fill (checkerboard)', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Rect> with pattern stroke', async () => {
+test('should render <Rect> with pattern stroke', async (render) => {
 	const canvas = new Canvas(100, 100);
 
 	function PatternStroke() {
@@ -44,7 +46,7 @@ test('should render <Rect> with pattern stroke', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('pattern with repeat-x', async () => {
+test('pattern with repeat-x', async (render) => {
 	const canvas = new Canvas(100, 100);
 
 	function RepeatX() {
@@ -63,7 +65,7 @@ test('pattern with repeat-x', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('pattern children are not drawn to main canvas (hidden)', async () => {
+test('pattern children are not drawn to main canvas (hidden)', async (render) => {
 	const canvas = new Canvas(100, 100);
 
 	function App() {

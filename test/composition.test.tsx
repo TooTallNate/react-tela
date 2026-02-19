@@ -1,11 +1,13 @@
 import './helpers/font';
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, Circle, Ellipse, Text, Line, RoundRect } from '../src';
-import { render } from '../src/render';
 
-test('should render a scene with mixed shape types', async () => {
+const test = createStrictTest();
+
+test('should render a scene with mixed shape types', async (render) => {
 	const canvas = new Canvas(400, 300);
 	await render(
 		<>
@@ -38,7 +40,7 @@ test('should render a scene with mixed shape types', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render text over shapes', async () => {
+test('should render text over shapes', async (render) => {
 	const canvas = new Canvas(300, 100);
 	await render(
 		<>
@@ -53,7 +55,7 @@ test('should render text over shapes', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should compose multiple overlapping circles', async () => {
+test('should compose multiple overlapping circles', async (render) => {
 	const canvas = new Canvas(250, 150);
 	const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
 	await render(

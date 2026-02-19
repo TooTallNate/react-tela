@@ -1,10 +1,12 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { RoundRect } from '../src';
-import { render } from '../src/render';
 
-test('should render <RoundRect> with uniform radii', async () => {
+const test = createStrictTest();
+
+test('should render <RoundRect> with uniform radii', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<RoundRect
@@ -21,7 +23,7 @@ test('should render <RoundRect> with uniform radii', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <RoundRect> with per-corner radii', async () => {
+test('should render <RoundRect> with per-corner radii', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<RoundRect
@@ -40,7 +42,7 @@ test('should render <RoundRect> with per-corner radii', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <RoundRect> with zero radii (same as Rect)', async () => {
+test('should render <RoundRect> with zero radii (same as Rect)', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
 		<RoundRect
@@ -57,7 +59,7 @@ test('should render <RoundRect> with zero radii (same as Rect)', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <RoundRect> with stroke only', async () => {
+test('should render <RoundRect> with stroke only', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<RoundRect

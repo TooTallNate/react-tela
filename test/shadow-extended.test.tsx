@@ -1,10 +1,12 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, Circle, Ellipse } from '../src';
-import { render } from '../src/render';
 
-test('should render shadow on <Circle>', async () => {
+const test = createStrictTest();
+
+test('should render shadow on <Circle>', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<Circle
@@ -23,7 +25,7 @@ test('should render shadow on <Circle>', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render shadow with negative offset', async () => {
+test('should render shadow with negative offset', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Rect
@@ -43,7 +45,7 @@ test('should render shadow with negative offset', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render shadow on <Ellipse>', async () => {
+test('should render shadow on <Ellipse>', async (render) => {
 	const canvas = new Canvas(250, 180);
 	await render(
 		<Ellipse
@@ -63,7 +65,7 @@ test('should render shadow on <Ellipse>', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render colored shadow', async () => {
+test('should render colored shadow', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Rect

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas as NativeCanvas } from '@napi-rs/canvas';
 import { Canvas, Rect, useParent, type CanvasRef } from '../src';
-import { render } from '../src/render';
 
-test('should render <Canvas> with imperative drawing', async () => {
+const test = createStrictTest();
+
+test('should render <Canvas> with imperative drawing', async (render) => {
 	const canvas = new NativeCanvas(150, 100);
 
 	function DrawingCanvas() {
@@ -31,7 +33,7 @@ test('should render <Canvas> with imperative drawing', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Canvas> with rotation', async () => {
+test('should render <Canvas> with rotation', async (render) => {
 	const canvas = new NativeCanvas(150, 150);
 
 	function RotatedCanvas() {
@@ -65,7 +67,7 @@ test('should render <Canvas> with rotation', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Canvas> with alpha transparency', async () => {
+test('should render <Canvas> with alpha transparency', async (render) => {
 	const canvas = new NativeCanvas(150, 100);
 
 	function TransparentCanvas() {
@@ -96,7 +98,7 @@ test('should render <Canvas> with alpha transparency', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should support getContext("2d")', async () => {
+test('should support getContext("2d")', async (render) => {
 	const canvas = new NativeCanvas(100, 100);
 	let ctxRef: any = null;
 
@@ -120,7 +122,7 @@ test('should support getContext("2d")', async () => {
 	expect(typeof ctxRef.clearRect).toBe('function');
 });
 
-test('should resize sub-canvas when dimensions change', async () => {
+test('should resize sub-canvas when dimensions change', async (render) => {
 	const canvas = new NativeCanvas(200, 100);
 	let canvasRef: CanvasRef | null = null;
 

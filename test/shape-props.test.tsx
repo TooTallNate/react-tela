@@ -1,12 +1,14 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, Ellipse, Line } from '../src';
-import { render } from '../src/render';
+
+const test = createStrictTest();
 
 // ─── lineDash ───
 
-test('should render <Rect> with dashed stroke', async () => {
+test('should render <Rect> with dashed stroke', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Rect
@@ -24,7 +26,7 @@ test('should render <Rect> with dashed stroke', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Rect> with lineDashOffset', async () => {
+test('should render <Rect> with lineDashOffset', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Rect
@@ -45,7 +47,7 @@ test('should render <Rect> with lineDashOffset', async () => {
 
 // ─── lineJoin ───
 
-test('should render <Line> with round lineJoin', async () => {
+test('should render <Line> with round lineJoin', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
 		<Line
@@ -64,7 +66,7 @@ test('should render <Line> with round lineJoin', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Line> with bevel lineJoin', async () => {
+test('should render <Line> with bevel lineJoin', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
 		<Line
@@ -85,7 +87,7 @@ test('should render <Line> with bevel lineJoin', async () => {
 
 // ─── fillRule ───
 
-test('should render <Rect> with fill and stroke', async () => {
+test('should render <Rect> with fill and stroke', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
 		<Rect
@@ -105,7 +107,7 @@ test('should render <Rect> with fill and stroke', async () => {
 
 // ─── lineCap ───
 
-test('should render <Line> with butt lineCap', async () => {
+test('should render <Line> with butt lineCap', async (render) => {
 	const canvas = new Canvas(150, 50);
 	await render(
 		<Line
@@ -123,7 +125,7 @@ test('should render <Line> with butt lineCap', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Line> with square lineCap', async () => {
+test('should render <Line> with square lineCap', async (render) => {
 	const canvas = new Canvas(150, 50);
 	await render(
 		<Line
@@ -143,7 +145,7 @@ test('should render <Line> with square lineCap', async () => {
 
 // ─── Ellipse stroke only ───
 
-test('should render <Ellipse> with stroke only', async () => {
+test('should render <Ellipse> with stroke only', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Ellipse

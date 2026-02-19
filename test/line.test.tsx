@@ -1,10 +1,12 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Line } from '../src';
-import { render } from '../src/render';
 
-test('should render a horizontal <Line>', async () => {
+const test = createStrictTest();
+
+test('should render a horizontal <Line>', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const root = render(
 		<Line
@@ -22,7 +24,7 @@ test('should render a horizontal <Line>', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render a polyline with 3+ points', async () => {
+test('should render a polyline with 3+ points', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const root = render(
 		<Line
@@ -41,7 +43,7 @@ test('should render a polyline with 3+ points', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render a <Line> with stroke color and lineWidth', async () => {
+test('should render a <Line> with stroke color and lineWidth', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const root = render(
 		<Line

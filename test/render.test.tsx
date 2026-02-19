@@ -1,10 +1,12 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
-import { render } from '../src/render';
 
-test('render() returns a Root with renderCount tracking', async () => {
+const test = createStrictTest();
+
+test('render() returns a Root with renderCount tracking', async (render) => {
 	const canvas = new Canvas(100, 100);
 	const root = render(<Rect width={100} height={100} fill='blue' />, canvas, config);
 	expect(root.renderCount).toBe(0);
@@ -12,7 +14,7 @@ test('render() returns a Root with renderCount tracking', async () => {
 	expect(root.renderCount).toBe(1);
 });
 
-test('render() should clear and re-render on tree change', async () => {
+test('render() should clear and re-render on tree change', async (render) => {
 	const canvas = new Canvas(150, 100);
 
 	// First render
@@ -30,7 +32,7 @@ test('render() should clear and re-render on tree change', async () => {
 	expect(root.height).toBe(100);
 });
 
-test('root.entities tracks child entities', async () => {
+test('root.entities tracks child entities', async (render) => {
 	const canvas = new Canvas(200, 100);
 	const root = render(
 		<>
@@ -45,7 +47,7 @@ test('root.entities tracks child entities', async () => {
 	expect(root.entities.length).toBe(3);
 });
 
-test('empty render produces blank canvas', async () => {
+test('empty render produces blank canvas', async (render) => {
 	const canvas = new Canvas(100, 100);
 	const root = render(<></>, canvas, config);
 	await root;

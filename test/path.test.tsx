@@ -1,10 +1,12 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Path } from '../src';
-import { render } from '../src/render';
 
-test('should render <Path>', async () => {
+const test = createStrictTest();
+
+test('should render <Path>', async (render) => {
 	const canvas = new Canvas(800, 800);
 	await render(
 		<Path

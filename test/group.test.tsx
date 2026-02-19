@@ -1,11 +1,13 @@
 import './helpers/font';
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Group, Rect, Text, useDimensions } from '../src';
-import { render } from '../src/render';
 
-test('should render <Group>', async () => {
+const test = createStrictTest();
+
+test('should render <Group>', async (render) => {
 	const canvas = new Canvas(300, 100);
 	let dims: { width: number; height: number };
 	function Inner() {

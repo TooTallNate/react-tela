@@ -1,13 +1,15 @@
 import React from 'react';
 import { join } from 'path';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Image, Rect } from '../src';
-import { render } from '../src/render';
+
+const test = createStrictTest();
 
 const SRC = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
 
-test('should render <Image> with alpha transparency', async () => {
+test('should render <Image> with alpha transparency', async (render) => {
 	const canvas = new Canvas(200, 150);
 	const root = render(
 		<>
@@ -22,7 +24,7 @@ test('should render <Image> with alpha transparency', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Image> with rotation', async () => {
+test('should render <Image> with rotation', async (render) => {
 	const canvas = new Canvas(200, 200);
 	const root = render(
 		<Image x={30} y={30} width={120} height={90} src={SRC} rotate={15} />,
@@ -34,7 +36,7 @@ test('should render <Image> with rotation', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Image> with source region crop (sx, sy, sw, sh)', async () => {
+test('should render <Image> with source region crop (sx, sy, sw, sh)', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const root = render(
 		<Image

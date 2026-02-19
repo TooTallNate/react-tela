@@ -173,6 +173,7 @@ interface FlexTreeManager {
 	yogaConfig: YogaConfig;
 	rootNode: YogaNode;
 	subscribers: Set<() => void>;
+	childNodes: Set<YogaNode>;
 	subscribe(cb: () => void): () => void;
 	recalculate(width: number, height: number): void;
 }
@@ -303,11 +304,13 @@ function FlexTreeProvider({
 	if (!managerRef.current) {
 		const rootNode = yoga.Node.createWithConfig(yogaConfig);
 		const subscribers = new Set<() => void>();
+		const childNodes = new Set<YogaNode>();
 		managerRef.current = {
 			yoga,
 			yogaConfig,
 			rootNode,
 			subscribers,
+			childNodes,
 			subscribe(cb: () => void) {
 				subscribers.add(cb);
 				return () => { subscribers.delete(cb); };
@@ -319,10 +322,14 @@ function FlexTreeProvider({
 		};
 	}
 
-	// Cleanup root node on unmount
+	// Cleanup all yoga nodes on unmount
 	useLayoutEffect(() => {
 		const manager = managerRef.current!;
 		return () => {
+			for (const child of manager.childNodes) {
+				child.free();
+			}
+			manager.childNodes.clear();
 			manager.rootNode.free();
 		};
 	}, []);
@@ -348,19 +355,26 @@ function FlexNode({
 	const nodeRef = useRef<YogaNode | null>(null);
 	const [layout, setLayout] = useState<Layout>({ x: 0, y: 0, width: 0, height: 0 });
 
-	// For root nodes, use the tree manager's root node.
-	// For child nodes, create a new yoga node.
+	// Lazily initialise the yoga node ref (safe in StrictMode — refs persist
+	// across double-renders and are not reset between effect mount cycles).
 	if (isRoot) {
 		nodeRef.current = treeManager.rootNode;
 	} else if (!nodeRef.current) {
-		nodeRef.current = treeManager.yoga.Node.createWithConfig(treeManager.yogaConfig);
+		const newNode = treeManager.yoga.Node.createWithConfig(treeManager.yogaConfig);
+		treeManager.childNodes.add(newNode);
+		nodeRef.current = newNode;
 	}
 	const node = nodeRef.current!;
 
-	// Apply yoga properties every render
-	applyYogaProps(node, flexProps);
+	// Apply yoga properties in a layout effect (not during render) so that
+	// StrictMode double-renders don't trigger Yoga side-effects.
+	useLayoutEffect(() => {
+		applyYogaProps(node, flexProps);
+	});
 
-	// Child: insert into parent yoga node on mount
+	// Child: insert into parent yoga node on mount.
+	// In StrictMode the sequence is mount→cleanup→mount; after cleanup
+	// `getChildCount()` is back to the previous value so re-insertion works.
 	useLayoutEffect(() => {
 		if (isRoot || !parentYogaNode) return;
 		parentYogaNode.insertChild(node, parentYogaNode.getChildCount());
@@ -390,16 +404,11 @@ function FlexNode({
 		return treeManager.subscribe(updateLayout);
 	}, [treeManager]);
 
-	// Cleanup child yoga node on unmount
-	useLayoutEffect(() => {
-		if (isRoot) return; // Root node is managed by FlexTreeProvider
-		return () => {
-			if (nodeRef.current) {
-				nodeRef.current.free();
-				nodeRef.current = null;
-			}
-		};
-	}, [isRoot]);
+	// Note: child yoga nodes are NOT individually freed here.  In React
+	// StrictMode effects run mount→cleanup→mount synchronously, so freeing
+	// in a cleanup function would destroy the node before the second mount.
+	// Child nodes are freed automatically when the root yoga node is freed
+	// by FlexTreeProvider on unmount (yoga recursively frees the tree).
 
 	return (
 		<FlexNodeContext.Provider value={node}>

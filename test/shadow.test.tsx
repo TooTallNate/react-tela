@@ -1,10 +1,12 @@
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
-import { render } from '../src/render';
 
-test('should render a <Rect> with shadow props', async () => {
+const test = createStrictTest();
+
+test('should render a <Rect> with shadow props', async (render) => {
 	const canvas = new Canvas(200, 150);
 	const root = render(
 		<Rect

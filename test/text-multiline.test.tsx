@@ -1,11 +1,13 @@
 import './helpers/font';
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Text } from '../src';
-import { render } from '../src/render';
 
-test('should wrap text to multiple lines with maxWidth', async () => {
+const test = createStrictTest();
+
+test('should wrap text to multiple lines with maxWidth', async (render) => {
 	const canvas = new Canvas(250, 200);
 	await render(
 		<Text
@@ -24,7 +26,7 @@ test('should wrap text to multiple lines with maxWidth', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should support lineHeight prop', async () => {
+test('should support lineHeight prop', async (render) => {
 	const canvas = new Canvas(250, 250);
 	await render(
 		<Text
@@ -44,7 +46,7 @@ test('should support lineHeight prop', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should truncate with ellipsis when overflow is ellipsis', async () => {
+test('should truncate with ellipsis when overflow is ellipsis', async (render) => {
 	const canvas = new Canvas(250, 50);
 	await render(
 		<Text
@@ -64,7 +66,7 @@ test('should truncate with ellipsis when overflow is ellipsis', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should clip text when overflow is clip', async () => {
+test('should clip text when overflow is clip', async (render) => {
 	const canvas = new Canvas(250, 50);
 	await render(
 		<Text
@@ -84,7 +86,7 @@ test('should clip text when overflow is clip', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should handle explicit newlines', async () => {
+test('should handle explicit newlines', async (render) => {
 	const canvas = new Canvas(300, 150);
 	await render(
 		<Text
@@ -102,7 +104,7 @@ test('should handle explicit newlines', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should wrap text with stroke and fill', async () => {
+test('should wrap text with stroke and fill', async (render) => {
 	const canvas = new Canvas(250, 200);
 	await render(
 		<Text

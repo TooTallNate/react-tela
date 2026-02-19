@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
-import { render } from '../src/render';
 import { enableEvents, dispatchEvent } from './helpers/event';
 
-test('should receive "mousedown" and "mouseup" events', async () => {
+const test = createStrictTest();
+
+test('should receive "mousedown" and "mouseup" events', async (render) => {
 	const canvas = new Canvas(150, 100);
 	enableEvents(canvas);
 	let downEvent: any;
@@ -44,7 +46,7 @@ test('should receive "mousedown" and "mouseup" events', async () => {
 	expect(upEvent.type).toBe('mouseup');
 });
 
-test('should receive "mousemove" events', async () => {
+test('should receive "mousemove" events', async (render) => {
 	const canvas = new Canvas(150, 100);
 	enableEvents(canvas);
 	const moves: any[] = [];
@@ -74,7 +76,7 @@ test('should receive "mousemove" events', async () => {
 	expect(moves.length).toBe(3);
 });
 
-test('should receive "mouseenter" and "mouseleave" events', async () => {
+test('should receive "mouseenter" and "mouseleave" events', async (render) => {
 	const canvas = new Canvas(150, 100);
 	enableEvents(canvas);
 	let entered = false;
@@ -111,7 +113,7 @@ test('should receive "mouseenter" and "mouseleave" events', async () => {
 	expect(left).toBe(true);
 });
 
-test('should NOT receive events when pointerEvents is false', async () => {
+test('should NOT receive events when pointerEvents is false', async (render) => {
 	const canvas = new Canvas(150, 100);
 	enableEvents(canvas);
 	let clicked = false;
@@ -140,7 +142,7 @@ test('should NOT receive events when pointerEvents is false', async () => {
 	expect(clicked).toBe(false);
 });
 
-test('click should target topmost entity (z-order)', async () => {
+test('click should target topmost entity (z-order)', async (render) => {
 	const canvas = new Canvas(150, 100);
 	enableEvents(canvas);
 	let clickedBottom = false;
@@ -180,7 +182,7 @@ test('click should target topmost entity (z-order)', async () => {
 	expect(clickedBottom).toBe(false);
 });
 
-test('should update visual state via event handler', async () => {
+test('should update visual state via event handler', async (render) => {
 	const canvas = new Canvas(150, 100);
 	enableEvents(canvas);
 

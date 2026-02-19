@@ -1,18 +1,20 @@
 import './helpers/font';
 import React from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import initYoga from 'yoga-wasm-web/asm';
 import { Rect, Text, useLayout } from '../src';
-import { render } from '../src/render';
 import { createFlex } from '../src/flex';
+
+const test = createStrictTest();
 
 const yoga = initYoga();
 const Flex = createFlex(yoga);
 
 // ─── Layout correctness ───
 
-test('flex row: equal children split width evenly', async () => {
+test('flex row: equal children split width evenly', async (render) => {
 	const canvas = new Canvas(300, 100);
 	const layouts: Record<string, any> = {};
 	function Track({ color, name }: { color: string; name: string }) {
@@ -35,7 +37,7 @@ test('flex row: equal children split width evenly', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('flex column: children stack vertically', async () => {
+test('flex column: children stack vertically', async (render) => {
 	const canvas = new Canvas(200, 300);
 	await render(
 		<Flex width={200} height={300} flexDirection='column' gap={10}>
@@ -48,7 +50,7 @@ test('flex column: children stack vertically', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('flex: padding and per-edge margins', async () => {
+test('flex: padding and per-edge margins', async (render) => {
 	const canvas = new Canvas(300, 200);
 	await render(
 		<Flex width={300} height={200} flexDirection='column' padding={20} gap={10}>
@@ -63,7 +65,7 @@ test('flex: padding and per-edge margins', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('flex: justifyContent center', async () => {
+test('flex: justifyContent center', async (render) => {
 	const canvas = new Canvas(300, 100);
 	const layouts: Record<string, any> = {};
 	function Track({ color, name }: { color: string; name: string }) {
@@ -85,7 +87,7 @@ test('flex: justifyContent center', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('flex: alignItems center', async () => {
+test('flex: alignItems center', async (render) => {
 	const canvas = new Canvas(300, 200);
 	const layouts: Record<string, any> = {};
 	function Track({ color, name }: { color: string; name: string }) {
@@ -109,7 +111,7 @@ test('flex: alignItems center', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('flex: space-between', async () => {
+test('flex: space-between', async (render) => {
 	const canvas = new Canvas(400, 80);
 	const layouts: Record<string, any> = {};
 	function Track({ color, name }: { color: string; name: string }) {
@@ -135,7 +137,7 @@ test('flex: space-between', async () => {
 
 // ─── Nested layouts ───
 
-test('nested flex: header / sidebar+content / footer', async () => {
+test('nested flex: header / sidebar+content / footer', async (render) => {
 	const canvas = new Canvas(300, 300);
 	const layouts: Record<string, any> = {};
 	function Track({ color, name }: { color: string; name: string }) {
@@ -164,7 +166,7 @@ test('nested flex: header / sidebar+content / footer', async () => {
 
 // ─── Percentage dimensions ───
 
-test('flex: percentage widths', async () => {
+test('flex: percentage widths', async (render) => {
 	const canvas = new Canvas(400, 100);
 	const layouts: Record<string, any> = {};
 	function Track({ color, name }: { color: string; name: string }) {
@@ -189,7 +191,7 @@ test('flex: percentage widths', async () => {
 
 // ─── Absolute positioning ───
 
-test('flex: absolute positioning overlay', async () => {
+test('flex: absolute positioning overlay', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<Flex width={200} height={200}>
@@ -205,7 +207,7 @@ test('flex: absolute positioning overlay', async () => {
 
 // ─── Flex wrap ───
 
-test('flex: wrap creates grid-like layout', async () => {
+test('flex: wrap creates grid-like layout', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<Flex width={200} height={200} flexWrap='wrap' gap={5} padding={5}>
@@ -224,7 +226,7 @@ test('flex: wrap creates grid-like layout', async () => {
 
 // ─── Flex.Text ───
 
-test('Flex.Text: text alongside flex items', async () => {
+test('Flex.Text: text alongside flex items', async (render) => {
 	const canvas = new Canvas(300, 100);
 	await render(
 		<Flex width={300} height={100} alignItems='center' justifyContent='center' gap={10}>
@@ -240,7 +242,7 @@ test('Flex.Text: text alongside flex items', async () => {
 
 // ─── Complex real-world layout ───
 
-test('flex: card layout with header, body, and action bar', async () => {
+test('flex: card layout with header, body, and action bar', async (render) => {
 	const canvas = new Canvas(250, 350);
 	await render(
 		<Flex width={250} height={350} justifyContent='center' alignItems='center'>

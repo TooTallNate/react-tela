@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
-import { render } from '../src/render';
 
-test('hidden entities should not be rendered', async () => {
+const test = createStrictTest();
+
+test('hidden entities should not be rendered', async (render) => {
 	const canvas = new Canvas(200, 100);
 	let setVisible!: (v: boolean) => void;
 

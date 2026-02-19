@@ -1,11 +1,13 @@
 import React from 'react';
 import { join } from 'path';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Image } from '../src';
-import { render } from '../src/render';
 
-test('should render <Image>', async () => {
+const test = createStrictTest();
+
+test('should render <Image>', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const src = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
 	const root = render(

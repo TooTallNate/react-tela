@@ -1,11 +1,13 @@
 import './helpers/font';
 import React, { useState } from 'react';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Text } from '../src';
-import { render } from '../src/render';
 
-test('should render <Text> with stroke only', async () => {
+const test = createStrictTest();
+
+test('should render <Text> with stroke only', async (render) => {
 	const canvas = new Canvas(300, 80);
 	await render(
 		<Text
@@ -24,7 +26,7 @@ test('should render <Text> with stroke only', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Text> with textAlign center', async () => {
+test('should render <Text> with textAlign center', async (render) => {
 	const canvas = new Canvas(300, 80);
 	await render(
 		<Text
@@ -43,7 +45,7 @@ test('should render <Text> with textAlign center', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Text> with textAlign end', async () => {
+test('should render <Text> with textAlign end', async (render) => {
 	const canvas = new Canvas(300, 80);
 	await render(
 		<Text
@@ -62,7 +64,7 @@ test('should render <Text> with textAlign end', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Text> with multiple children (concatenated)', async () => {
+test('should render <Text> with multiple children (concatenated)', async (render) => {
 	const canvas = new Canvas(300, 80);
 	await render(
 		<Text
@@ -83,7 +85,7 @@ test('should render <Text> with multiple children (concatenated)', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should dynamically update <Text> content', async () => {
+test('should dynamically update <Text> content', async (render) => {
 	const canvas = new Canvas(300, 80);
 	let setText!: (s: string) => void;
 
@@ -106,7 +108,7 @@ test('should dynamically update <Text> content', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Text> with rotation', async () => {
+test('should render <Text> with rotation', async (render) => {
 	const canvas = new Canvas(300, 200);
 	await render(
 		<Text
@@ -125,7 +127,7 @@ test('should render <Text> with rotation', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Text> with alpha', async () => {
+test('should render <Text> with alpha', async (render) => {
 	const canvas = new Canvas(300, 80);
 	await render(
 		<>

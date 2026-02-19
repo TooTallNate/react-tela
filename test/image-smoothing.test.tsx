@@ -1,13 +1,15 @@
 import React from 'react';
 import { join } from 'path';
-import { test, expect } from 'vitest';
+import { expect } from 'vitest';
+import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Image } from '../src';
-import { render } from '../src/render';
+
+const test = createStrictTest();
 
 const SRC = join(__dirname, 'pexels-small.jpg');
 
-test('should render <Image> with imageSmoothing disabled', async () => {
+test('should render <Image> with imageSmoothing disabled', async (render) => {
 	const canvas = new Canvas(200, 200);
 	const root = render(
 		<Image
@@ -26,7 +28,7 @@ test('should render <Image> with imageSmoothing disabled', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Image> with imageSmoothing enabled and high quality', async () => {
+test('should render <Image> with imageSmoothing enabled and high quality', async (render) => {
 	const canvas = new Canvas(200, 200);
 	const root = render(
 		<Image
@@ -46,7 +48,7 @@ test('should render <Image> with imageSmoothing enabled and high quality', async
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Image> with imageSmoothingQuality medium', async () => {
+test('should render <Image> with imageSmoothingQuality medium', async (render) => {
 	const canvas = new Canvas(200, 200);
 	const root = render(
 		<Image
