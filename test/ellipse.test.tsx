@@ -4,9 +4,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Ellipse } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render a basic <Ellipse>', async () => {
+test('should render a basic <Ellipse>', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const root = render(
 		<Ellipse x={25} y={10} radiusX={50} radiusY={40} fill='purple' />,
@@ -17,7 +17,7 @@ test('should render a basic <Ellipse>', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render an <Ellipse> with fill and stroke', async () => {
+test('should render an <Ellipse> with fill and stroke', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const root = render(
 		<Ellipse

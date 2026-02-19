@@ -11,7 +11,7 @@ import {
 	type ColorStop,
 } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
 function LinearGradientRect({
 	width,
@@ -108,7 +108,7 @@ function LinearGradientText({
 	);
 }
 
-test('should render <Rect> with linearGradient fill', async () => {
+test('should render <Rect> with linearGradient fill', async (render) => {
 	const canvas = new Canvas(200, 100);
 	await render(
 		<LinearGradientRect
@@ -130,7 +130,7 @@ test('should render <Rect> with linearGradient fill', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Rect> with radialGradient fill', async () => {
+test('should render <Rect> with radialGradient fill', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<RadialGradientRect
@@ -153,7 +153,7 @@ test('should render <Rect> with radialGradient fill', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Rect> with linearGradient stroke', async () => {
+test('should render <Rect> with linearGradient stroke', async (render) => {
 	const canvas = new Canvas(200, 100);
 	await render(
 		<LinearGradientStrokeRect
@@ -177,7 +177,7 @@ test('should render <Rect> with linearGradient stroke', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Text> with linearGradient fill', async () => {
+test('should render <Text> with linearGradient fill', async (render) => {
 	const canvas = new Canvas(300, 60);
 	await render(
 		<LinearGradientText
@@ -195,7 +195,7 @@ test('should render <Text> with linearGradient fill', async () => {
 	});
 });
 
-test('string fill still works (backward compat)', async () => {
+test('string fill still works (backward compat)', async (render) => {
 	const canvas = new Canvas(100, 100);
 	await render(
 		<Rect width={100} height={100} fill="red" />,

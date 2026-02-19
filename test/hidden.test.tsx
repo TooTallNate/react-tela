@@ -4,9 +4,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('hidden entities should not be rendered', async () => {
+test('hidden entities should not be rendered', async (render) => {
 	const canvas = new Canvas(200, 100);
 	let setVisible!: (v: boolean) => void;
 

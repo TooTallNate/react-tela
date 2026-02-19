@@ -4,9 +4,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Arc, Circle } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render a full <Arc> (donut shape)', async () => {
+test('should render a full <Arc> (donut shape)', async (render) => {
 	const canvas = new Canvas(150, 150);
 	await render(
 		<Arc
@@ -23,7 +23,7 @@ test('should render a full <Arc> (donut shape)', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render a partial <Arc> (pie slice)', async () => {
+test('should render a partial <Arc> (pie slice)', async (render) => {
 	const canvas = new Canvas(150, 150);
 	await render(
 		<Arc
@@ -42,7 +42,7 @@ test('should render a partial <Arc> (pie slice)', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Arc> with counterclockwise', async () => {
+test('should render <Arc> with counterclockwise', async (render) => {
 	const canvas = new Canvas(150, 150);
 	await render(
 		<Arc
@@ -62,7 +62,7 @@ test('should render <Arc> with counterclockwise', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Arc> with stroke only', async () => {
+test('should render <Arc> with stroke only', async (render) => {
 	const canvas = new Canvas(150, 150);
 	await render(
 		<Arc
@@ -80,7 +80,7 @@ test('should render <Arc> with stroke only', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Circle> as full arc', async () => {
+test('should render <Circle> as full arc', async (render) => {
 	const canvas = new Canvas(150, 150);
 	await render(
 		<Circle
@@ -97,7 +97,7 @@ test('should render <Circle> as full arc', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Circle> with alpha transparency', async () => {
+test('should render <Circle> with alpha transparency', async (render) => {
 	const canvas = new Canvas(150, 150);
 	await render(
 		<>

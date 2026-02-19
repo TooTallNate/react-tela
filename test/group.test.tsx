@@ -5,9 +5,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Group, Rect, Text, useDimensions } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render <Group>', async () => {
+test('should render <Group>', async (render) => {
 	const canvas = new Canvas(300, 100);
 	let dims: { width: number; height: number };
 	function Inner() {

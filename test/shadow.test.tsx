@@ -4,9 +4,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render a <Rect> with shadow props', async () => {
+test('should render a <Rect> with shadow props', async (render) => {
 	const canvas = new Canvas(200, 150);
 	const root = render(
 		<Rect

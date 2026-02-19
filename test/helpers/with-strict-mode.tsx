@@ -4,15 +4,23 @@ import { render as baseRender } from '../../src/render';
 import type { ICanvas } from '../../src/types';
 
 type RenderFn = typeof baseRender;
+type TestFn = (render: RenderFn) => any;
 
 /**
- * Creates a pair of `test` + `render` that runs each test case twice:
+ * Creates a `test` function that runs each test case twice:
  * once normally, and once with the element wrapped in `<React.StrictMode>`.
+ *
+ * The test callback receives a `render` function as its first argument,
+ * which automatically wraps elements in StrictMode for the second run.
  *
  * Usage:
  * ```ts
- * import { createTestPair } from './helpers/with-strict-mode';
- * const { test, render } = createTestPair();
+ * import { createStrictTest } from './helpers/with-strict-mode';
+ * const test = createStrictTest();
+ *
+ * test('my test', async (render) => {
+ *   await render(<App />, canvas, config);
+ * });
  * ```
  *
  * Each `test(name, fn)` call registers two vitest tests:
@@ -20,36 +28,29 @@ type RenderFn = typeof baseRender;
  *   - "name (StrictMode)"
  */
 export function createStrictTest() {
-	let strictMode = false;
-
-	const render: RenderFn = (app, canvas, opts?) => {
-		const element = strictMode
-			? (<React.StrictMode>{app}</React.StrictMode>)
-			: app;
-		return baseRender(element, canvas, opts);
+	const strictRender: RenderFn = (app, canvas, opts?) => {
+		return baseRender(
+			<React.StrictMode>{app}</React.StrictMode>,
+			canvas,
+			opts,
+		);
 	};
 
-	const test = ((name: string, fn: () => any, timeout?: number) => {
-		viTest(name, () => {
-			strictMode = false;
-			return fn();
-		}, timeout);
-		viTest(`${name} (StrictMode)`, () => {
-			strictMode = true;
-			return fn();
-		}, timeout);
+	const test = ((name: string, fn: TestFn, timeout?: number) => {
+		viTest(name, () => fn(baseRender), timeout);
+		viTest(`${name} (StrictMode)`, () => fn(strictRender), timeout);
 	}) as TestAPI;
 
 	// Copy over .skip, .only, etc. for convenience
-	test.skip = ((name: string, fn: () => any, timeout?: number) => {
-		viTest.skip(name, fn, timeout);
-		viTest.skip(`${name} (StrictMode)`, fn, timeout);
+	test.skip = ((name: string, fn: TestFn, timeout?: number) => {
+		viTest.skip(name, () => fn(baseRender), timeout);
+		viTest.skip(`${name} (StrictMode)`, () => fn(baseRender), timeout);
 	}) as any;
 
-	test.only = ((name: string, fn: () => any, timeout?: number) => {
-		viTest.only(name, fn, timeout);
-		viTest.only(`${name} (StrictMode)`, fn, timeout);
+	test.only = ((name: string, fn: TestFn, timeout?: number) => {
+		viTest.only(name, () => fn(baseRender), timeout);
+		viTest.only(`${name} (StrictMode)`, () => fn(strictRender), timeout);
 	}) as any;
 
-	return { test, render };
+	return test;
 }

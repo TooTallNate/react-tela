@@ -5,9 +5,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, Circle, Text, Line } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render <Rect> with blur filter', async () => {
+test('should render <Rect> with blur filter', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
 		<Rect x={10} y={10} width={100} height={50} fill="red" filter="blur(4px)" />,
@@ -17,7 +17,7 @@ test('should render <Rect> with blur filter', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Circle> with drop-shadow filter', async () => {
+test('should render <Circle> with drop-shadow filter', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Circle
@@ -33,7 +33,7 @@ test('should render <Circle> with drop-shadow filter', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Text> with brightness filter', async () => {
+test('should render <Text> with brightness filter', async (render) => {
 	const canvas = new Canvas(200, 60);
 	await render(
 		<Text x={10} y={40} fill="green" fontFamily="Geist Sans" fontSize={32} filter="brightness(1.5)">
@@ -45,7 +45,7 @@ test('should render <Text> with brightness filter', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Line> with combined filters', async () => {
+test('should render <Line> with combined filters', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Line

@@ -4,9 +4,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Ellipse } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render partial <Ellipse> (half)', async () => {
+test('should render partial <Ellipse> (half)', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Ellipse
@@ -26,7 +26,7 @@ test('should render partial <Ellipse> (half)', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Ellipse> with counterclockwise', async () => {
+test('should render <Ellipse> with counterclockwise', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<Ellipse
@@ -45,7 +45,7 @@ test('should render <Ellipse> with counterclockwise', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Ellipse> with ellipseRotation', async () => {
+test('should render <Ellipse> with ellipseRotation', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<Ellipse
@@ -64,7 +64,7 @@ test('should render <Ellipse> with ellipseRotation', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Ellipse> with scale', async () => {
+test('should render <Ellipse> with scale', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<Ellipse

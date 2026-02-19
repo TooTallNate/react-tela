@@ -4,11 +4,11 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, Ellipse, Circle } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
 // ─── Scale ───
 
-test('should render <Rect> with scaleX and scaleY', async () => {
+test('should render <Rect> with scaleX and scaleY', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<Rect
@@ -26,7 +26,7 @@ test('should render <Rect> with scaleX and scaleY', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Rect> with scaleX only (horizontal stretch)', async () => {
+test('should render <Rect> with scaleX only (horizontal stretch)', async (render) => {
 	const canvas = new Canvas(200, 100);
 	await render(
 		<Rect
@@ -45,7 +45,7 @@ test('should render <Rect> with scaleX only (horizontal stretch)', async () => {
 
 // ─── Alpha ───
 
-test('should render overlapping shapes with alpha', async () => {
+test('should render overlapping shapes with alpha', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<>
@@ -60,7 +60,7 @@ test('should render overlapping shapes with alpha', async () => {
 
 // ─── Rotation ───
 
-test('should render <Rect> with rotation', async () => {
+test('should render <Rect> with rotation', async (render) => {
 	const canvas = new Canvas(200, 200);
 	await render(
 		<Rect
@@ -79,7 +79,7 @@ test('should render <Rect> with rotation', async () => {
 
 // ─── Combined transforms ───
 
-test('should render <Rect> with rotation + scale + alpha', async () => {
+test('should render <Rect> with rotation + scale + alpha', async (render) => {
 	const canvas = new Canvas(250, 250);
 	await render(
 		<>
@@ -104,7 +104,7 @@ test('should render <Rect> with rotation + scale + alpha', async () => {
 
 // ─── Dynamic prop update ───
 
-test('should re-render <Rect> when fill color changes', async () => {
+test('should re-render <Rect> when fill color changes', async (render) => {
 	const canvas = new Canvas(150, 100);
 	let setColor!: (c: string) => void;
 
@@ -126,7 +126,7 @@ test('should re-render <Rect> when fill color changes', async () => {
 
 // ─── Z-ordering (later elements paint over earlier ones) ───
 
-test('should render entities in z-order (last on top)', async () => {
+test('should render entities in z-order (last on top)', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
 		<>

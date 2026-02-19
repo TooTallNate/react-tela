@@ -9,10 +9,10 @@ import { Ellipse as _Ellipse } from '../src/ellipse';
 import { Line as _Line } from '../src/line';
 import { RoundRect as _RoundRect } from '../src/round-rect';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
 describe('Matrix caching', () => {
-	test('entity.matrix returns same reference when properties unchanged', async () => {
+	test('entity.matrix returns same reference when properties unchanged', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -26,7 +26,7 @@ describe('Matrix caching', () => {
 		expect(matrix1).toBe(matrix2);
 	});
 
-	test('entity.matrix returns new object after changing x', async () => {
+	test('entity.matrix returns new object after changing x', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -41,7 +41,7 @@ describe('Matrix caching', () => {
 		expect(matrix1).not.toBe(matrix2);
 	});
 
-	test('entity.matrix returns new object after changing y', async () => {
+	test('entity.matrix returns new object after changing y', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -55,7 +55,7 @@ describe('Matrix caching', () => {
 		expect(matrix1).not.toBe(matrix2);
 	});
 
-	test('entity.matrix returns new object after changing width', async () => {
+	test('entity.matrix returns new object after changing width', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -69,7 +69,7 @@ describe('Matrix caching', () => {
 		expect(matrix1).not.toBe(matrix2);
 	});
 
-	test('entity.matrix returns new object after changing rotate', async () => {
+	test('entity.matrix returns new object after changing rotate', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -83,7 +83,7 @@ describe('Matrix caching', () => {
 		expect(matrix1).not.toBe(matrix2);
 	});
 
-	test('entity.matrix is not invalidated when setting same value', async () => {
+	test('entity.matrix is not invalidated when setting same value', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -99,7 +99,7 @@ describe('Matrix caching', () => {
 });
 
 describe('Inverse matrix caching', () => {
-	test('inverseMatrix returns same reference when properties unchanged', async () => {
+	test('inverseMatrix returns same reference when properties unchanged', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -112,7 +112,7 @@ describe('Inverse matrix caching', () => {
 		expect(inv1).toBe(inv2);
 	});
 
-	test('inverseMatrix invalidated independently from matrix', async () => {
+	test('inverseMatrix invalidated independently from matrix', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -126,7 +126,7 @@ describe('Inverse matrix caching', () => {
 		expect(inv1).not.toBe(inv2);
 	});
 
-	test('inverseMatrix is cached separately from matrix', async () => {
+	test('inverseMatrix is cached separately from matrix', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -146,7 +146,7 @@ describe('Inverse matrix caching', () => {
 });
 
 describe('Path caching - Rect', () => {
-	test('path returns same reference when properties unchanged', async () => {
+	test('path returns same reference when properties unchanged', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -159,7 +159,7 @@ describe('Path caching - Rect', () => {
 		expect(path1).toBe(path2);
 	});
 
-	test('path is recomputed when width changes', async () => {
+	test('path is recomputed when width changes', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -173,7 +173,7 @@ describe('Path caching - Rect', () => {
 		expect(path1).not.toBe(path2);
 	});
 
-	test('path is recomputed when height changes', async () => {
+	test('path is recomputed when height changes', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -187,7 +187,7 @@ describe('Path caching - Rect', () => {
 		expect(path1).not.toBe(path2);
 	});
 
-	test('path is NOT recomputed when x changes (position only affects matrix)', async () => {
+	test('path is NOT recomputed when x changes (position only affects matrix)', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
@@ -203,7 +203,7 @@ describe('Path caching - Rect', () => {
 });
 
 describe('Path caching - Arc', () => {
-	test('arc path is cached', async () => {
+	test('arc path is cached', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Arc | null = null;
 		await render(
@@ -216,7 +216,7 @@ describe('Path caching - Arc', () => {
 		expect(path1).toBe(path2);
 	});
 
-	test('arc path recomputed when radius changes', async () => {
+	test('arc path recomputed when radius changes', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Arc | null = null;
 		await render(
@@ -230,7 +230,7 @@ describe('Path caching - Arc', () => {
 		expect(path1).not.toBe(path2);
 	});
 
-	test('arc path recomputed when startAngle changes', async () => {
+	test('arc path recomputed when startAngle changes', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Arc | null = null;
 		await render(
@@ -246,7 +246,7 @@ describe('Path caching - Arc', () => {
 });
 
 describe('Path caching - Ellipse', () => {
-	test('ellipse path is cached', async () => {
+	test('ellipse path is cached', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Ellipse | null = null;
 		await render(
@@ -259,7 +259,7 @@ describe('Path caching - Ellipse', () => {
 		expect(path1).toBe(path2);
 	});
 
-	test('ellipse path recomputed when radiusX changes', async () => {
+	test('ellipse path recomputed when radiusX changes', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Ellipse | null = null;
 		await render(
@@ -275,7 +275,7 @@ describe('Path caching - Ellipse', () => {
 });
 
 describe('Path caching - Line', () => {
-	test('line path is cached', async () => {
+	test('line path is cached', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Line | null = null;
 		await render(
@@ -288,7 +288,7 @@ describe('Path caching - Line', () => {
 		expect(path1).toBe(path2);
 	});
 
-	test('line path recomputed when points change', async () => {
+	test('line path recomputed when points change', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Line | null = null;
 		await render(
@@ -304,7 +304,7 @@ describe('Path caching - Line', () => {
 });
 
 describe('Path caching - RoundRect', () => {
-	test('roundrect path is cached', async () => {
+	test('roundrect path is cached', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _RoundRect | null = null;
 		await render(
@@ -317,7 +317,7 @@ describe('Path caching - RoundRect', () => {
 		expect(path1).toBe(path2);
 	});
 
-	test('roundrect path recomputed when radii changes', async () => {
+	test('roundrect path recomputed when radii changes', async (render) => {
 		const canvas = new Canvas(150, 100);
 		let ref: _RoundRect | null = null;
 		await render(

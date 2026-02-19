@@ -4,9 +4,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Path } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render <Path>', async () => {
+test('should render <Path>', async (render) => {
 	const canvas = new Canvas(800, 800);
 	await render(
 		<Path

@@ -5,7 +5,7 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, usePattern } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
 function PatternRect({
 	src,
@@ -33,7 +33,7 @@ function waitForRender(root: any): Promise<void> {
 	});
 }
 
-test('should render <Rect> with usePattern fill', async () => {
+test('should render <Rect> with usePattern fill', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const src = join(__dirname, 'pexels-small.jpg');
 
@@ -47,7 +47,7 @@ test('should render <Rect> with usePattern fill', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('usePattern with no-repeat', async () => {
+test('usePattern with no-repeat', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const src = join(__dirname, 'pexels-small.jpg');
 

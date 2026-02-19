@@ -5,9 +5,9 @@ import config, { Canvas } from '@napi-rs/canvas';
 import { LayoutContext, Rect } from '../src';
 import { enableEvents, dispatchEvent } from './helpers/event';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render <Rect>', async () => {
+test('should render <Rect>', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
 		<Rect x={10} y={10} width={10} height={10} fill='red' />,
@@ -17,7 +17,7 @@ test('should render <Rect>', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <Rect> with layout context', async () => {
+test('should render <Rect> with layout context', async (render) => {
 	const canvas = new Canvas(150, 100);
 	function BlueRect() {
 		return <Rect fill='blue' />;
@@ -32,7 +32,7 @@ test('should render <Rect> with layout context', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should receive "click" event', async () => {
+test('should receive "click" event', async (render) => {
 	const canvas = new Canvas(150, 100);
 	enableEvents(canvas);
 	let event: MouseEvent;

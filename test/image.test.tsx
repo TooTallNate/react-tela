@@ -5,9 +5,9 @@ import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Image } from '../src';
 
-const { test, render } = createStrictTest();
+const test = createStrictTest();
 
-test('should render <Image>', async () => {
+test('should render <Image>', async (render) => {
 	const canvas = new Canvas(150, 100);
 	const src = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
 	const root = render(
