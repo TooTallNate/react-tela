@@ -28,16 +28,19 @@ export function usePattern(
 	const [pattern, setPattern] = useState<CanvasPattern | null>(null);
 
 	useEffect(() => {
-		let cancelled = false;
+		const controller = new AbortController();
 		setPattern(null);
-		parent.loadImage(source).then((img) => {
-			if (cancelled) return;
+		parent.loadImage(source, { signal: controller.signal }).then((img) => {
 			const p = parent.ctx.createPattern(img, repetition);
 			setPattern(p);
 			parent.queueRender();
+		}).catch((err) => {
+			// Ignore abort errors — they are expected during cleanup
+			if (err instanceof DOMException && err.name === 'AbortError') return;
+			throw err;
 		});
 		return () => {
-			cancelled = true;
+			controller.abort();
 		};
 	}, [parent, source, repetition]);
 
