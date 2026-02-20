@@ -135,6 +135,28 @@ importers:
         specifier: ^0.3.3
         version: 0.3.3
 
+  packages/terminal:
+    dependencies:
+      '@react-tela/core':
+        specifier: workspace:*
+        version: link:../core
+      '@xterm/headless':
+        specifier: ^5.5.0
+        version: 5.5.0
+    devDependencies:
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.28
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+      react-tela:
+        specifier: workspace:*
+        version: link:../react-tela
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.3
+
 packages:
 
   '@babel/code-frame@7.29.0':
@@ -1400,6 +1422,9 @@ packages:
   '@xmldom/xmldom@0.8.11':
     resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
     engines: {node: '>=10.0.0'}
+
+  '@xterm/headless@5.5.0':
+    resolution: {integrity: sha512-5xXB7kdQlFBP82ViMJTwwEc3gKCLGKR/eoxQm4zge7GPBl86tCdI0IdPJjoKd8mUSFXz5V7i/25sfsEkP4j46g==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -3805,6 +3830,8 @@ snapshots:
       pretty-format: 29.7.0
 
   '@xmldom/xmldom@0.8.11': {}
+
+  '@xterm/headless@5.5.0': {}
 
   abort-controller@3.0.0:
     dependencies:
