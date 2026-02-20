@@ -18,12 +18,6 @@ export default function App() {
   const dims = useDimensions();
   const termRef = useRef<TerminalEntity>(null);
   const [focused, setFocused] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // Grab a reference to the canvas element
-  useEffect(() => {
-    canvasRef.current = document.querySelector("canvas");
-  }, []);
 
   // Write a welcome message on mount
   useEffect(() => {
@@ -34,35 +28,37 @@ export default function App() {
     term.write("\\x1b[36m$\\x1b[0m ");
   }, []);
 
-  // Focus/unfocus: listen for clicks on the canvas vs elsewhere
+  // Make canvas focusable and track focus/blur
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = document.querySelector("canvas");
     if (!canvas) return;
 
-    const handleCanvasClick = () => setFocused(true);
-    const handleDocumentClick = (e: MouseEvent) => {
-      if (e.target !== canvas) setFocused(false);
-    };
+    // Make the canvas focusable
+    canvas.tabIndex = 0;
+    canvas.style.outline = "none";
 
-    canvas.addEventListener("click", handleCanvasClick);
-    document.addEventListener("click", handleDocumentClick);
+    const onFocus = () => setFocused(true);
+    const onBlur = () => setFocused(false);
+
+    canvas.addEventListener("focus", onFocus);
+    canvas.addEventListener("blur", onBlur);
     return () => {
-      canvas.removeEventListener("click", handleCanvasClick);
-      document.removeEventListener("click", handleDocumentClick);
+      canvas.removeEventListener("focus", onFocus);
+      canvas.removeEventListener("blur", onBlur);
     };
   }, []);
 
   // Forward keyboard events to terminal when focused
   useEffect(() => {
     if (!focused) return;
+    const canvas = document.querySelector("canvas");
+    if (!canvas) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const term = termRef.current;
       if (!term) return;
 
-      // Ignore modifier-only keys
       if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) return;
-
       e.preventDefault();
 
       if (e.key === "Enter") {
@@ -84,8 +80,8 @@ export default function App() {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    canvas.addEventListener("keydown", handleKeyDown);
+    return () => canvas.removeEventListener("keydown", handleKeyDown);
   }, [focused]);
 
   const padding = 20;
@@ -129,8 +125,8 @@ export default function App() {
         y={padding + headerH}
         width={dims.width - padding * 2}
         height={dims.height - padding * 2 - headerH}
-        fontSize={16}
-        fontFamily="Geist Mono, monospace"
+        fontSize={32}
+        fontFamily={"'Geist Mono', monospace"}
         theme={{
           background: "#111827",
           foreground: "#f9fafb",
