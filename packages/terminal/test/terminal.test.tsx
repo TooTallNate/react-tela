@@ -1,4 +1,3 @@
-import './helpers/font';
 import React, { useEffect, useRef } from 'react';
 import { expect, test as viTest } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
