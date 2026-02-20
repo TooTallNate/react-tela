@@ -23,6 +23,7 @@ import * as ReactModule from 'react';
 import * as reactTela from 'react-tela';
 import * as reactTelaRender from 'react-tela/render';
 import * as reactTelaFlex from 'react-tela/flex';
+import * as reactTelaTerminal from '@react-tela/terminal';
 import yogaInit from 'yoga-wasm-web/asm';
 import { registerModule, transpileAndEval } from './transpile';
 import { Preview } from './Preview';
@@ -33,6 +34,7 @@ registerModule('react', ReactModule);
 registerModule('react-tela', reactTela);
 registerModule('react-tela/render', reactTelaRender);
 registerModule('react-tela/flex', reactTelaFlex);
+registerModule('@react-tela/terminal', reactTelaTerminal);
 registerModule('yoga-wasm-web/asm', yogaInit);
 
 function VimToggle({

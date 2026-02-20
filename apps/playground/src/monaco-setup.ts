@@ -126,6 +126,43 @@ export function configureMonaco(monaco: Monaco) {
 		'file:///node_modules/@types/react-tela/flex.d.ts',
 	);
 
+	// Add @react-tela/terminal types
+	ts.addExtraLib(
+		`
+declare module "@react-tela/terminal" {
+  import { Ref, ForwardRefExoticComponent, RefAttributes } from "react";
+
+  export interface TerminalProps {
+    cols?: number;
+    rows?: number;
+    fontSize?: number;
+    fontFamily?: string;
+    charWidth?: number;
+    lineHeight?: number;
+    theme?: Record<string, string>;
+    scrollback?: number;
+    onData?: (data: string) => void;
+    onResize?: (cols: number, rows: number) => void;
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+    alpha?: number;
+    rotate?: number;
+    pointerEvents?: boolean;
+  }
+
+  export class TerminalEntity {
+    write(data: string): Promise<void>;
+    dispose(): void;
+  }
+
+  export const Terminal: ForwardRefExoticComponent<TerminalProps & RefAttributes<TerminalEntity>>;
+}
+`,
+		'file:///node_modules/@types/react-tela-terminal/index.d.ts',
+	);
+
 	// Add yoga-wasm-web types
 	ts.addExtraLib(
 		`
