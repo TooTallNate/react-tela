@@ -6,4 +6,4 @@ dist
 **/test/__image_snapshots__/__diff_output__
 
 # Generated playground types (build-time artifact)
-packages/playground/src/generated-types.ts
+apps/playground/src/generated-types.ts
