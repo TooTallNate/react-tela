@@ -1,8 +1,11 @@
+import './helpers/font';
 import React, { useEffect, useRef } from 'react';
 import { expect, test as viTest } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
 import { render } from 'react-tela/render';
 import { Terminal, TerminalEntity } from '../src/index.js';
+
+const FONT = 'Geist Mono';
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 50));
 
@@ -46,7 +49,7 @@ async function renderAndWrite(
 
 viTest('should render Terminal with "Hello World"', async () => {
 	const { canvas } = await renderAndWrite(
-		{ cols: 40, rows: 10, fontSize: 14 },
+		{ cols: 40, rows: 10, fontSize: 14, fontFamily: FONT },
 		['Hello World'],
 	);
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
@@ -57,7 +60,7 @@ viTest('should render Terminal with "Hello World"', async () => {
 viTest('should render Terminal with progressive writes', async () => {
 	const canvas = new Canvas(500, 400);
 	const { root, entity } = await renderAndWrite(
-		{ cols: 40, rows: 10, fontSize: 14 },
+		{ cols: 40, rows: 10, fontSize: 14, fontFamily: FONT },
 		['First line\r\n'],
 		canvas,
 	);
@@ -72,7 +75,7 @@ viTest('should render Terminal with progressive writes', async () => {
 
 viTest('should render Terminal with ANSI colors', async () => {
 	const { canvas } = await renderAndWrite(
-		{ cols: 40, rows: 10, fontSize: 14 },
+		{ cols: 40, rows: 10, fontSize: 14, fontFamily: FONT },
 		[
 			'\x1b[31mRed Text\x1b[0m ',
 			'\x1b[32mGreen Text\x1b[0m ',
@@ -86,7 +89,7 @@ viTest('should render Terminal with ANSI colors', async () => {
 
 viTest('should render Terminal with alpha=0.5', async () => {
 	const { canvas } = await renderAndWrite(
-		{ cols: 40, rows: 10, fontSize: 14, alpha: 0.5 },
+		{ cols: 40, rows: 10, fontSize: 14, fontFamily: FONT, alpha: 0.5 },
 		['Semi-transparent terminal'],
 	);
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
@@ -97,7 +100,7 @@ viTest('should render Terminal with alpha=0.5', async () => {
 viTest('should render Terminal with rotate=15', async () => {
 	const canvas = new Canvas(600, 500);
 	const { canvas: c } = await renderAndWrite(
-		{ cols: 30, rows: 8, fontSize: 14, rotate: 15, x: 50, y: 50 },
+		{ cols: 30, rows: 8, fontSize: 14, fontFamily: FONT, rotate: 15, x: 50, y: 50 },
 		['Rotated terminal'],
 		canvas,
 	);
@@ -108,7 +111,7 @@ viTest('should render Terminal with rotate=15', async () => {
 
 viTest('should render Terminal with visible cursor', async () => {
 	const { canvas } = await renderAndWrite(
-		{ cols: 40, rows: 10, fontSize: 14 },
+		{ cols: 40, rows: 10, fontSize: 14, fontFamily: FONT },
 		['Cursor here: '],
 	);
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();

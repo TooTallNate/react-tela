@@ -21,6 +21,10 @@ export interface TerminalProps extends EntityProps {
 	fontSize?: number;
 	/** Font family. @default "monospace" */
 	fontFamily?: string;
+	/** Character width in pixels. Auto-calculated from fontSize if not set. */
+	charWidth?: number;
+	/** Line height in pixels. Auto-calculated from fontSize if not set. */
+	lineHeight?: number;
 	/** xterm.js theme object. */
 	theme?: ITheme;
 	/** Scrollback buffer size. @default 500 */
@@ -54,8 +58,10 @@ export class Terminal extends Entity {
 		const cols = opts.cols ?? 80;
 		const rows = opts.rows ?? 30;
 		const fontSize = opts.fontSize ?? 16;
-		const charWidth = fontSize * 0.6;
-		const lineHeight = fontSize * 1.2;
+		// For monospace fonts, character width is typically ~60% of font size.
+		// Users can override with explicit width/height props.
+		const charWidth = opts.charWidth ?? Math.ceil(fontSize * 0.6);
+		const lineHeight = opts.lineHeight ?? Math.ceil(fontSize * 1.2);
 
 		// Auto-calculate width/height if not explicitly set
 		const width = opts.width ?? Math.ceil(cols * charWidth);
@@ -112,21 +118,20 @@ export class Terminal extends Entity {
 		});
 	}
 
-	#getCellColor(colorCode: number, isBold: boolean): string {
+	#getCellColor(colorCode: number, isBold: boolean, isDefault: boolean): string {
 		const fg = this.#theme.foreground ?? '#fff';
 
-		if (colorCode === -1 || colorCode === 0) {
+		if (isDefault || colorCode === -1) {
 			return fg;
 		}
 
 		// Standard ANSI colors (0-15)
-		if (colorCode >= 1 && colorCode <= 16) {
-			const idx = colorCode - 1;
+		if (colorCode >= 0 && colorCode <= 15) {
 			// Bold shifts standard colors to bright
-			if (isBold && idx < 8) {
-				return ANSI_COLORS[idx + 8]!;
+			if (isBold && colorCode < 8) {
+				return ANSI_COLORS[colorCode + 8]!;
 			}
-			return ANSI_COLORS[idx]!;
+			return ANSI_COLORS[colorCode]!;
 		}
 
 		// 256-color: 16-231 are a 6x6x6 color cube
@@ -216,8 +221,8 @@ export class Terminal extends Entity {
 
 				// Draw cell background if set
 				const bgColor = cell.getBgColor();
-				if (bgColor > 0) {
-					ctx.fillStyle = this.#getCellColor(bgColor, false);
+				if (!cell.isBgDefault() && bgColor >= 0) {
+					ctx.fillStyle = this.#getCellColor(bgColor, false, cell.isBgDefault());
 					ctx.fillRect(
 						x * this.#charWidth,
 						y * this.#lineHeight,
@@ -230,6 +235,7 @@ export class Terminal extends Entity {
 				ctx.fillStyle = this.#getCellColor(
 					cell.getFgColor(),
 					cell.isBold() !== 0,
+					cell.isFgDefault(),
 				);
 				ctx.font = cell.isBold()
 					? `bold ${this.#fontSize}px "${this.#fontFamily}"`
