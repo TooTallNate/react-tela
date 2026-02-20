@@ -11,13 +11,18 @@
     }
   },
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc",
+    "test": "vitest"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^0.1.65",
+    "@types/jest-image-snapshot": "^6.4.0",
     "@types/react": "^18.0.0",
+    "jest-image-snapshot": "^6.4.0",
     "react": "^18.0.0",
     "react-tela": "workspace:*",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^3.0.4"
   },
   "dependencies": {
     "@react-tela/core": "workspace:*",
