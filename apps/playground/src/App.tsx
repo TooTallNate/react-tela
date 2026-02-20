@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Editor, { loader, type Monaco } from '@monaco-editor/react';
-import * as monacoAll from 'monaco-editor';
+import * as monaco from 'monaco-editor';
 import type { editor as MonacoEditor } from 'monaco-editor';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
@@ -8,7 +8,7 @@ import { configureMonaco } from './monaco-setup';
 
 // Use locally installed monaco-editor instead of CDN.
 // This ensures monaco-vim's KeyCode imports match the editor instance.
-loader.config({ monaco: monacoAll });
+loader.config({ monaco });
 
 // Configure Monaco workers for IntelliSense (required when using local bundle)
 self.MonacoEnvironment = {
