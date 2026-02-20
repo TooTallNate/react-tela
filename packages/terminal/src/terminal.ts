@@ -53,24 +53,56 @@ export class Terminal extends Entity {
 	#onData?: (data: string) => void;
 	#onResize?: (cols: number, rows: number) => void;
 	#dataDisposable?: { dispose(): void };
+	/** Whether cols was explicitly provided (not auto-calculated). */
+	#explicitCols: boolean;
+	/** Whether rows was explicitly provided (not auto-calculated). */
+	#explicitRows: boolean;
 
 	constructor(opts: TerminalProps = {}) {
-		const cols = opts.cols ?? 80;
-		const rows = opts.rows ?? 30;
 		const fontSize = opts.fontSize ?? 16;
 		// For monospace fonts, character width is typically ~60% of font size.
 		// Users can override with explicit width/height props.
 		const charWidth = opts.charWidth ?? Math.ceil(fontSize * 0.6);
 		const lineHeight = opts.lineHeight ?? Math.ceil(fontSize * 1.2);
 
-		// Auto-calculate width/height if not explicitly set
-		const width = opts.width ?? Math.ceil(cols * charWidth);
-		const height = opts.height ?? Math.ceil(rows * lineHeight);
+		const explicitCols = opts.cols != null;
+		const explicitRows = opts.rows != null;
+
+		// When cols/rows are omitted, derive from width/height if provided,
+		// otherwise fall back to sensible defaults.
+		let cols: number;
+		let rows: number;
+		let width: number;
+		let height: number;
+
+		if (explicitCols) {
+			cols = opts.cols!;
+			width = opts.width ?? Math.ceil(cols * charWidth);
+		} else if (opts.width != null) {
+			width = opts.width;
+			cols = Math.max(1, Math.floor(width / charWidth));
+		} else {
+			cols = 80;
+			width = Math.ceil(cols * charWidth);
+		}
+
+		if (explicitRows) {
+			rows = opts.rows!;
+			height = opts.height ?? Math.ceil(rows * lineHeight);
+		} else if (opts.height != null) {
+			height = opts.height;
+			rows = Math.max(1, Math.floor(height / lineHeight));
+		} else {
+			rows = 30;
+			height = Math.ceil(rows * lineHeight);
+		}
 
 		super({ ...opts, width, height });
 
 		this.#cols = cols;
 		this.#rows = rows;
+		this.#explicitCols = explicitCols;
+		this.#explicitRows = explicitRows;
 		this.#fontSize = fontSize;
 		this.#fontFamily = opts.fontFamily ?? 'monospace';
 		this.#charWidth = charWidth;
@@ -101,6 +133,42 @@ export class Terminal extends Entity {
 		this.#term.onScroll(() => {
 			this._root?.queueRender();
 		});
+	}
+
+	/**
+	 * Override width setter to auto-resize cols when cols is not explicitly set.
+	 */
+	override get width(): number {
+		return super.width;
+	}
+	override set width(v: number) {
+		super.width = v;
+		if (!this.#explicitCols) {
+			const newCols = Math.max(1, Math.floor(v / this.#charWidth));
+			if (newCols !== this.#cols) {
+				this.#cols = newCols;
+				this.#term.resize(this.#cols, this.#rows);
+				this.#onResize?.(this.#cols, this.#rows);
+			}
+		}
+	}
+
+	/**
+	 * Override height setter to auto-resize rows when rows is not explicitly set.
+	 */
+	override get height(): number {
+		return super.height;
+	}
+	override set height(v: number) {
+		super.height = v;
+		if (!this.#explicitRows) {
+			const newRows = Math.max(1, Math.floor(v / this.#lineHeight));
+			if (newRows !== this.#rows) {
+				this.#rows = newRows;
+				this.#term.resize(this.#cols, this.#rows);
+				this.#onResize?.(this.#cols, this.#rows);
+			}
+		}
 	}
 
 	/** The underlying xterm.js Terminal instance. */
@@ -159,8 +227,8 @@ export class Terminal extends Entity {
 		}
 		if (opts.fontSize !== undefined) {
 			this.#fontSize = opts.fontSize;
-			this.#charWidth = opts.fontSize * 0.6;
-			this.#lineHeight = opts.fontSize * 1.2;
+			this.#charWidth = Math.ceil(opts.fontSize * 0.6);
+			this.#lineHeight = Math.ceil(opts.fontSize * 1.2);
 		}
 		if (opts.fontFamily !== undefined) {
 			this.#fontFamily = opts.fontFamily;
@@ -176,21 +244,27 @@ export class Terminal extends Entity {
 			this.#onResize = opts.onResize;
 		}
 
-		// Handle resize
-		const newCols = opts.cols ?? this.#cols;
-		const newRows = opts.rows ?? this.#rows;
-		if (newCols !== this.#cols || newRows !== this.#rows) {
-			this.#cols = newCols;
-			this.#rows = newRows;
-			this.#term.resize(newCols, newRows);
-			this.#onResize?.(newCols, newRows);
+		// Track whether cols/rows are explicitly provided
+		this.#explicitCols = opts.cols != null;
+		this.#explicitRows = opts.rows != null;
+
+		// Handle explicit cols/rows resize
+		if (this.#explicitCols || this.#explicitRows) {
+			const newCols = opts.cols ?? this.#cols;
+			const newRows = opts.rows ?? this.#rows;
+			if (newCols !== this.#cols || newRows !== this.#rows) {
+				this.#cols = newCols;
+				this.#rows = newRows;
+				this.#term.resize(newCols, newRows);
+				this.#onResize?.(newCols, newRows);
+			}
 		}
 
-		// Recalculate dimensions
-		if (!opts.width) {
+		// Recalculate dimensions from cols/rows when they're explicit
+		if (this.#explicitCols && !opts.width) {
 			this.width = Math.ceil(this.#cols * this.#charWidth);
 		}
-		if (!opts.height) {
+		if (this.#explicitRows && !opts.height) {
 			this.height = Math.ceil(this.#rows * this.#lineHeight);
 		}
 
