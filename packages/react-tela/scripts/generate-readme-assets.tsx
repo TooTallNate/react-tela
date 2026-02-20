@@ -32,7 +32,7 @@ import {
 	QuadraticCurve,
 } from '../src/index';
 import initYoga from 'yoga-wasm-web/asm';
-import { createFlex } from '../src/flex';
+import { createFlex } from '@react-tela/flex';
 
 const yoga = initYoga();
 const Flex = createFlex(yoga);

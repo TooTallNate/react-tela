@@ -4,8 +4,8 @@ import { expect } from 'vitest';
 import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import initYoga from 'yoga-wasm-web/asm';
-import { Rect, Text, useLayout } from '../src';
-import { createFlex } from '../src/flex';
+import { Rect, Text, useLayout } from 'react-tela';
+import { createFlex } from '../src/index.js';
 
 const test = createStrictTest();
 

@@ -19,7 +19,7 @@ const root = resolve(__dirname, '..');
 const entries = [
   { entry: 'src/index.tsx', module: 'react-tela' },
   { entry: 'src/render.ts', module: 'react-tela/render' },
-  { entry: 'src/flex.tsx', module: 'react-tela/flex' },
+  { entry: '../flex/src/index.tsx', module: '@react-tela/flex' },
 ];
 
 const results = {};

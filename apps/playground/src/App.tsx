@@ -22,7 +22,7 @@ self.MonacoEnvironment = {
 import * as ReactModule from 'react';
 import * as reactTela from 'react-tela';
 import * as reactTelaRender from 'react-tela/render';
-import * as reactTelaFlex from 'react-tela/flex';
+import * as reactTelaFlex from '@react-tela/flex';
 import yogaInit from 'yoga-wasm-web/asm';
 import { registerModule, transpileAndEval } from './transpile';
 import { Preview } from './Preview';
