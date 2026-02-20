@@ -74,7 +74,7 @@ ref.current.terminal.scrollToBottom();
 ## Installation
 
 ```bash
-npm install @react-tela/terminal react-tela @react-tela/core
+npm install @react-tela/terminal react-tela
 ```
 
 ## License
