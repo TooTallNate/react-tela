@@ -230,7 +230,11 @@ viTest('should wrap long line to next row after dynamic resize', async () => {
 	await refReady;
 
 	const longLine = 'The quick brown fox jumps over the lazy dog near the river';
-	await entity!.write(longLine);
+	// Write text + newline so cursor moves off the wrapped line group.
+	// xterm.js skips reflowing the line group containing the cursor
+	// (to protect active editing context), so the cursor must be below
+	// the content for reflow to work correctly on resize.
+	await entity!.write(longLine + '\r\n');
 	await flush();
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 
