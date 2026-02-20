@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParent } from './use-parent.js';
-import type { PatternRepetition } from '../pattern.js';
+import type { PatternRepetition } from '@react-tela/core';
 
 /**
  * Create a `CanvasPattern` from an image URL.

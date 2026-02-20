@@ -1,0 +1,26 @@
+{
+  "name": "@react-tela/core",
+  "version": "0.0.1",
+  "description": "Core Canvas2D rendering engine for react-tela",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "dependencies": {
+    "parse-svg-path": "^0.1.2"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "@types/node": "^20.8.6"
+  }
+}

@@ -5,33 +5,42 @@ import React, {
 	type PropsWithChildren,
 } from 'react';
 import { ParentContext, useParent } from './hooks/use-parent.js';
-import { Canvas as _Canvas, type CanvasProps } from './canvas.js';
 import {
+	Canvas as _Canvas,
+	type CanvasProps,
 	GroupRoot,
 	Group as _Group,
 	type GroupProps as _GroupProps,
-} from './group.js';
-import {
 	Pattern as _Pattern,
 	type PatternProps as _PatternProps,
-} from './pattern.js';
-import { Rect as _Rect, type RectProps } from './rect.js';
-import { RoundRect as _RoundRect, type RoundRectProps } from './round-rect.js';
-import { Arc as _Arc, type ArcProps } from './arc.js';
-import { Ellipse as _Ellipse, type EllipseProps } from './ellipse.js';
-import { Path as _Path, type PathProps } from './path.js';
-import { Image as _Image, type ImageProps } from './image.js';
-import { BezierCurve as _BezierCurve, type BezierCurveProps } from './bezier-curve.js';
-import { Line as _Line, type LineProps } from './line.js';
-import { QuadraticCurve as _QuadraticCurve, type QuadraticCurveProps } from './quadratic-curve.js';
-import { Text as _Text, type TextProps as _TextProps } from './text.js';
-import { ICanvas } from './types.js';
+	Rect as _Rect,
+	type RectProps,
+	RoundRect as _RoundRect,
+	type RoundRectProps,
+	Arc as _Arc,
+	type ArcProps,
+	Ellipse as _Ellipse,
+	type EllipseProps,
+	Path as _Path,
+	type PathProps,
+	Image as _Image,
+	type ImageProps,
+	BezierCurve as _BezierCurve,
+	type BezierCurveProps,
+	Line as _Line,
+	type LineProps,
+	QuadraticCurve as _QuadraticCurve,
+	type QuadraticCurveProps,
+	Text as _Text,
+	type TextProps as _TextProps,
+	type ICanvas,
+	type EntityProps,
+} from '@react-tela/core';
 import {
 	DEFAULT_LAYOUT,
 	LayoutContext,
 	useLayout,
 } from './hooks/use-layout.js';
-import { EntityProps } from './entity.js';
 
 type MaybeArray<T> = T | T[];
 
@@ -252,10 +261,10 @@ export const Pattern = forwardRef<_Pattern, PatternProps>(
 );
 Pattern.displayName = 'Pattern';
 
-export { type ColorStop } from './types.js';
-export { type FillStrokeStyle, type FillStrokeInput } from './shape.js';
-export { type PatternRepetition } from './pattern.js';
-export { type TextOverflow } from './text.js';
+export { type ColorStop } from '@react-tela/core';
+export { type FillStrokeStyle, type FillStrokeInput } from '@react-tela/core';
+export { type PatternRepetition } from '@react-tela/core';
+export { type TextOverflow } from '@react-tela/core';
 export {
 	useLinearGradient,
 	useRadialGradient,

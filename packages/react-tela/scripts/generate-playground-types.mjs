@@ -137,7 +137,7 @@ function varName(mod) {
 // --- Bundle @types/react for Monaco intellisense ---
 
 // Resolve @types/react from the playground's node_modules
-const playgroundDir = resolve(root, 'playground');
+const playgroundDir = resolve(root, '../playground');
 const reactTypesDir = resolve(playgroundDir, 'node_modules/@types/react');
 
 const reactIndexDts = readFileSync(resolve(reactTypesDir, 'index.d.ts'), 'utf-8');
@@ -156,6 +156,6 @@ export const reactIndexDts = ${JSON.stringify(reactIndexDts)};
 export const reactGlobalDts = ${JSON.stringify(reactGlobalDts)};
 `;
 
-const outPath = resolve(root, 'playground/src/generated-types.ts');
+const outPath = resolve(root, '../playground/src/generated-types.ts');
 writeFileSync(outPath, output);
 console.log(`✅ Generated ${outPath}`);

@@ -34,8 +34,8 @@
   "author": "Nathan Rajlich <n@n8.io>",
   "license": "MIT",
   "dependencies": {
-    "parse-svg-path": "^0.1.2",
-    "react-reconciler": "^0.29.0"
+    "react-reconciler": "^0.29.0",
+    "@react-tela/core": "workspace:*"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",

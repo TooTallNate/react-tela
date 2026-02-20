@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { Root } from '../root.js';
+import type { Root } from '@react-tela/core';
 
 export const ParentContext = createContext<Root | null>(null);
 ParentContext.displayName = 'ParentContext';

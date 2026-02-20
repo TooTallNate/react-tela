@@ -1,12 +1,9 @@
-/dist
-/node_modules
-/*.js
-/*.js.map
-/*.png
-/*.tgz
-/test/__image_snapshots__/__diff_output__
-/playground/dist
-/playground/node_modules
+node_modules
+dist
+*.tgz
+
+# Test diff output
+**/test/__image_snapshots__/__diff_output__
 
 # Generated playground types (build-time artifact)
-playground/src/generated-types.ts
+packages/playground/src/generated-types.ts
