@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate:types": "node ../scripts/generate-playground-types.mjs",
+    "generate:types": "node ../../packages/react-tela/scripts/generate-playground-types.mjs",
     "dev": "pnpm generate:types && vite",
     "build": "pnpm generate:types && vite build",
     "preview": "vite preview"

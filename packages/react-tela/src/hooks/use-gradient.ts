@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useParent } from './use-parent.js';
-import type { ColorStop } from '../types.js';
+import type { ColorStop } from '@react-tela/core';
 
 /**
  * Create a memoized `CanvasGradient` for a linear gradient.

@@ -3,11 +3,11 @@ import { expect, describe } from 'vitest';
 import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Rect, RoundRect, Arc, Ellipse, Line, Path } from '../src';
-import { Rect as _Rect } from '../src/rect';
-import { Arc as _Arc } from '../src/arc';
-import { Ellipse as _Ellipse } from '../src/ellipse';
-import { Line as _Line } from '../src/line';
-import { RoundRect as _RoundRect } from '../src/round-rect';
+import { Rect as _Rect } from '@react-tela/core';
+import { Arc as _Arc } from '@react-tela/core';
+import { Ellipse as _Ellipse } from '@react-tela/core';
+import { Line as _Line } from '@react-tela/core';
+import { RoundRect as _RoundRect } from '@react-tela/core';
 
 const test = createStrictTest();
 

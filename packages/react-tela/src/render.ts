@@ -1,23 +1,26 @@
 import { createElement } from 'react';
 import ReactReconciler from 'react-reconciler';
-import { Root, type RootParams } from './root.js';
-import { Arc } from './arc.js';
-import { Canvas } from './canvas.js';
-import { Ellipse } from './ellipse.js';
-import { Group } from './group.js';
-import { Pattern } from './pattern.js';
-import { BezierCurve } from './bezier-curve.js';
-import { QuadraticCurve } from './quadratic-curve.js';
-import { Line } from './line.js';
-import { Rect } from './rect.js';
-import { RoundRect } from './round-rect.js';
-import { Path } from './path.js';
-import { Image } from './image.js';
-import { Text } from './text.js';
-import { Entity } from './entity.js';
+import {
+	Arc,
+	BezierCurve,
+	Canvas,
+	Ellipse,
+	Entity,
+	Group,
+	Image,
+	Line,
+	Path,
+	Pattern,
+	QuadraticCurve,
+	Rect,
+	Root,
+	RoundRect,
+	Text,
+	type ICanvas,
+	type RootParams,
+} from '@react-tela/core';
 import { ParentContext } from './hooks/use-parent.js';
 import type * as C from './index.js';
-import type { ICanvas } from './types.js';
 
 type Components = {
 	Arc: C.ArcProps;

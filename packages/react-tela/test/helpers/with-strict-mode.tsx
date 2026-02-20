@@ -1,7 +1,7 @@
 import React from 'react';
 import { test as viTest, type TestAPI } from 'vitest';
 import { render as baseRender } from '../../src/render';
-import type { ICanvas } from '../../src/types';
+import type { ICanvas } from '@react-tela/core';
 
 type RenderFn = typeof baseRender;
 type TestFn = (render: RenderFn) => any;

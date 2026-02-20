@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { test, expect } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
-import { Root } from '../src/root';
+import { Root } from '@react-tela/core';
 
 function createRoot() {
 	const canvas = new Canvas(100, 100);
