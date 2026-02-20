@@ -102,9 +102,14 @@ export class Terminal extends Entity {
 		return this.#term;
 	}
 
-	/** Write data into the terminal. */
-	write(data: string): void {
-		this.#term.write(data);
+	/** Write data into the terminal. Returns a Promise that resolves when the data has been processed. */
+	write(data: string): Promise<void> {
+		return new Promise<void>((resolve) => {
+			this.#term.write(data, () => {
+				this._root?.queueRender();
+				resolve();
+			});
+		});
 	}
 
 	#getCellColor(colorCode: number, isBold: boolean): string {
