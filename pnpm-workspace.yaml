@@ -1,6 +1,5 @@
 packages:
-  - "."
-  - playground
+  - "packages/*"
 
 onlyBuiltDependencies:
   - '@biomejs/biome'
