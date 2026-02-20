@@ -7,3 +7,4 @@ dist
 
 # Generated playground types (build-time artifact)
 apps/playground/src/generated-types.ts
+.turbo

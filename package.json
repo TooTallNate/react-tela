@@ -3,7 +3,11 @@
   "name": "react-tela-monorepo",
   "packageManager": "pnpm@10.29.3",
   "scripts": {
-    "build": "pnpm -r build",
-    "test": "pnpm -r test"
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "dev": "turbo run dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.8.10"
   }
 }
