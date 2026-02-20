@@ -149,6 +149,7 @@ export class Terminal extends Entity {
 				this.#cols = newCols;
 				this.#term.resize(this.#cols, this.#rows);
 				this.#onResize?.(this.#cols, this.#rows);
+				this._root?.queueRender();
 			}
 		}
 	}
@@ -167,6 +168,7 @@ export class Terminal extends Entity {
 				this.#rows = newRows;
 				this.#term.resize(this.#cols, this.#rows);
 				this.#onResize?.(this.#cols, this.#rows);
+				this._root?.queueRender();
 			}
 		}
 	}
