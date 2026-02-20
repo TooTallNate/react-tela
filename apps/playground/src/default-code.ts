@@ -1,5 +1,5 @@
 export const DEFAULT_CODE = `import React, { useRef, useEffect, useState, useCallback } from "react";
-import { Rect, RoundRect, Text, useDimensions } from "react-tela";
+import { Group, Rect, RoundRect, Text, useDimensions } from "react-tela";
 import { Terminal, TerminalEntity } from "@react-tela/terminal";
 
 // ─── Theme ───
@@ -69,7 +69,10 @@ export default function App() {
   const headerH = 44;
 
   return (
-    <Rect width={dims.width} height={dims.height} fill={t.bg}>
+    <Group width={dims.width} height={dims.height}>
+      {/* Background */}
+      <Rect width={dims.width} height={dims.height} fill={t.bg} />
+
       {/* Header */}
       <RoundRect
         x={padding}
@@ -125,7 +128,7 @@ export default function App() {
           onClick={() => setFocused(false)}
         />
       )}
-    </Rect>
+    </Group>
   );
 }
 `;
