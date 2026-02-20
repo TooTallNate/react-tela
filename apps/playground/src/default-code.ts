@@ -1,4 +1,4 @@
-export const DEFAULT_CODE = `import React, { useRef, useEffect, useState, useCallback } from "react";
+export const DEFAULT_CODE = `import React, { useRef, useEffect, useState } from "react";
 import { Group, Rect, RoundRect, Text, useDimensions } from "react-tela";
 import { Terminal, TerminalEntity } from "@react-tela/terminal";
 
@@ -17,18 +17,42 @@ const t = {
 export default function App() {
   const dims = useDimensions();
   const termRef = useRef<TerminalEntity>(null);
-  const [focused, setFocused] = useState(true);
+  const [focused, setFocused] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Grab a reference to the canvas element
+  useEffect(() => {
+    canvasRef.current = document.querySelector("canvas");
+  }, []);
 
   // Write a welcome message on mount
   useEffect(() => {
     const term = termRef.current;
     if (!term) return;
     term.write("\\x1b[1;32mreact-tela terminal\\x1b[0m\\r\\n");
-    term.write("Click the terminal to focus, then type!\\r\\n\\r\\n");
+    term.write("Click the canvas to focus, then type!\\r\\n\\r\\n");
     term.write("\\x1b[36m$\\x1b[0m ");
   }, []);
 
-  // Listen for keyboard events on the document and write to terminal
+  // Focus/unfocus: listen for clicks on the canvas vs elsewhere
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleCanvasClick = () => setFocused(true);
+    const handleDocumentClick = (e: MouseEvent) => {
+      if (e.target !== canvas) setFocused(false);
+    };
+
+    canvas.addEventListener("click", handleCanvasClick);
+    document.addEventListener("click", handleDocumentClick);
+    return () => {
+      canvas.removeEventListener("click", handleCanvasClick);
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, []);
+
+  // Forward keyboard events to terminal when focused
   useEffect(() => {
     if (!focused) return;
 
@@ -48,7 +72,6 @@ export default function App() {
       } else if (e.key === "Tab") {
         term.write("    ");
       } else if (e.key.length === 1) {
-        // Handle Ctrl+C, Ctrl+L etc.
         if (e.ctrlKey) {
           if (e.key === "c") {
             term.write("^C\\r\\n\\x1b[36m$\\x1b[0m ");
@@ -106,28 +129,15 @@ export default function App() {
         y={padding + headerH}
         width={dims.width - padding * 2}
         height={dims.height - padding * 2 - headerH}
-        fontSize={14}
+        fontSize={16}
+        fontFamily="Geist Mono, monospace"
         theme={{
           background: "#111827",
           foreground: "#f9fafb",
           cursor: "#6366f1",
           cursorAccent: "#111827",
-          selectionBackground: "#6366f180",
         }}
-        onClick={() => setFocused(true)}
       />
-
-      {/* Click overlay to unfocus */}
-      {focused && (
-        <Rect
-          x={0}
-          y={0}
-          width={dims.width}
-          height={padding}
-          alpha={0}
-          onClick={() => setFocused(false)}
-        />
-      )}
     </Group>
   );
 }
