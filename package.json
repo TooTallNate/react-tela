@@ -5,9 +5,13 @@
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "version": "changeset version",
+    "release": "turbo run build && changeset publish --provenance",
+    "changeset": "changeset"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "turbo": "^2.8.10"
   }
 }
