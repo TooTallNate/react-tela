@@ -8,20 +8,7 @@ importers:
 
   .: {}
 
-  packages/core:
-    dependencies:
-      parse-svg-path:
-        specifier: ^0.1.2
-        version: 0.1.2
-    devDependencies:
-      '@types/node':
-        specifier: ^20.8.6
-        version: 20.19.33
-      typescript:
-        specifier: ^5.2.2
-        version: 5.9.3
-
-  packages/playground:
+  apps/playground:
     dependencies:
       '@monaco-editor/react':
         specifier: ^4.7.0
@@ -40,7 +27,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-tela:
         specifier: workspace:*
-        version: link:../react-tela
+        version: link:../../packages/react-tela
       sucrase:
         specifier: ^3.35.0
         version: 3.35.1
@@ -60,6 +47,19 @@ importers:
       vite:
         specifier: ^5.1.6
         version: 5.4.21(@types/node@20.19.33)
+
+  packages/core:
+    dependencies:
+      parse-svg-path:
+        specifier: ^0.1.2
+        version: 0.1.2
+    devDependencies:
+      '@types/node':
+        specifier: ^20.8.6
+        version: 20.19.33
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.3
 
   packages/react-tela:
     dependencies:
