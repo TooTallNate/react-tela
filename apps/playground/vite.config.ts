@@ -15,7 +15,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'monaco-editor': ['monaco-editor/esm/vs/editor/editor.api'],
+          'monaco-editor': ['monaco-editor'],
         },
       },
     },
