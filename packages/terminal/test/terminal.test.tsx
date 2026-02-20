@@ -201,6 +201,45 @@ viTest('should recalculate rows when height changes (dynamic resize)', async () 
 	expect(resizes[resizes.length - 1][1]).toBe(20);
 });
 
+viTest('should wrap long line to next row after dynamic resize', async () => {
+	const canvas = new Canvas(600, 400);
+	let entity: TerminalEntity | null = null;
+	let resolveRef: () => void;
+	const refReady = new Promise<void>((r) => { resolveRef = r; });
+
+	function App({ width }: { width: number }) {
+		const ref = useRef<TerminalEntity>(null);
+		useEffect(() => {
+			entity = ref.current;
+			resolveRef();
+		}, []);
+		return (
+			<Terminal
+				ref={ref}
+				width={width}
+				height={340}
+				fontSize={14}
+				fontFamily={FONT}
+			/>
+		);
+	}
+
+	// Start wide: charWidth=9, 450/9=50 cols — the long line fits on one row
+	const root = render(<App width={450} />, canvas, config);
+	await root;
+	await refReady;
+
+	const longLine = 'The quick brown fox jumps over the lazy dog near the river';
+	await entity!.write(longLine);
+	await flush();
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+
+	// Shrink to 180px → 180/9=20 cols — the 58-char line must wrap across 3 rows
+	entity!.width = 180;
+	await flush();
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
 viTest('should NOT auto-resize cols when cols is explicitly set', async () => {
 	const resizes: [number, number][] = [];
 	const canvas = new Canvas(600, 400);
