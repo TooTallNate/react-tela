@@ -68,12 +68,12 @@ Entity (base: x, y, opacity, filters, blendMode, shadow*, transforms)
 **Props → Entity properties:**
 Components receive props and map them onto Entity instances in the reconciler's `commitUpdate`. Check `render.ts` for how props are applied.
 
-**createInternal pattern:**
-Private state is stored via WeakMap-based internals:
+**Private fields:**
+Entity state uses ES private class fields (`#field`), with dirty-flag caching for computed values like matrices:
 ```typescript
-import { createInternal } from './utils';
-const _ = createInternal<MyClass, MyInternalState>();
-// Usage: _(instance).somePrivateField
+#x: number;
+#matrixDirty = true;
+#cachedMatrix: IDOMMatrix | null = null;
 ```
 
 **Hooks:**
