@@ -10,31 +10,33 @@ A **React renderer for Canvas 2D**. Write React components, get canvas drawings.
 
 ## Repo Structure
 
+This is a **monorepo** (pnpm workspaces + turborepo):
+
 ```
-src/              — Main package source (the renderer + all components)
-  index.tsx       — Exports everything
-  render.ts       — React reconciler setup (react-reconciler)
-  root.ts         — createRoot / render entry points
-  entity.ts       — Base Entity class (all drawable things extend this)
-  shape.ts        — Base Shape class (extends Entity, adds fill/stroke)
-  canvas.ts       — <Canvas> component (offscreen canvas)
-  rect.ts         — <Rect>
-  round-rect.ts   — <RoundRect>
-  arc.ts          — <Arc>
-  ellipse.ts      — <Ellipse>
-  line.ts         — <Line>
-  path.ts         — <Path>
-  image.ts        — <Image>
-  pattern.ts      — <Pattern>
-  group.ts        — <Group> (transform container)
-  text.ts         — <Text>
-  flex.tsx         — <Flex> (Yoga layout engine)
-  hooks/          — useCanvas, useFrame, etc.
-  events.ts       — Touch/pointer event system
-  event-target.ts — EventTarget polyfill
-  test.tsx         — Test/snapshot utilities
-playground/       — Interactive playground (Monaco editor, deployed on Vercel)
-examples/         — Example scripts that generate PNG snapshots
+packages/
+  core/            — @react-tela/core: headless canvas entity system (no React dep)
+    src/
+      entity.ts    — Base Entity class (all drawable things extend this)
+      shape.ts     — Base Shape class (extends Entity, adds fill/stroke)
+      rect.ts, arc.ts, ellipse.ts, line.ts, path.ts, etc.
+      text.ts      — <Text> with multiline, letter/word spacing
+      image.ts     — <Image>
+      pattern.ts   — <Pattern>
+      group.ts     — <Group> (transform container)
+      root.ts      — Root rendering logic
+      bezier-curve.ts, quadratic-curve.ts — curve components
+  react-tela/      — react-tela: React renderer (depends on @react-tela/core)
+    src/
+      index.tsx    — Exports everything, registers components
+      render.ts    — React reconciler setup (react-reconciler)
+      flex.tsx     — <Flex> (Yoga layout engine)
+      hooks/       — useCanvas, useGradient, usePattern, useTextMetrics, etc.
+      test.tsx     — Test/snapshot utilities
+    test/          — Vitest snapshot tests
+    scripts/       — benchmark, readme asset generation
+    assets/        — Generated example PNGs for README
+apps/
+  playground/      — Interactive playground (Monaco editor, deployed via Vercel)
 ```
 
 ## Architecture
@@ -89,21 +91,22 @@ const _ = createInternal<MyClass, MyInternalState>();
 ## Testing
 
 ```bash
-pnpm test          # Run vitest
+pnpm test          # Run vitest (in packages/react-tela)
 pnpm test:update   # Update snapshots
 ```
 
-Tests use a canvas mock/polyfill. Snapshot tests compare rendered output.
+Tests use a canvas mock/polyfill. Snapshot tests compare rendered output. Tests also run in **strict mode** (duplicate renders) automatically.
 
-The `src/test.tsx` module exports utilities for rendering components in tests.
+The `packages/react-tela/src/test.tsx` module exports utilities for rendering components in tests.
 
 ## Building
 
 ```bash
-pnpm build         # TypeScript compilation
+pnpm build         # TypeScript compilation (turborepo builds core first, then react-tela)
 ```
 
-Output goes to `dist/`. The package publishes as `react-tela` on npm.
+- `@react-tela/core` → `packages/core/dist/`
+- `react-tela` → `packages/react-tela/dist/`
 
 ## Versioning & Changesets
 
