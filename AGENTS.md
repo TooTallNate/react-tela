@@ -30,7 +30,7 @@ packages/
       index.tsx    — Exports everything, registers components
       render.ts    — React reconciler setup (react-reconciler)
       flex.tsx     — <Flex> (Yoga layout engine)
-      hooks/       — useCanvas, useGradient, usePattern, useTextMetrics, etc.
+      hooks/       — useDimensions, useGradient, useLayout, useParent, usePattern, useTextMetrics
       test.tsx     — Test/snapshot utilities
     test/          — Vitest snapshot tests
     scripts/       — benchmark, readme asset generation
@@ -77,8 +77,12 @@ Entity state uses ES private class fields (`#field`), with dirty-flag caching fo
 ```
 
 **Hooks:**
-- `useCanvas()` — get the CanvasRenderingContext2D
-- `useFrame(callback)` — run code each frame
+- `useDimensions()` — get root canvas dimensions
+- `useGradient(type, coords, stops)` — create linear/radial/conic gradients
+- `useLayout()` — access layout context (dimensions + DPR)
+- `useParent()` — get the parent entity
+- `usePattern(image, repetition)` — create a canvas pattern
+- `useTextMetrics(text, font)` — measure text
 
 ## Tech Stack
 
