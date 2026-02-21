@@ -8,6 +8,8 @@ export default defineConfig({
       'react-tela/render': resolve(__dirname, '../../packages/react-tela/src/render.ts'),
       'react-tela/flex': resolve(__dirname, '../../packages/react-tela/src/flex.tsx'),
       'react-tela': resolve(__dirname, '../../packages/react-tela/src/index.tsx'),
+      '@react-tela/terminal': resolve(__dirname, '../../packages/terminal/src/index.ts'),
+      '@react-tela/core': resolve(__dirname, '../../packages/core/src/index.ts'),
     },
   },
   build: {

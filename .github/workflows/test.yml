@@ -44,4 +44,6 @@ jobs:
         if: ${{ failure() && steps.test.conclusion == 'failure' }}
         with:
           name: Image Snapshot Diff Output - ${{ matrix.os }}
-          path: packages/react-tela/test/__image_snapshots__/__diff_output__/
+          path: |
+            packages/react-tela/test/__image_snapshots__/__diff_output__/
+            packages/terminal/test/__image_snapshots__/__diff_output__/
