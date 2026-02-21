@@ -1,5 +1,18 @@
 # react-tela
 
+## 0.3.0
+
+### Minor Changes
+
+- f0aa216: Add AbortController support for cancelling in-flight image loads. The `loadImage()` method on `Root` now accepts an optional `{ signal }` option. The `<Image>` component and `usePattern` hook automatically cancel pending loads on unmount or when the source changes.
+- f5ff7e0: Convert to monorepo and extract `@react-tela/core` engine package
+
+### Patch Changes
+
+- 6d4b507: Fix React StrictMode compatibility for Flex components and add StrictMode test coverage across all tests
+- Updated dependencies [f5ff7e0]
+  - @react-tela/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
