@@ -6,7 +6,7 @@ import {
   Text,
   useDimensions,
 } from "react-tela";
-import { createFlex } from "react-tela/flex";
+import { createFlex } from "@react-tela/flex";
 import initYoga from "yoga-wasm-web/asm";
 
 const yoga = initYoga();

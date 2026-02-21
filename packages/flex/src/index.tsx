@@ -7,10 +7,7 @@ import React, {
 	type PropsWithChildren,
 } from 'react';
 import type { TextProps as _TextProps } from '@react-tela/core';
-import { LayoutContext, type Layout } from './hooks/use-layout.js';
-import { useTextMetrics } from './hooks/use-text-metrics.js';
-import { useDimensions } from './hooks/use-dimensions.js';
-import { Text } from './index.js';
+import { LayoutContext, type Layout, useTextMetrics, useDimensions, Text } from 'react-tela';
 
 export type { Layout };
 

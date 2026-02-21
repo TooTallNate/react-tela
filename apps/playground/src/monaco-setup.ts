@@ -120,10 +120,10 @@ export function configureMonaco(monaco: Monaco) {
 		'file:///node_modules/@types/react-tela/render.d.ts',
 	);
 
-	// Add react-tela/flex types — auto-generated from source
+	// Add @react-tela/flex types — auto-generated from source
 	ts.addExtraLib(
 		reactTelaFlexTypes,
-		'file:///node_modules/@types/react-tela/flex.d.ts',
+		'file:///node_modules/@types/@react-tela/flex/index.d.ts',
 	);
 
 	// Add yoga-wasm-web types
