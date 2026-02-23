@@ -42,7 +42,7 @@ export interface TerminalProps extends EntityProps {
  * contents using canvas text rendering.
  */
 export class Terminal extends Entity {
-	#term: XTerminalType;
+	#term: XTerminal;
 	#cols: number;
 	#rows: number;
 	#fontSize: number;
@@ -174,7 +174,7 @@ export class Terminal extends Entity {
 	}
 
 	/** The underlying xterm.js Terminal instance. */
-	get terminal(): XTerminalType {
+	get terminal(): XTerminal {
 		return this.#term;
 	}
 
