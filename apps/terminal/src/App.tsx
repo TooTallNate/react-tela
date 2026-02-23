@@ -3,9 +3,7 @@ import { render } from 'react-tela/render';
 import { Terminal, TerminalEntity } from '@react-tela/terminal';
 
 // Terminal settings
-const COLS = 80;
-const ROWS = 24;
-const FONT_SIZE = 14;
+const FONT_SIZE = 32;
 
 /**
  * Inner react-tela scene rendered onto the canvas.
@@ -32,45 +30,12 @@ function Scene({
   return (
     <Terminal
       ref={termRef}
-      cols={COLS}
-      rows={ROWS}
+      width={canvasWidth}
+      height={canvasHeight}
       fontFamily="Geist Mono"
       fontSize={FONT_SIZE}
-      x={canvasWidth / 2 - 200}
-      y={80}
-      rotate={-8}
-      scaleX={0.85}
-      scaleY={0.95}
-      shadowColor="rgba(0, 0, 0, 0.5)"
-      shadowBlur={30}
-      shadowOffsetX={15}
-      shadowOffsetY={15}
     />
   );
-}
-
-/**
- * Draws the dark "wall" background with subtle texture lines.
- */
-function drawWallBackground(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-) {
-  const gradient = ctx.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, '#2c3e50');
-  gradient.addColorStop(1, '#1a252f');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
-  ctx.lineWidth = 1;
-  for (let y = 0; y < height; y += 20) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(width, y);
-    ctx.stroke();
-  }
 }
 
 /**
@@ -234,13 +199,6 @@ export function App() {
     const dpr = window.devicePixelRatio || 1;
     canvas.width = canvasSize.width * dpr;
     canvas.height = canvasSize.height * dpr;
-
-    // Draw the wall background
-    const ctx = canvas.getContext('2d')!;
-    ctx.save();
-    ctx.scale(dpr, dpr);
-    drawWallBackground(ctx, canvasSize.width, canvasSize.height);
-    ctx.restore();
 
     if (rootRef.current) {
       rootRef.current.clear();
