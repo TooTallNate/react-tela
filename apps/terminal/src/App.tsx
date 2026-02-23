@@ -33,7 +33,7 @@ function Scene({
       width={canvasWidth}
       height={canvasHeight}
       fontFamily="Geist Mono"
-      fontSize={FONT_SIZE}
+      fontSize={FONT_SIZE * (window.devicePixelRatio || 1)}
     />
   );
 }
@@ -207,8 +207,8 @@ export function App() {
     rootRef.current = render(
       <Scene
         onReady={handleReady}
-        canvasWidth={canvasSize.width}
-        canvasHeight={canvasSize.height}
+        canvasWidth={canvas.width}
+        canvasHeight={canvas.height}
       />,
       canvas,
     );
