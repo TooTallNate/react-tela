@@ -1,8 +1,9 @@
 import { Entity, type EntityProps } from '@react-tela/core';
 import type { Terminal as XTerminalType, ITheme } from '@xterm/headless';
 import XTermHeadless from '@xterm/headless';
-// @xterm/headless is CJS-only; use default import + destructure for Node ESM compat
-const XTerminal = (XTermHeadless as any).Terminal as typeof XTerminalType;
+// @xterm/headless is CJS-only; handle both Node ESM (default.Terminal) and bundler (Terminal) interop
+const _mod = XTermHeadless as any;
+const XTerminal = (_mod.Terminal ?? _mod.default?.Terminal) as typeof XTerminalType;
 
 // ANSI 256-color palette (first 16 standard colors)
 const ANSI_COLORS = [
