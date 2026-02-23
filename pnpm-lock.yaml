@@ -55,6 +55,34 @@ importers:
         specifier: ^5.1.6
         version: 5.4.21(@types/node@20.19.33)
 
+  apps/terminal:
+    dependencies:
+      '@napi-rs/canvas':
+        specifier: ^0.1.65
+        version: 0.1.93
+      '@react-tela/terminal':
+        specifier: workspace:*
+        version: link:../../packages/terminal
+      node-pty:
+        specifier: ^1.0.0
+        version: 1.1.0
+      react:
+        specifier: ^18.2.0
+        version: 18.3.1
+      react-tela:
+        specifier: workspace:*
+        version: link:../../packages/react-tela
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.28
+        version: 18.3.28
+      tsx:
+        specifier: ^4.19.4
+        version: 4.21.0
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.3
+
   packages/core:
     dependencies:
       parse-svg-path:
@@ -2077,6 +2105,12 @@ packages:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+
+  node-addon-api@7.1.1:
+    resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
+
+  node-pty@1.1.0:
+    resolution: {integrity: sha512-20JqtutY6JPXTUnL0ij1uad7Qe1baT46lyolh2sSENDd4sTzKZ4nmAFkeAARDKwmlLjPx6XKRlwRUxwjOy+lUg==}
 
   npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
@@ -4664,6 +4698,12 @@ snapshots:
       thenify-all: 1.6.0
 
   nanoid@3.3.11: {}
+
+  node-addon-api@7.1.1: {}
+
+  node-pty@1.1.0:
+    dependencies:
+      node-addon-api: 7.1.1
 
   npm-run-path@4.0.1:
     dependencies:

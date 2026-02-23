@@ -1,5 +1,8 @@
 import { Entity, type EntityProps } from '@react-tela/core';
-import { Terminal as XTerminal, type ITheme } from '@xterm/headless';
+import type { Terminal as XTerminalType, ITheme } from '@xterm/headless';
+import XTermHeadless from '@xterm/headless';
+// @xterm/headless is CJS-only; use default import + destructure for Node ESM compat
+const XTerminal = (XTermHeadless as any).Terminal as typeof XTerminalType;
 
 // ANSI 256-color palette (first 16 standard colors)
 const ANSI_COLORS = [
@@ -42,7 +45,7 @@ export interface TerminalProps extends EntityProps {
  * contents using canvas text rendering.
  */
 export class Terminal extends Entity {
-	#term: XTerminal;
+	#term: XTerminalType;
 	#cols: number;
 	#rows: number;
 	#fontSize: number;
@@ -174,7 +177,7 @@ export class Terminal extends Entity {
 	}
 
 	/** The underlying xterm.js Terminal instance. */
-	get terminal(): XTerminal {
+	get terminal(): XTerminalType {
 		return this.#term;
 	}
 
