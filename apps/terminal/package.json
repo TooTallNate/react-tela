@@ -8,7 +8,7 @@
   "dependencies": {
     "@napi-rs/canvas": "^0.1.65",
     "@react-tela/terminal": "workspace:*",
-    "node-pty": "^1.0.0",
+    "node-pty": "1.2.0-beta.11",
     "react": "^18.2.0",
     "react-tela": "workspace:*"
   },
