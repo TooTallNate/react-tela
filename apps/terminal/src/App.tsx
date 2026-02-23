@@ -34,6 +34,7 @@ function Scene({
       ref={termRef}
       cols={COLS}
       rows={ROWS}
+      fontFamily="Geist Mono"
       fontSize={FONT_SIZE}
       x={canvasWidth / 2 - 200}
       y={80}
