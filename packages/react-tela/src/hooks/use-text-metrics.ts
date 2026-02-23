@@ -1,3 +1,4 @@
+import { formatFontFamily } from '@react-tela/core';
 import { useMemo } from 'react';
 import { useParent } from './use-parent.js';
 
@@ -16,13 +17,14 @@ import { useParent } from './use-parent.js';
  */
 export function useTextMetrics(
 	text: string,
-	fontFamily = 'sans-serif',
+	fontFamily: string | string[] = 'sans-serif',
 	fontSize = 24,
 	fontWeight: string | number = '',
 ) {
 	const { ctx } = useParent();
 	return useMemo(() => {
-		ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
+		ctx.font =
+			`${fontWeight} ${fontSize}px ${formatFontFamily(fontFamily)}`.trim();
 		return ctx.measureText(text);
 	}, [ctx, text, fontWeight, fontSize, fontFamily]);
 }

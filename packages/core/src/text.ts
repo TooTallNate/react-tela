@@ -1,5 +1,38 @@
 import { Entity, EntityProps } from './entity.js';
-import { resolveFillStroke, type FillStrokeInput } from './shape.js';
+import { type FillStrokeInput, resolveFillStroke } from './shape.js';
+
+function quoteFamilyName(name: string): string {
+	if (name.includes(' ')) {
+		return `"${name}"`;
+	}
+	return name;
+}
+
+/**
+ * Formats a `fontFamily` value for use in the CSS `font` shorthand.
+ *
+ * Accepts a single font family name, a comma-separated CSS `font-family`
+ * string, or an array of family names:
+ *
+ * - **Array** — each entry is quoted if it contains spaces, then joined
+ *   with `", "` (e.g. `['Geist Sans', 'sans-serif']` → `'"Geist Sans", sans-serif'`).
+ * - **String with comma** — assumed to be a complete CSS `font-family`
+ *   value and used as-is (e.g. `"'Geist Sans', sans-serif"`).
+ * - **String without comma** — quoted only when it contains spaces
+ *   (e.g. `"Geist Sans"` → `'"Geist Sans"'`, `"Arial"` → `'Arial'`).
+ *
+ * @param fontFamily - A font family name, comma-separated list, or array.
+ * @returns A properly formatted font-family string.
+ */
+export function formatFontFamily(fontFamily: string | string[]): string {
+	if (Array.isArray(fontFamily)) {
+		return fontFamily.map(quoteFamilyName).join(', ');
+	}
+	if (fontFamily.includes(',')) {
+		return fontFamily;
+	}
+	return quoteFamilyName(fontFamily);
+}
 
 /**
  * Controls how text overflows when it exceeds `maxWidth`.
@@ -21,8 +54,8 @@ export type TextOverflow = 'wrap' | 'ellipsis' | 'clip';
 export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
 	/** The text content to render. */
 	value: string;
-	/** The font family name. @default "sans-serif" */
-	fontFamily?: string;
+	/** The font family name or an array of font family names. @default "sans-serif" */
+	fontFamily?: string | string[];
 	/** The font weight (e.g. `"bold"`, `"700"`). */
 	fontWeight?: string;
 	/** The font size in pixels. @default 24 */
@@ -82,7 +115,7 @@ export interface TextProps extends Omit<EntityProps, 'width' | 'height'> {
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillText | MDN fillText()}
  */
 export class Text extends Entity {
-	fontFamily?: string;
+	fontFamily?: string | string[];
 	fontWeight?: string;
 	fontSize?: number;
 	#value!: string;
@@ -91,7 +124,7 @@ export class Text extends Entity {
 	lineWidth?: number;
 	textAlign: CanvasTextAlign;
 	textBaseline: CanvasTextBaseline;
-letterSpacing?: number;
+	letterSpacing?: number;
 	wordSpacing?: number;
 	direction?: CanvasDirection;
 	fontKerning?: CanvasFontKerning;
@@ -124,7 +157,7 @@ letterSpacing?: number;
 		this.lineWidth = opts.lineWidth;
 		this.textAlign = opts.textAlign || 'start';
 		this.textBaseline = opts.textBaseline || 'top';
-this.letterSpacing = opts.letterSpacing;
+		this.letterSpacing = opts.letterSpacing;
 		this.wordSpacing = opts.wordSpacing;
 		this.direction = opts.direction;
 		this.fontKerning = opts.fontKerning;
@@ -210,8 +243,9 @@ this.letterSpacing = opts.letterSpacing;
 			overflow = 'wrap',
 		} = this;
 		const { ctx } = root;
-		ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
-if (typeof letterSpacing === 'number') {
+		ctx.font =
+			`${fontWeight} ${fontSize}px ${formatFontFamily(fontFamily)}`.trim();
+		if (typeof letterSpacing === 'number') {
 			ctx.letterSpacing = `${letterSpacing}px`;
 		}
 		if (typeof wordSpacing === 'number') {
@@ -257,9 +291,7 @@ if (typeof letterSpacing === 'number') {
 			if (w > maxLineWidth) maxLineWidth = w;
 		}
 		this.width =
-			maxWidth != null
-				? Math.min(maxLineWidth, maxWidth)
-				: maxLineWidth;
+			maxWidth != null ? Math.min(maxLineWidth, maxWidth) : maxLineWidth;
 		this.height =
 			lines.length === 1
 				? fontSize
