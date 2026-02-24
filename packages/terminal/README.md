@@ -13,7 +13,7 @@ A [react-tela](https://github.com/TooTallNate/react-tela) component that renders
 
 ## Usage
 
-```tsx asset="example-usage" width=660 height=420
+```tsx asset="example-usage" width=380 height=90
 import React, { useEffect, useRef } from "react";
 import { Terminal, TerminalEntity } from "./src/index.js";
 
@@ -34,9 +34,7 @@ export function App() {
   return (
     <Terminal
       ref={ref}
-      cols={40}
-      rows={5}
-      fontSize={16}
+      fontSize={14}
       fontFamily="Geist Mono"
       theme={{ background: "#1e1e1e", foreground: "#d4d4d4", cursor: "transparent" }}
     />
@@ -50,7 +48,7 @@ export function App() {
 
 The terminal supports the full ANSI 256-color palette:
 
-```tsx asset="example-colors" width=660 height=560
+```tsx asset="example-colors" width=440 height=270
 import React, { useEffect, useRef } from "react";
 import { Terminal, TerminalEntity } from "./src/index.js";
 
@@ -84,8 +82,6 @@ export function App() {
   return (
     <Terminal
       ref={ref}
-      cols={72}
-      rows={16}
       fontSize={14}
       fontFamily="Geist Mono"
       theme={{ background: "#1a1a2e", foreground: "#eee", cursor: "transparent" }}
