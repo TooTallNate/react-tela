@@ -90,6 +90,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.28)
+      dts-bundle-generator:
+        specifier: ^9.5.1
+        version: 9.5.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -205,9 +208,6 @@ importers:
       '@types/react-reconciler':
         specifier: ^0.28.5
         version: 0.28.9(@types/react@18.3.28)
-      dts-bundle-generator:
-        specifier: ^9.5.1
-        version: 9.5.1
       esbuild:
         specifier: ^0.19.4
         version: 0.19.12

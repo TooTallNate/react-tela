@@ -29,7 +29,7 @@ for (const { entry, module: moduleName } of entries) {
   const tmpFile = join(tmpdir(), `react-tela-${moduleName.replace(/\//g, '-')}.d.ts`);
 
   execFileSync(
-    resolve(packagesDir, 'react-tela/node_modules/.bin/dts-bundle-generator'),
+    resolve(root, 'node_modules/.bin/dts-bundle-generator'),
     ['-o', tmpFile, '--no-check', resolve(packagesDir, entry)],
     { cwd: resolve(packagesDir, 'react-tela'), stdio: ['pipe', 'pipe', 'pipe'] },
   );
