@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@react-tela/terminal": "workspace:*",
-    "geist": "^1.7.0",
+    "geist": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-tela": "workspace:*"
