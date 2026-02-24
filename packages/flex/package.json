@@ -9,6 +9,10 @@
     ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "dist"
   ],
@@ -34,6 +38,11 @@
     "react-tela": "workspace:*",
     "typescript": "catalog:",
     "vitest": "catalog:"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TooTallNate/react-tela.git",
+    "directory": "packages/flex"
   },
   "license": "MIT"
 }

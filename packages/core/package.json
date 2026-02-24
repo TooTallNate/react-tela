@@ -9,6 +9,10 @@
     ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "dist"
   ],
@@ -18,6 +22,11 @@
   },
   "dependencies": {
     "parse-svg-path": "^0.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TooTallNate/react-tela.git",
+    "directory": "packages/core"
   },
   "license": "MIT",
   "devDependencies": {
