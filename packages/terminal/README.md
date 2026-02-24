@@ -23,11 +23,12 @@ export function App() {
   useEffect(() => {
     const term = ref.current;
     if (!term) return;
-    term.write("Hello, terminal! 🖥️\r\n");
+    term.write("Hello, terminal!\r\n");
     term.write("\x1b[32mGreen text\x1b[0m ");
     term.write("\x1b[31mRed text\x1b[0m ");
     term.write("\x1b[34mBlue text\x1b[0m\r\n");
     term.write("\x1b[1mBold\x1b[0m \x1b[4mUnderline\x1b[0m \x1b[7mInverse\x1b[0m\r\n");
+    term.write("\x1b[?25l"); // hide cursor
   }, []);
 
   return (
@@ -37,7 +38,7 @@ export function App() {
       rows={5}
       fontSize={16}
       fontFamily="Geist Mono"
-      theme={{ background: "#1e1e1e", foreground: "#d4d4d4" }}
+      theme={{ background: "#1e1e1e", foreground: "#d4d4d4", cursor: "transparent" }}
     />
   );
 }
@@ -77,6 +78,7 @@ export function App() {
       term.write(`\x1b[48;5;${i}m  \x1b[0m`);
     }
     term.write("\r\n");
+    term.write("\x1b[?25l"); // hide cursor
   }, []);
 
   return (
@@ -86,7 +88,7 @@ export function App() {
       rows={16}
       fontSize={14}
       fontFamily="Geist Mono"
-      theme={{ background: "#1a1a2e", foreground: "#eee" }}
+      theme={{ background: "#1a1a2e", foreground: "#eee", cursor: "transparent" }}
     />
   );
 }
