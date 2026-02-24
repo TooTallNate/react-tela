@@ -15,7 +15,7 @@ npm install @react-tela/flex react-tela react
 
 ## Quick Start
 
-```tsx
+```tsx asset="example-quickstart" width=300 height=100
 import React from "react";
 import { Rect } from "react-tela";
 import initYoga from "yoga-wasm-web/asm";
@@ -55,16 +55,28 @@ Creates a `Flex` component bound to the given Yoga instance. Returns a component
 
 A subcomponent for auto-measured text within Flex layouts:
 
-```tsx
-<Flex width={300} height={60} flexDirection="row" alignItems="center" gap={10}>
-  <Rect fill="#1a1a2e" />
-  <Flex width={60} height={60}><Rect fill="#9b59b6" /></Flex>
-  <Flex flex={1} justifyContent="center">
-    <Flex.Text fontFamily="Geist Sans" fontSize={24} fill="white">
-      Hello Flex!
-    </Flex.Text>
-  </Flex>
-</Flex>
+```tsx asset="example-text" width=300 height=60
+import React from "react";
+import { Rect } from "react-tela";
+import initYoga from "yoga-wasm-web/asm";
+import { createFlex } from "@react-tela/flex";
+
+const yoga = initYoga();
+const Flex = createFlex(yoga);
+
+export function App() {
+  return (
+    <Flex width={300} height={60} flexDirection="row" alignItems="center" gap={10}>
+      <Rect fill="#1a1a2e" />
+      <Flex width={60} height={60}><Rect fill="#9b59b6" /></Flex>
+      <Flex flex={1} justifyContent="center">
+        <Flex.Text fontFamily="Geist Sans" fontSize={24} fill="white">
+          Hello Flex!
+        </Flex.Text>
+      </Flex>
+    </Flex>
+  );
+}
 ```
 
 ![Flex.Text example](./assets/example-text.png)
@@ -73,15 +85,27 @@ A subcomponent for auto-measured text within Flex layouts:
 
 Flex components nest naturally — the outermost `<Flex>` becomes the layout root:
 
-```tsx
-<Flex width={300} height={300} flexDirection="column" gap={10}>
-  <Flex height={50}><Rect fill="#2c3e50" /></Flex>
-  <Flex flex={1} flexDirection="row" gap={10}>
-    <Flex width={80}><Rect fill="#7f8c8d" /></Flex>
-    <Flex flex={1}><Rect fill="#bdc3c7" /></Flex>
-  </Flex>
-  <Flex height={40}><Rect fill="#34495e" /></Flex>
-</Flex>
+```tsx asset="example-nested" width=300 height=300
+import React from "react";
+import { Rect } from "react-tela";
+import initYoga from "yoga-wasm-web/asm";
+import { createFlex } from "@react-tela/flex";
+
+const yoga = initYoga();
+const Flex = createFlex(yoga);
+
+export function App() {
+  return (
+    <Flex width={300} height={300} flexDirection="column" gap={10}>
+      <Flex height={50}><Rect fill="#2c3e50" /></Flex>
+      <Flex flex={1} flexDirection="row" gap={10}>
+        <Flex width={80}><Rect fill="#7f8c8d" /></Flex>
+        <Flex flex={1}><Rect fill="#bdc3c7" /></Flex>
+      </Flex>
+      <Flex height={40}><Rect fill="#34495e" /></Flex>
+    </Flex>
+  );
+}
 ```
 
 ![Nested layout example](./assets/example-nested.png)

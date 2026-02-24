@@ -13,32 +13,86 @@ A [react-tela](https://github.com/TooTallNate/react-tela) component that renders
 
 ## Usage
 
-```tsx
-import { render } from 'react-tela/render';
-import { Terminal } from '@react-tela/terminal';
+```tsx asset="example-usage" width=660 height=420
+import React, { useEffect, useRef } from "react";
+import { Terminal, TerminalEntity } from "./src/index.js";
 
-function App() {
-  const ref = useRef(null);
+export function App() {
+  const ref = useRef<TerminalEntity>(null);
 
   useEffect(() => {
-    ref.current?.write('Hello, terminal! 🖥️\r\n');
-    ref.current?.write('\x1b[32mGreen text\x1b[0m\r\n');
+    const term = ref.current;
+    if (!term) return;
+    term.write("Hello, terminal! 🖥️\r\n");
+    term.write("\x1b[32mGreen text\x1b[0m ");
+    term.write("\x1b[31mRed text\x1b[0m ");
+    term.write("\x1b[34mBlue text\x1b[0m\r\n");
+    term.write("\x1b[1mBold\x1b[0m \x1b[4mUnderline\x1b[0m \x1b[7mInverse\x1b[0m\r\n");
   }, []);
 
   return (
     <Terminal
       ref={ref}
-      cols={80}
-      rows={24}
+      cols={40}
+      rows={5}
       fontSize={16}
-      fontFamily="Geist Mono"
-      theme={{ background: '#1e1e1e', foreground: '#d4d4d4' }}
+      fontFamily="monospace"
+      theme={{ background: "#1e1e1e", foreground: "#d4d4d4" }}
     />
   );
 }
-
-render(<App />, canvas);
 ```
+
+![Terminal usage example](./assets/example-usage.png)
+
+## ANSI Colors
+
+The terminal supports the full ANSI 256-color palette:
+
+```tsx asset="example-colors" width=660 height=560
+import React, { useEffect, useRef } from "react";
+import { Terminal, TerminalEntity } from "./src/index.js";
+
+export function App() {
+  const ref = useRef<TerminalEntity>(null);
+
+  useEffect(() => {
+    const term = ref.current;
+    if (!term) return;
+    term.write("\x1b[1m Standard Colors \x1b[0m\r\n");
+    for (let i = 0; i < 8; i++) {
+      term.write(`\x1b[48;5;${i}m  \x1b[0m`);
+    }
+    term.write("\r\n");
+    for (let i = 8; i < 16; i++) {
+      term.write(`\x1b[48;5;${i}m  \x1b[0m`);
+    }
+    term.write("\r\n\r\n\x1b[1m 216 Colors \x1b[0m\r\n");
+    for (let i = 16; i < 232; i++) {
+      term.write(`\x1b[48;5;${i}m  \x1b[0m`);
+      if ((i - 15) % 36 === 0) term.write("\r\n");
+    }
+    term.write("\r\n\x1b[1m Grayscale \x1b[0m\r\n");
+    for (let i = 232; i < 256; i++) {
+      term.write(`\x1b[48;5;${i}m  \x1b[0m`);
+    }
+    term.write("\r\n");
+  }, []);
+
+  return (
+    <Terminal
+      ref={ref}
+      cols={72}
+      rows={16}
+      fontSize={14}
+      fontFamily="monospace"
+      theme={{ background: "#1a1a2e", foreground: "#eee" }}
+    />
+  );
+}
+```
+
+![ANSI 256-color palette](./assets/example-colors.png)
 
 ## Props
 
