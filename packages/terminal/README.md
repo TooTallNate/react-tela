@@ -36,7 +36,7 @@ export function App() {
       cols={40}
       rows={5}
       fontSize={16}
-      fontFamily="monospace"
+      fontFamily="Geist Mono"
       theme={{ background: "#1e1e1e", foreground: "#d4d4d4" }}
     />
   );
@@ -85,7 +85,7 @@ export function App() {
       cols={72}
       rows={16}
       fontSize={14}
-      fontFamily="monospace"
+      fontFamily="Geist Mono"
       theme={{ background: "#1a1a2e", foreground: "#eee" }}
     />
   );

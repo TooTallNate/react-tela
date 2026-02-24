@@ -33,32 +33,33 @@ const __dirname = dirname(__filename);
 const rootDir = pathResolve(__dirname, "..");
 
 // ── Register Geist fonts ──────────────────────────────────────────────
-const geistFontsDir = join(
-	rootDir,
-	"node_modules",
-	"geist",
-	"dist",
-	"fonts",
-	"geist-sans",
-);
+const geistFontsBase = join(rootDir, "node_modules", "geist", "dist", "fonts");
 
-const fontWeights = [
-	"Geist-Regular",
-	"Geist-Bold",
-	"Geist-Medium",
-	"Geist-SemiBold",
-	"Geist-Light",
-	"Geist-Thin",
+const fontFamilies: Array<{ dir: string; names: string[]; weights: string[] }> = [
+	{
+		dir: "geist-sans",
+		names: ["Geist", "Geist Sans"],
+		weights: ["Regular", "Bold", "Medium", "SemiBold", "Light", "Thin"],
+	},
+	{
+		dir: "geist-mono",
+		names: ["Geist Mono"],
+		weights: ["Regular", "Bold", "Medium", "SemiBold", "Light", "Thin"],
+	},
 ];
 
 let fontsRegistered = 0;
-for (const file of fontWeights) {
-	const ttf = join(geistFontsDir, `${file}.ttf`);
-	if (existsSync(ttf)) {
-		// Register under both names so README code can use either
-		GlobalFonts.registerFromPath(ttf, "Geist");
-		GlobalFonts.registerFromPath(ttf, "Geist Sans");
-		fontsRegistered++;
+for (const family of fontFamilies) {
+	const dir = join(geistFontsBase, family.dir);
+	const prefix = family.dir === "geist-mono" ? "GeistMono" : "Geist";
+	for (const weight of family.weights) {
+		const ttf = join(dir, `${prefix}-${weight}.ttf`);
+		if (existsSync(ttf)) {
+			for (const name of family.names) {
+				GlobalFonts.registerFromPath(ttf, name);
+			}
+			fontsRegistered++;
+		}
 	}
 }
 
