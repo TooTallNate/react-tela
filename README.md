@@ -11,7 +11,7 @@
 
 - **Low-level primitives** — base components expose Canvas drawing operations directly (rects, circles, arcs, paths, images, text)
 - **High-level abstractions** — use the power of React to compose primitives into complex UIs
-- **Flexbox layout** — optional [`@react-tela/flex`](https://github.com/TooTallNate/react-tela/tree/main/packages/flex) package provides a `<Flex>` component powered by [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web) for CSS-like layout
+- **Flexbox layout** — optional [`@react-tela/flex`](https://github.com/TooTallNate/react-tela/tree/main/packages/flex) package provides a `<Flex>` component powered by [Yoga](https://github.com/facebook/yoga) for CSS-like layout
 - **Unopinionated about runtime** — works in web browsers, Node.js, and [nx.js](https://github.com/TooTallNate/nx.js)
 - **No DOM dependency** — never assumes anything "outside" of the provided canvas node
 
@@ -66,7 +66,7 @@ render(<App />, document.getElementById("canvas"));
 
 ### Node.js
 
-Uses [`@napi-rs/canvas`](https://github.com/nicolo-ribaudo/napi-rs-canvas) for headless rendering:
+Uses [`@napi-rs/canvas`](https://github.com/Brooooooklyn/canvas) for headless rendering:
 
 ```tsx
 import React from "react";
@@ -609,7 +609,7 @@ function CenteredText({ children }: { children: string }) {
 
 ## Related Packages
 
-- [`@react-tela/flex`](https://github.com/TooTallNate/react-tela/tree/main/packages/flex) — CSS Flexbox-like layout powered by [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web)
+- [`@react-tela/flex`](https://github.com/TooTallNate/react-tela/tree/main/packages/flex) — CSS Flexbox-like layout powered by [Yoga](https://github.com/facebook/yoga)
 
 ## Exports
 

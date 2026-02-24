@@ -1,11 +1,11 @@
 # @react-tela/flex
 
-### CSS Flexbox layout for react-tela, powered by [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web)
+### CSS Flexbox layout for react-tela, powered by [Yoga](https://github.com/facebook/yoga)
 
 > [!WARNING]
 > This package is currently under development. Expect breaking changes.
 
-`@react-tela/flex` provides a `<Flex>` component that brings CSS Flexbox layout to [`react-tela`](https://github.com/TooTallNate/react-tela) canvas rendering. It uses [`yoga-wasm-web`](https://github.com/nicolo-ribaudo/yoga-wasm-web) under the hood to compute layouts.
+`@react-tela/flex` provides a `<Flex>` component that brings CSS Flexbox layout to [`react-tela`](https://github.com/TooTallNate/react-tela) canvas rendering. It uses [`yoga-wasm-web`](https://github.com/shuding/yoga-wasm-web) under the hood to compute layouts.
 
 ## Installation
 
@@ -35,6 +35,8 @@ export function App() {
 }
 ```
 
+![Quick Start example](./assets/example-quickstart.png)
+
 ## API
 
 ### `createFlex(yogaInstance)`
@@ -59,6 +61,8 @@ A subcomponent for auto-measured text within Flex layouts:
 </Flex.Text>
 ```
 
+![Flex.Text example](./assets/example-text.png)
+
 ## Nested Layouts
 
 Flex components nest naturally — the outermost `<Flex>` becomes the layout root:
@@ -73,6 +77,8 @@ Flex components nest naturally — the outermost `<Flex>` becomes the layout roo
   <Flex height={40}><Rect fill="#34495e" /></Flex>
 </Flex>
 ```
+
+![Nested layout example](./assets/example-nested.png)
 
 ## Why a separate package?
 
