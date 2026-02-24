@@ -5,3 +5,4 @@ packages:
 onlyBuiltDependencies:
   - '@biomejs/biome'
   - esbuild
+  - node-pty
