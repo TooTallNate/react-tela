@@ -11,7 +11,7 @@
 
 - **Low-level primitives** — base components expose Canvas drawing operations directly (rects, circles, arcs, paths, images, text)
 - **High-level abstractions** — use the power of React to compose primitives into complex UIs
-- **Flexbox layout** — optional `<Flex>` component powered by [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web) for CSS-like layout
+- **Flexbox layout** — optional [`@react-tela/flex`](https://github.com/TooTallNate/react-tela/tree/main/packages/flex) package provides a `<Flex>` component powered by [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web) for CSS-like layout
 - **Unopinionated about runtime** — works in web browsers, Node.js, and [nx.js](https://github.com/TooTallNate/nx.js)
 - **No DOM dependency** — never assumes anything "outside" of the provided canvas node
 
@@ -607,145 +607,9 @@ function CenteredText({ children }: { children: string }) {
 
 ![useTextMetrics example](./assets/example-centered-text.png)
 
-## Flex Layout
+## Related Packages
 
-The `<Flex>` component provides CSS Flexbox-like layout powered by the [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web) layout engine. It calculates positions and sizes for child components and feeds them through `LayoutContext`, so standard components like `<Rect>` automatically receive the correct position and dimensions.
-
-### Setup
-
-```bash
-npm install yoga-wasm-web
-```
-
-```tsx
-import initYoga from "yoga-wasm-web/asm";
-import { createFlex } from "react-tela/flex";
-
-const yoga = initYoga();
-const Flex = createFlex(yoga);
-```
-
-`createFlex()` is a factory that takes an initialized Yoga instance and returns a `<Flex>` component. This avoids a hard runtime dependency on Yoga — you bring your own.
-
-### Basic Usage
-
-```tsx
-// Three equal columns
-<Flex width={300} height={100} flexDirection="row" gap={10}>
-  <Flex flex={1}><Rect fill="red" /></Flex>
-  <Flex flex={1}><Rect fill="green" /></Flex>
-  <Flex flex={1}><Rect fill="blue" /></Flex>
-</Flex>
-```
-
-![Flex row example](./assets/example-flex-row.png)
-
-### Nesting
-
-Build complex layouts by nesting `<Flex>` components:
-
-```tsx
-// Classic app layout: header, sidebar + content, footer
-<Flex width={800} height={600} flexDirection="column" gap={10}>
-  <Flex height={50}>
-    <Rect fill="#2c3e50" />
-  </Flex>
-  <Flex flex={1} flexDirection="row" gap={10}>
-    <Flex width={200}>
-      <Rect fill="#7f8c8d" />
-    </Flex>
-    <Flex flex={1}>
-      <Rect fill="#bdc3c7" />
-    </Flex>
-  </Flex>
-  <Flex height={40}>
-    <Rect fill="#2c3e50" />
-  </Flex>
-</Flex>
-```
-
-![Flex layout example](./assets/example-flex-layout.png)
-
-### `Flex.Text`
-
-For text within a flex layout, use `Flex.Text` — it measures the text and creates a correctly-sized flex node:
-
-```tsx
-<Flex alignItems="center" gap={10}>
-  <Flex width={40} height={40}><Circle fill="blue" radius={20} /></Flex>
-  <Flex.Text fontSize={24} fontFamily="Geist" fill="white">
-    Hello Flex!
-  </Flex.Text>
-</Flex>
-```
-
-![Flex.Text example](./assets/example-flex-text.png)
-
-### Flex Props
-
-#### Container Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `flexDirection` | `"row" \| "column" \| "row-reverse" \| "column-reverse"` | `"column"` | Main axis direction |
-| `flexWrap` | `"no-wrap" \| "wrap" \| "wrap-reverse"` | `"no-wrap"` | Whether children wrap |
-| `justifyContent` | `"flex-start" \| "center" \| "flex-end" \| "space-between" \| "space-around" \| "space-evenly"` | `"flex-start"` | Main axis alignment |
-| `alignItems` | `"flex-start" \| "center" \| "flex-end" \| "stretch" \| "baseline" \| "auto"` | `"stretch"` | Cross axis alignment |
-| `gap` | `number` | — | Gap between children (all axes) |
-
-#### Item Props
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `alignSelf` | Same as `alignItems` | Override parent's `alignItems` for this child |
-| `flex` | `number` | Shorthand for grow/shrink/basis |
-| `flexGrow` | `number` | How much this item grows to fill space |
-| `flexShrink` | `number` | How much this item shrinks |
-| `flexBasis` | `number \| string` | Initial size before growing/shrinking |
-
-#### Dimensions
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `width` | `number \| string` | Width (number for pixels, string like `"50%"` for percentage, `"auto"`) |
-| `height` | `number \| string` | Height |
-| `minWidth` | `number \| string` | Minimum width |
-| `maxWidth` | `number \| string` | Maximum width |
-| `minHeight` | `number \| string` | Minimum height |
-| `maxHeight` | `number \| string` | Maximum height |
-
-#### Spacing
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `margin` | `number` | Margin on all edges |
-| `marginTop` | `number` | Top margin |
-| `marginBottom` | `number` | Bottom margin |
-| `marginLeft` | `number` | Left margin |
-| `marginRight` | `number` | Right margin |
-| `padding` | `number` | Padding on all edges |
-| `paddingTop` | `number` | Top padding |
-| `paddingBottom` | `number` | Bottom padding |
-| `paddingLeft` | `number` | Left padding |
-| `paddingRight` | `number` | Right padding |
-
-#### Positioning
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `position` | `"relative" \| "absolute" \| "static"` | `"relative"` | Position type |
-| `top` | `number` | — | Top offset |
-| `bottom` | `number` | — | Bottom offset |
-| `left` | `number` | — | Left offset |
-| `right` | `number` | — | Right offset |
-
-#### Other
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `display` | `"flex" \| "none"` | Display mode |
-| `overflow` | `"visible" \| "hidden" \| "scroll"` | Overflow behavior |
-| `aspectRatio` | `number` | Aspect ratio |
+- [`@react-tela/flex`](https://github.com/TooTallNate/react-tela/tree/main/packages/flex) — CSS Flexbox-like layout powered by [Yoga](https://github.com/nicolo-ribaudo/yoga-wasm-web)
 
 ## Exports
 
@@ -753,7 +617,6 @@ For text within a flex layout, use `Flex.Text` — it measures the text and crea
 |------------|---------|
 | `react-tela` | `Rect`, `RoundRect`, `Circle`, `Ellipse`, `Arc`, `Path`, `Line`, `Image`, `Text`, `Group`, `Canvas`, `useDimensions`, `useLayout`, `useParent`, `useTextMetrics`, `LayoutContext` |
 | `react-tela/render` | `render` |
-| `react-tela/flex` | `createFlex` |
 
 ## What is "tela"? 🇧🇷
 
