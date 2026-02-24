@@ -9,6 +9,7 @@ export default defineConfig({
       'react-tela': resolve(__dirname, '../../packages/react-tela/src/index.tsx'),
       '@react-tela/core': resolve(__dirname, '../../packages/core/src/index.ts'),
       '@react-tela/terminal': resolve(__dirname, '../../packages/terminal/src/index.ts'),
+      'geist': resolve(__dirname, '../../node_modules/geist'),
     },
   },
   build: {
