@@ -18,7 +18,7 @@ This is a monorepo containing the core renderer and supporting packages.
 | App | Description | |
 |-----|-------------|---|
 | [`playground`](./apps/playground) | Interactive playground for experimenting with react-tela | [Live](https://react-tela-playground.n8.io) |
-| [`terminal`](./apps/terminal) | Terminal demo app | [Live](https://react-tela-playground.n8.io) |
+| [`terminal`](./apps/terminal) | Terminal demo app | [Live](https://react-tela-terminal-demo.n8.io) |
 
 ## License
 
