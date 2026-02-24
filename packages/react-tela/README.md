@@ -95,7 +95,7 @@ render(<App />, screen);
 
 The `fill` and `stroke` props on shapes and text accept gradient descriptors in addition to CSS color strings. Use the gradient hooks inside components for optimal performance — they memoize the descriptor so the underlying `CanvasGradient` is cached across re-renders:
 
-```tsx asset="example-gradient" width=300 height=560
+```tsx asset="example-gradient" width=350 height=560
 import React from 'react';
 import { Rect, Text, useLinearGradient, useRadialGradient, useConicGradient } from 'react-tela';
 
@@ -130,7 +130,7 @@ export function App() {
       <Rect width={200} height={100} fill={linear} />
       <Rect y={100} width={200} height={200} fill={radial} />
       <Rect y={300} width={200} height={200} fill={conic} />
-      <Text y={500} fontSize={48} fill={textGradient}>Gradient Text</Text>
+      <Text y={500} fontSize={48} fontFamily="Geist" fill={textGradient}>Gradient Text</Text>
     </>
   );
 }
@@ -572,22 +572,32 @@ export function App() {
 
 When `maxWidth` is set, text automatically wraps to fit. Use `overflow` to control behavior:
 
-```tsx
-{/* Word wrap (default) */}
-<Text x={10} y={10} fontSize={16} fill="black" maxWidth={200} lineHeight={1.4}>
-  This is a long paragraph that will automatically wrap to fit within 200 pixels.
-</Text>
+```tsx asset="example-multiline" width=500 height=120
+import React from 'react';
+import { Rect, Text } from 'react-tela';
 
-{/* Ellipsis truncation */}
-<Text x={10} y={10} fontSize={16} fill="black" maxWidth={200} overflow="ellipsis">
-  This text will be truncated with an ellipsis…
-</Text>
-
-{/* Hard clip */}
-<Text x={10} y={10} fontSize={16} fill="black" maxWidth={200} overflow="clip">
-  This text will be hard-clipped at the boundary.
-</Text>
+export function App() {
+  return (
+    <>
+      <Rect width={500} height={120} fill="#f8f8f8" />
+      <Text x={10} y={10} fontSize={14} fontFamily="Geist" fill="#333" maxWidth={150} lineHeight={1.4}>
+        This is a long paragraph that will automatically wrap to fit within the maxWidth.
+      </Text>
+      <Text x={180} y={10} fontSize={14} fontFamily="Geist" fill="#333" maxWidth={150} overflow="ellipsis">
+        This text will be truncated with an ellipsis when it overflows.
+      </Text>
+      <Text x={350} y={10} fontSize={14} fontFamily="Geist" fill="#333" maxWidth={150} overflow="clip">
+        This text will be hard-clipped at the boundary edge.
+      </Text>
+      <Text x={60} y={105} fontSize={10} fontFamily="Geist" fill="#999">wrap (default)</Text>
+      <Text x={235} y={105} fontSize={10} fontFamily="Geist" fill="#999">ellipsis</Text>
+      <Text x={415} y={105} fontSize={10} fontFamily="Geist" fill="#999">clip</Text>
+    </>
+  );
+}
 ```
+
+![Multiline / word wrap example](./assets/example-multiline.png)
 
 Explicit newline characters (`\n`) are always respected, even without `maxWidth`.
 
