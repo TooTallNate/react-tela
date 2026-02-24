@@ -1,9 +1,9 @@
 packages:
-  - "packages/*"
-  - "apps/*"
+  - packages/*
+  - apps/*
 
 catalog:
-  '@napi-rs/canvas': ^0.1.65
+  '@napi-rs/canvas': ^0.1.93
   '@types/jest-image-snapshot': ^6.4.0
   '@types/node': ^20.8.6
   '@types/react': ^18.2.28
