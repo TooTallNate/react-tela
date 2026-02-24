@@ -45,17 +45,35 @@ export interface GenerateOptions {
 	/** Directory to save generated PNGs */
 	assetsDir: string;
 	/**
-	 * Render function: given a dynamically imported module, canvas width/height,
-	 * produce a PNG Buffer. The module will have an `App` export.
+	 * Extra code to prepend to each temp file (e.g. font registration).
+	 * This is inserted AFTER the original code block.
 	 */
-	renderBlock: (mod: any, width: number, height: number) => Promise<Buffer>;
+	renderSuffix?: string;
 }
+
+const DEFAULT_RENDER_SUFFIX = `
+import React from "react";
+import nodeConfig, { Canvas as NativeCanvas } from "@napi-rs/canvas";
+import { render as _telaRender } from "react-tela/render";
+
+export async function __render(width, height) {
+	const _App = App || exports.default;
+	const canvas = new NativeCanvas(width, height);
+	const root = _telaRender(React.createElement(_App), canvas, nodeConfig);
+	await new Promise(r => setTimeout(r, 500));
+	if (root && typeof root.render === "function") {
+		root.dirty = true;
+		root.render();
+	}
+	return canvas.toBuffer("image/png");
+}
+`;
 
 /**
  * Generate all asset images from a README.md file.
  */
 export async function generateReadmeAssets(opts: GenerateOptions): Promise<void> {
-	const { readmePath, assetsDir, renderBlock } = opts;
+	const { readmePath, assetsDir, renderSuffix = DEFAULT_RENDER_SUFFIX } = opts;
 
 	const blocks = parseReadmeAssets(readmePath);
 	if (blocks.length === 0) {
@@ -70,11 +88,12 @@ export async function generateReadmeAssets(opts: GenerateOptions): Promise<void>
 
 	for (const block of blocks) {
 		const tmpFile = join(tmpDir, `.readme-asset-${randomUUID()}.tsx`);
-		writeFileSync(tmpFile, block.code);
+		// Append render helper so everything runs in the same module scope
+		writeFileSync(tmpFile, block.code + '\n' + renderSuffix);
 
 		try {
 			const mod = await import(tmpFile);
-			const buffer = await renderBlock(mod, block.width, block.height);
+			const buffer = await mod.__render(block.width, block.height);
 			writeFileSync(join(assetsDir, `${block.name}.png`), buffer);
 			console.log(`✓ ${block.name}.png (${block.width}×${block.height})`);
 		} catch (err) {

@@ -3,6 +3,7 @@
   "name": "react-tela-monorepo",
   "packageManager": "pnpm@10.29.3",
   "scripts": {
+    "generate:assets": "tsx scripts/generate-readme-assets.tsx",
     "build": "turbo run build",
     "test": "turbo run test",
     "dev": "turbo run dev",
@@ -12,6 +13,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
+    "geist": "^1.7.0",
     "tsx": "^4.21.0",
     "turbo": "^2.8.10"
   }

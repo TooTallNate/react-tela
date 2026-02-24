@@ -23,7 +23,7 @@ npm install react-tela react
 
 ## Quick Start
 
-```tsx
+```tsx asset="example" width=300 height=100
 import React from "react";
 import { Group, Rect, Text, useDimensions } from "react-tela";
 
@@ -95,10 +95,11 @@ render(<App />, screen);
 
 The `fill` and `stroke` props on shapes and text accept gradient descriptors in addition to CSS color strings. Use the gradient hooks inside components for optimal performance — they memoize the descriptor so the underlying `CanvasGradient` is cached across re-renders:
 
-```tsx
+```tsx asset="example-gradient" width=300 height=560
+import React from 'react';
 import { Rect, Text, useLinearGradient, useRadialGradient, useConicGradient } from 'react-tela';
 
-function GradientDemo() {
+export function App() {
   // Linear gradient (memoized)
   const linear = useLinearGradient(0, 0, 200, 0, [
     [0, 'red'],
@@ -151,11 +152,11 @@ Each `stops` parameter is an array of `[offset, color]` tuples where `offset` is
 
 The `<Pattern>` component creates a repeating pattern that can be used as a `fill` or `stroke` on shapes and text. It works like a `<Group>` but renders its children into an offscreen canvas and exposes a `CanvasPattern` via `ref`:
 
-```tsx
+```tsx asset="example-pattern" width=200 height=120
+import React, { useRef } from 'react';
 import { Rect, Pattern } from 'react-tela';
-import { useRef } from 'react';
 
-function Checkerboard() {
+export function App() {
   const pattern = useRef<CanvasPattern>(null);
 
   return (
@@ -164,7 +165,7 @@ function Checkerboard() {
         <Rect width={10} height={10} fill="#ccc" />
         <Rect x={10} y={10} width={10} height={10} fill="#ccc" />
       </Pattern>
-      <Rect width={400} height={400} fill={pattern} />
+      <Rect width={200} height={120} fill={pattern} />
     </>
   );
 }
@@ -209,14 +210,19 @@ Returns `CanvasPattern | null` — `null` while the image is loading.
 
 All entities support the `filter` prop, which maps directly to [`CanvasRenderingContext2D.filter`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter). Pass any valid CSS filter string:
 
-```tsx
+```tsx asset="example-filter" width=400 height=120
+import React from 'react';
 import { Rect, Circle, Text } from 'react-tela';
 
-<Rect x={10} y={20} width={80} height={80} fill="red" filter="blur(3px)" />
-<Circle x={115} y={25} radius={35} fill="blue" filter="drop-shadow(4px 4px 4px black)" />
-<Text x={220} y={44} fill="green" fontSize={32} filter="drop-shadow(3px 3px 0 rgba(0,0,0,0.7))">
-  Hello
-</Text>
+export function App() {
+  return (
+    <>
+      <Rect x={10} y={20} width={80} height={80} fill="red" filter="blur(3px)" />
+      <Circle x={115} y={25} radius={35} fill="blue" filter="drop-shadow(4px 4px 4px rgba(0,0,0,0.5))" />
+      <Text x={220} y={44} fill="green" fontSize={32} fontFamily="Geist" filter="drop-shadow(3px 3px 0 rgba(0,0,0,0.7))">Hello</Text>
+    </>
+  );
+}
 ```
 
 ![Filter example](./assets/example-filter.png)
@@ -227,9 +233,23 @@ Supported filter functions include `blur()`, `brightness()`, `contrast()`, `drop
 
 Set the `blendMode` prop on any entity to control how it composites with the content below it. This maps directly to the Canvas [`globalCompositeOperation`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation) property.
 
-```tsx
-<Rect width={120} height={120} fill="red" />
-<Circle x={60} y={60} radius={60} fill="blue" blendMode="multiply" />
+```tsx asset="example-blend-modes" width=360 height=120
+import React from 'react';
+import { Rect, Circle } from 'react-tela';
+
+export function App() {
+  return (
+    <>
+      <Rect width={360} height={120} fill="#222" />
+      <Rect x={10} y={10} width={80} height={100} fill="#e74c3c" />
+      <Rect x={50} y={10} width={80} height={100} fill="#3498db" blendMode="multiply" />
+      <Rect x={140} y={10} width={80} height={100} fill="#e74c3c" />
+      <Rect x={180} y={10} width={80} height={100} fill="#3498db" blendMode="screen" />
+      <Rect x={270} y={10} width={80} height={100} fill="#e74c3c" />
+      <Circle x={290} y={30} radius={40} fill="#3498db" blendMode="overlay" />
+    </>
+  );
+}
 ```
 
 ![Blend modes example](./assets/example-blend-modes.png)
@@ -240,17 +260,22 @@ Common values include `"multiply"`, `"screen"`, `"overlay"`, `"darken"`, `"light
 
 All entities support shadow props that map directly to the [Canvas shadow properties](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowColor):
 
-```tsx
+```tsx asset="example-shadow" width=400 height=120
+import React from 'react';
 import { Rect, Circle, Text } from 'react-tela';
 
-<Rect x={10} y={10} width={100} height={80} fill="blue"
-  shadowColor="rgba(0, 0, 0, 0.5)" shadowBlur={10} shadowOffsetX={5} shadowOffsetY={5} />
-<Circle x={180} y={20} radius={40} fill="red"
-  shadowColor="rgba(0, 0, 0, 0.6)" shadowBlur={15} shadowOffsetX={4} shadowOffsetY={4} />
-<Text x={270} y={40} fill="green" fontSize={32}
-  shadowColor="rgba(0, 0, 0, 0.7)" shadowBlur={3} shadowOffsetX={2} shadowOffsetY={2}>
-  Hello
-</Text>
+export function App() {
+  return (
+    <>
+      <Rect x={10} y={10} width={100} height={80} fill="blue"
+        shadowColor="rgba(0, 0, 0, 0.5)" shadowBlur={10} shadowOffsetX={5} shadowOffsetY={5} />
+      <Circle x={180} y={20} radius={40} fill="red"
+        shadowColor="rgba(0, 0, 0, 0.6)" shadowBlur={15} shadowOffsetX={4} shadowOffsetY={4} />
+      <Text x={270} y={40} fill="green" fontSize={32} fontFamily="Geist"
+        shadowColor="rgba(0, 0, 0, 0.7)" shadowBlur={3} shadowOffsetX={2} shadowOffsetY={2}>Hello</Text>
+    </>
+  );
+}
 ```
 
 ![Shadow example](./assets/example-shadow.png)
@@ -283,8 +308,13 @@ Mouse and touch events are supported on all components: `onClick`, `onMouseDown`
 
 Draws a filled and/or stroked rectangle.
 
-```tsx
-<Rect x={10} y={10} width={100} height={50} fill="red" stroke="black" lineWidth={2} />
+```tsx asset="example-rect" width=130 height=70
+import React from 'react';
+import { Rect } from 'react-tela';
+
+export function App() {
+  return <Rect x={5} y={5} width={100} height={50} fill="red" stroke="black" lineWidth={2} />;
+}
 ```
 
 ![Rect example](./assets/example-rect.png)
@@ -293,8 +323,13 @@ Draws a filled and/or stroked rectangle.
 
 Like `<Rect>` but with rounded corners.
 
-```tsx
-<RoundRect x={10} y={10} width={100} height={50} fill="blue" radii={10} />
+```tsx asset="example-roundrect" width=130 height=70
+import React from 'react';
+import { RoundRect } from 'react-tela';
+
+export function App() {
+  return <RoundRect x={5} y={5} width={100} height={50} fill="blue" radii={10} />;
+}
 ```
 
 ![RoundRect example](./assets/example-roundrect.png)
@@ -305,8 +340,13 @@ The `radii` prop accepts a single number, a `DOMPointInit`, or an array — matc
 
 Draws a circle. Shorthand for `<Arc>` with `startAngle={0}` and `endAngle={360}`.
 
-```tsx
-<Circle x={100} y={100} radius={40} fill="green" />
+```tsx asset="example-circle" width=100 height=100
+import React from 'react';
+import { Circle } from 'react-tela';
+
+export function App() {
+  return <Circle x={10} y={10} radius={40} fill="green" />;
+}
 ```
 
 ![Circle example](./assets/example-circle.png)
@@ -315,8 +355,13 @@ Draws a circle. Shorthand for `<Arc>` with `startAngle={0}` and `endAngle={360}`
 
 Draws an ellipse with separate X and Y radii.
 
-```tsx
-<Ellipse x={10} y={10} radiusX={80} radiusY={40} fill="purple" stroke="white" lineWidth={2} />
+```tsx asset="example-ellipse" width=180 height=100
+import React from 'react';
+import { Ellipse } from 'react-tela';
+
+export function App() {
+  return <Ellipse x={10} y={10} radiusX={80} radiusY={40} fill="purple" stroke="white" lineWidth={2} />;
+}
 ```
 
 ![Ellipse example](./assets/example-ellipse.png)
@@ -334,8 +379,13 @@ Draws an ellipse with separate X and Y radii.
 
 Draws an arc or partial circle.
 
-```tsx
-<Arc x={100} y={100} radius={50} startAngle={0} endAngle={180} fill="orange" />
+```tsx asset="example-arc" width=120 height=120
+import React from 'react';
+import { Arc } from 'react-tela';
+
+export function App() {
+  return <Arc x={10} y={10} radius={50} startAngle={0} endAngle={180} fill="orange" />;
+}
 ```
 
 ![Arc example](./assets/example-arc.png)
@@ -351,16 +401,23 @@ Draws an arc or partial circle.
 
 Draws an SVG path.
 
-```tsx
-<Path
-  x={50} y={50}
-  width={48} height={48}
-  d="M26.285,2.486l5.407,10.956..."
-  fill="#ED8A19"
-  stroke="red"
-  lineWidth={3}
-  scaleX={2} scaleY={2}
-/>
+```tsx asset="example-path" width=115 height=115
+import React from 'react';
+import { Path } from 'react-tela';
+
+export function App() {
+  return (
+    <Path
+      x={31} y={31}
+      width={47.94} height={47.94}
+      d="M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757c2.118,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685c-1.894,0.996-4.108-0.613-3.746-2.722l2.065-12.042c0.144-0.837-0.134-1.692-0.742-2.285l-8.749-8.528c-1.532-1.494-0.687-4.096,1.431-4.403l12.091-1.757c0.841-0.122,1.568-0.65,1.944-1.412l5.407-10.956C22.602,0.567,25.338,0.567,26.285,2.486z"
+      fill="#ED8A19"
+      stroke="red"
+      lineWidth={3}
+      scaleX={2} scaleY={2}
+    />
+  );
+}
 ```
 
 | Prop | Type | Description |
@@ -375,8 +432,13 @@ Draws an SVG path.
 
 Draws a line or polyline through a series of points.
 
-```tsx
-<Line points={[{ x: 10, y: 80 }, { x: 70, y: 10 }, { x: 140, y: 80 }]} stroke="blue" lineWidth={3} />
+```tsx asset="example-line" width=160 height=100
+import React from 'react';
+import { Line } from 'react-tela';
+
+export function App() {
+  return <Line points={[{ x: 10, y: 80 }, { x: 70, y: 10 }, { x: 140, y: 80 }]} stroke="blue" lineWidth={3} />;
+}
 ```
 
 ![Line example](./assets/example-line.png)
@@ -393,15 +455,22 @@ Draws a cubic Bézier curve between two points with two control points.
 
 ![BezierCurve example](./assets/example-beziercurve.png)
 
-```tsx
-<BezierCurve
-  x0={10} y0={10}
-  cp1x={40} cp1y={0}
-  cp2x={60} cp2y={100}
-  x1={90} y1={10}
-  stroke="blue"
-  lineWidth={2}
-/>
+```tsx asset="example-beziercurve" width=110 height=110
+import React from 'react';
+import { BezierCurve } from 'react-tela';
+
+export function App() {
+  return (
+    <BezierCurve
+      x0={10} y0={10}
+      cp1x={40} cp1y={0}
+      cp2x={60} cp2y={100}
+      x1={90} y1={10}
+      stroke="blue"
+      lineWidth={2}
+    />
+  );
+}
 ```
 
 | Prop | Type | Description |
@@ -419,14 +488,21 @@ Draws a quadratic Bézier curve between two points with one control point.
 
 ![QuadraticCurve example](./assets/example-quadraticcurve.png)
 
-```tsx
-<QuadraticCurve
-  x0={10} y0={80}
-  cpx={50} cpy={10}
-  x1={90} y1={80}
-  stroke="red"
-  lineWidth={2}
-/>
+```tsx asset="example-quadraticcurve" width=110 height=100
+import React from 'react';
+import { QuadraticCurve } from 'react-tela';
+
+export function App() {
+  return (
+    <QuadraticCurve
+      x0={10} y0={80}
+      cpx={50} cpy={10}
+      x1={90} y1={80}
+      stroke="red"
+      lineWidth={2}
+    />
+  );
+}
 ```
 
 | Prop | Type | Description |
@@ -456,11 +532,20 @@ Renders an image from a URL or file path. The image loads asynchronously — the
 
 Renders text.
 
-```tsx
-<Text x={10} y={10} fontSize={24} fontFamily="Geist" fill="white" stroke="black">
-  Hello world!
-</Text>
+```tsx asset="example-text" width=220 height=45
+import React from 'react';
+import { Text } from 'react-tela';
+
+export function App() {
+  return (
+    <Text x={10} y={10} fontSize={24} fontFamily="Geist" fill="#333" stroke="rgba(0,0,0,0.1)">
+      Hello world!
+    </Text>
+  );
+}
 ```
+
+![Text example](./assets/example-text.png)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -506,17 +591,22 @@ When `maxWidth` is set, text automatically wraps to fit. Use `overflow` to contr
 
 Explicit newline characters (`\n`) are always respected, even without `maxWidth`.
 
-![Text example](./assets/example-text.png)
-
 ### `<Group>`
 
 Groups child components into a sub-canvas with its own coordinate system. Children render relative to the group's position.
 
-```tsx
-<Group x={50} y={50} width={200} height={100} rotate={5}>
-  <Rect width={200} height={100} fill="purple" alpha={0.5} />
-  <Text fontSize={24} fill="white">Inside a group</Text>
-</Group>
+```tsx asset="example-group" width=300 height=120
+import React from 'react';
+import { Group, Rect, Text } from 'react-tela';
+
+export function App() {
+  return (
+    <Group x={50} y={20} width={200} height={80} rotate={5}>
+      <Rect width={200} height={80} fill="purple" alpha={0.5} />
+      <Text fontSize={24} fontFamily="Geist" fill="white">Inside a group</Text>
+    </Group>
+  );
+}
 ```
 
 ![Group example](./assets/example-group.png)
@@ -525,17 +615,30 @@ Groups child components into a sub-canvas with its own coordinate system. Childr
 
 Creates a sub-canvas that you can draw to imperatively via `getContext('2d')`. Useful for mixing imperative canvas drawing with React components.
 
-```tsx
-function CustomCanvas() {
+```tsx asset="example-canvas" width=120 height=80
+import React from 'react';
+import { Canvas, useParent } from 'react-tela';
+
+export function App() {
+  const root = useParent();
   return (
     <Canvas
-      width={100}
-      height={100}
-      ref={(canvas) => {
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "blue";
-        ctx.fillRect(0, 0, 50, 50);
+      width={120}
+      height={80}
+      ref={(ref) => {
+        if (!ref) return;
+        const ctx = ref.getContext("2d");
+        if (!ctx) return;
+        const grad = ctx.createLinearGradient(0, 0, 120, 80);
+        grad.addColorStop(0, "#3498db");
+        grad.addColorStop(1, "#9b59b6");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 120, 80);
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(60, 40, 25, 0, Math.PI * 2);
+        ctx.fill();
+        root.queueRender();
       }}
     />
   );
@@ -587,7 +690,10 @@ Returns the parent `Root` context. Useful for advanced use cases like accessing 
 
 Measures text and returns a [`TextMetrics`](https://developer.mozilla.org/docs/Web/API/TextMetrics) object. Useful for positioning or sizing based on text content.
 
-```tsx
+```tsx asset="example-centered-text" width=400 height=60
+import React from 'react';
+import { Group, Rect, Text, useDimensions, useTextMetrics } from 'react-tela';
+
 function CenteredText({ children }: { children: string }) {
   const dims = useDimensions();
   const metrics = useTextMetrics(children, "Geist", 24);
@@ -601,6 +707,15 @@ function CenteredText({ children }: { children: string }) {
     >
       {children}
     </Text>
+  );
+}
+
+export function App() {
+  return (
+    <Group x={0} y={0} width={400} height={60}>
+      <Rect width={400} height={60} fill="#2c3e50" />
+      <CenteredText>Centered with useTextMetrics</CenteredText>
+    </Group>
   );
 }
 ```
