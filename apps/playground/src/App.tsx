@@ -32,7 +32,7 @@ import { DEFAULT_CODE } from './default-code';
 registerModule('react', ReactModule);
 registerModule('react-tela', reactTela);
 registerModule('react-tela/render', reactTelaRender);
-registerModule('react-tela/flex', reactTelaFlex);
+registerModule('@react-tela/flex', reactTelaFlex);
 registerModule('yoga-wasm-web/asm', yogaInit);
 
 function VimToggle({
