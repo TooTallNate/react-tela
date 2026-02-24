@@ -1,12 +1,13 @@
+import { GlobalFonts } from '@napi-rs/canvas';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
 import { join } from 'path';
 import { expect } from 'vitest';
-import { toMatchImageSnapshot } from 'jest-image-snapshot';
-import { GlobalFonts } from '@napi-rs/canvas';
 
 expect.extend({ toMatchImageSnapshot });
 
-// Register Geist Mono for consistent cross-platform rendering
+// Register Geist Mono under a unique name so it won't conflict
+// with a system-installed "Geist Mono" font.
 GlobalFonts.registerFromPath(
 	join(__dirname, 'GeistMono-Regular.ttf'),
-	'Geist Mono',
+	'Geist Mono Test',
 );
