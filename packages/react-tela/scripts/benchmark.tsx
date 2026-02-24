@@ -21,9 +21,12 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+import { createRequire } from 'module';
+import { resolve } from 'path';
+const require = createRequire(import.meta.url);
+const geistDir = resolve(dirname(require.resolve('geist/font/sans')), '..');
 try {
-	const fontPath = join(__dirname, '..', 'test', 'Geist-Regular.otf');
-	GlobalFonts.registerFromPath(fontPath, 'Geist');
+	GlobalFonts.registerFromPath(join(geistDir, 'dist/fonts/geist-sans/Geist-Regular.ttf'), 'Geist');
 } catch {}
 
 interface BenchmarkResult {
