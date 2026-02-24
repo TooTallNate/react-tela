@@ -15,11 +15,12 @@ import { join } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
+const packagesDir = resolve(root, '../../packages');
 
 const entries = [
-  { entry: 'src/index.tsx', module: 'react-tela' },
-  { entry: 'src/render.ts', module: 'react-tela/render' },
-  { entry: '../flex/src/index.tsx', module: '@react-tela/flex' },
+  { entry: 'react-tela/src/index.tsx', module: 'react-tela' },
+  { entry: 'react-tela/src/render.ts', module: 'react-tela/render' },
+  { entry: 'flex/src/index.tsx', module: '@react-tela/flex' },
 ];
 
 const results = {};
@@ -28,9 +29,9 @@ for (const { entry, module: moduleName } of entries) {
   const tmpFile = join(tmpdir(), `react-tela-${moduleName.replace(/\//g, '-')}.d.ts`);
 
   execFileSync(
-    resolve(root, 'node_modules/.bin/dts-bundle-generator'),
-    ['-o', tmpFile, '--no-check', resolve(root, entry)],
-    { cwd: root, stdio: ['pipe', 'pipe', 'pipe'] },
+    resolve(packagesDir, 'react-tela/node_modules/.bin/dts-bundle-generator'),
+    ['-o', tmpFile, '--no-check', resolve(packagesDir, entry)],
+    { cwd: resolve(packagesDir, 'react-tela'), stdio: ['pipe', 'pipe', 'pipe'] },
   );
 
   let content = readFileSync(tmpFile, 'utf-8');
@@ -137,8 +138,7 @@ function varName(mod) {
 // --- Bundle @types/react for Monaco intellisense ---
 
 // Resolve @types/react from the playground's node_modules
-const playgroundDir = resolve(root, '../../apps/playground');
-const reactTypesDir = resolve(playgroundDir, 'node_modules/@types/react');
+const reactTypesDir = resolve(root, 'node_modules/@types/react');
 
 const reactIndexDts = readFileSync(resolve(reactTypesDir, 'index.d.ts'), 'utf-8');
 const reactGlobalDts = readFileSync(resolve(reactTypesDir, 'global.d.ts'), 'utf-8');
@@ -156,6 +156,6 @@ export const reactIndexDts = ${JSON.stringify(reactIndexDts)};
 export const reactGlobalDts = ${JSON.stringify(reactGlobalDts)};
 `;
 
-const outPath = resolve(root, '../../apps/playground/src/generated-types.ts');
+const outPath = resolve(root, 'src/generated-types.ts');
 writeFileSync(outPath, output);
 console.log(`✅ Generated ${outPath}`);

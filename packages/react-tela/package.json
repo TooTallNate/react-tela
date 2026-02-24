@@ -16,7 +16,6 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "generate:types": "node scripts/generate-playground-types.mjs",
     "dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
     "format": "biome format --write src examples test",
     "node": "tsx examples/node.tsx",
