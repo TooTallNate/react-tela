@@ -1,5 +1,24 @@
 # react-tela
 
+## 0.3.0
+
+### Minor Changes
+
+- f0aa216: Add AbortController support for cancelling in-flight image loads. The `loadImage()` method on `Root` now accepts an optional `{ signal }` option. The `<Image>` component and `usePattern` hook automatically cancel pending loads on unmount or when the source changes.
+- f5ff7e0: Convert to monorepo and extract `@react-tela/core` engine package
+- 56afeb6: Move Flex component to dedicated @react-tela/flex package
+
+  The Flex component and its yoga-wasm-web dependency have been moved to
+  `@react-tela/flex`. Import from `@react-tela/flex` instead of `react-tela/flex`.
+
+### Patch Changes
+
+- 3682863: Fix `fontFamily` prop to support comma-delimited font lists and arrays. Previously, the entire `fontFamily` value was wrapped in quotes, breaking CSS font fallback syntax. Now a string with commas is passed through as-is, a single name is only quoted when it contains spaces, and an array of names is joined with each entry individually quoted as needed.
+- 6d4b507: Fix React StrictMode compatibility for Flex components and add StrictMode test coverage across all tests
+- Updated dependencies [3682863]
+- Updated dependencies [f5ff7e0]
+  - @react-tela/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
