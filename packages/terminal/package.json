@@ -15,14 +15,14 @@
     "test": "vitest"
   },
   "devDependencies": {
-    "@napi-rs/canvas": "^0.1.65",
-    "@types/jest-image-snapshot": "^6.4.0",
-    "@types/react": "^18.0.0",
-    "jest-image-snapshot": "^6.4.0",
-    "react": "^18.0.0",
+    "@napi-rs/canvas": "catalog:",
+    "@types/jest-image-snapshot": "catalog:",
+    "@types/react": "catalog:",
+    "jest-image-snapshot": "catalog:",
+    "react": "catalog:",
     "react-tela": "workspace:*",
-    "typescript": "^5.2.2",
-    "vitest": "^3.0.4"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "dependencies": {
     "@react-tela/core": "workspace:*",

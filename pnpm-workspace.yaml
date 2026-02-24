@@ -2,6 +2,20 @@ packages:
   - "packages/*"
   - "apps/*"
 
+catalog:
+  '@napi-rs/canvas': ^0.1.65
+  '@types/jest-image-snapshot': ^6.4.0
+  '@types/node': ^20.8.6
+  '@types/react': ^18.2.28
+  '@types/react-dom': ^18.2.13
+  jest-image-snapshot: ^6.4.0
+  react: ^18.2.0
+  react-dom: ^18.2.0
+  typescript: ^5.2.2
+  vite: ^5.1.6
+  vitest: ^3.0.4
+  yoga-wasm-web: ^0.3.3
+
 onlyBuiltDependencies:
   - '@biomejs/biome'
   - esbuild
