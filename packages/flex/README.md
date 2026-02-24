@@ -56,9 +56,15 @@ Creates a `Flex` component bound to the given Yoga instance. Returns a component
 A subcomponent for auto-measured text within Flex layouts:
 
 ```tsx
-<Flex.Text fontFamily="Geist Sans" fontSize={24} fill="white">
-  Hello Flex!
-</Flex.Text>
+<Flex width={300} height={60} flexDirection="row" alignItems="center" gap={10}>
+  <Rect fill="#1a1a2e" />
+  <Flex width={60} height={60}><Rect fill="#9b59b6" /></Flex>
+  <Flex flex={1} justifyContent="center">
+    <Flex.Text fontFamily="Geist Sans" fontSize={24} fill="white">
+      Hello Flex!
+    </Flex.Text>
+  </Flex>
+</Flex>
 ```
 
 ![Flex.Text example](./assets/example-text.png)
