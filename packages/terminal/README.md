@@ -48,7 +48,7 @@ export function App() {
 
 The terminal supports the full ANSI 256-color palette:
 
-```tsx asset="example-colors" width=660 height=270
+```tsx asset="example-colors" width=440 height=270
 import React, { useEffect, useRef } from "react";
 import { Terminal, TerminalEntity } from "./src/index.js";
 
