@@ -1,0 +1,39 @@
+{
+  "name": "@react-tela/flex",
+  "version": "0.0.1",
+  "description": "Flex layout component for react-tela powered by Yoga",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@react-tela/core": "workspace:*",
+    "yoga-wasm-web": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "18",
+    "react-tela": "workspace:*"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "catalog:",
+    "@types/jest-image-snapshot": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "jest-image-snapshot": "catalog:",
+    "react": "catalog:",
+    "react-tela": "workspace:*",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "license": "MIT"
+}

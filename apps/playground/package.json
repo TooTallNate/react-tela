@@ -1,27 +1,29 @@
 {
-  "name": "react-tela-playground",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "generate:types": "node ../../packages/react-tela/scripts/generate-playground-types.mjs",
-    "dev": "pnpm generate:types && vite",
-    "build": "pnpm generate:types && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@monaco-editor/react": "^4.7.0",
-    "monaco-editor": "^0.52.2",
-    "monaco-vim": "^0.4.4",
-    "react": "catalog:",
-    "react-dom": "catalog:",
-    "react-tela": "workspace:*",
-    "sucrase": "^3.35.0",
-    "yoga-wasm-web": "catalog:"
-  },
-  "devDependencies": {
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
-    "typescript": "catalog:",
-    "vite": "catalog:"
-  }
+	"name": "react-tela-playground",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"generate:types": "node scripts/generate-playground-types.mjs",
+		"dev": "pnpm generate:types && vite",
+		"build": "pnpm generate:types && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@monaco-editor/react": "^4.7.0",
+		"monaco-editor": "^0.52.2",
+		"monaco-vim": "^0.4.4",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"@react-tela/flex": "workspace:*",
+		"react-tela": "workspace:*",
+		"sucrase": "^3.35.0",
+		"yoga-wasm-web": "catalog:"
+	},
+	"devDependencies": {
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"dts-bundle-generator": "^9.5.1",
+		"typescript": "catalog:",
+		"vite": "catalog:"
+	}
 }

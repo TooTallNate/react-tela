@@ -1,63 +1,59 @@
 {
-  "name": "react-tela",
-  "version": "0.2.0",
-  "description": "React renderer for Canvas",
-  "type": "module",
-  "packageManager": "pnpm@10.29.3",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": "./dist/index.js",
-    "./render": "./dist/render.js",
-    "./flex": "./dist/flex.js",
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "rm -rf dist && tsc",
-    "generate:types": "node scripts/generate-playground-types.mjs",
-    "dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
-    "format": "biome format --write src examples test",
-    "node": "tsx examples/node.tsx",
-    "test": "vitest",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "release": "pnpm build && changeset publish --provenance"
-  },
-  "keywords": [],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/TooTallNate/react-tela.git"
-  },
-  "author": "Nathan Rajlich <n@n8.io>",
-  "license": "MIT",
-  "dependencies": {
-    "react-reconciler": "^0.29.0",
-    "@react-tela/core": "workspace:*"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
-    "@napi-rs/canvas": "catalog:",
-    "@types/jest-image-snapshot": "catalog:",
-    "@types/node": "catalog:",
-    "@types/react": "catalog:",
-    "@types/react-reconciler": "^0.28.5",
-    "dts-bundle-generator": "^9.5.1",
-    "esbuild": "^0.19.4",
-    "jest-image-snapshot": "catalog:",
-    "react": "catalog:",
-    "react-fps": "^1.0.6",
-    "react-router-dom": "^6.23.0",
-    "terminal-image": "^2.0.0",
-    "tsx": "^4.7.0",
-    "typescript": "catalog:",
-    "vite": "catalog:",
-    "vitest": "catalog:",
-    "yoga-wasm-web": "catalog:"
-  },
-  "peerDependencies": {
-    "react": "18"
-  }
+	"name": "react-tela",
+	"version": "0.2.0",
+	"description": "React renderer for Canvas",
+	"type": "module",
+	"packageManager": "pnpm@10.29.3",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": "./dist/index.js",
+		"./render": "./dist/render.js",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "rm -rf dist && tsc",
+		"dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
+		"format": "biome format --write src examples test",
+		"node": "tsx examples/node.tsx",
+		"test": "vitest",
+		"changeset": "changeset",
+		"version": "changeset version",
+		"release": "pnpm build && changeset publish --provenance"
+	},
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/TooTallNate/react-tela.git"
+	},
+	"author": "Nathan Rajlich <n@n8.io>",
+	"license": "MIT",
+	"dependencies": {
+		"react-reconciler": "^0.29.0",
+		"@react-tela/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.5.3",
+		"@napi-rs/canvas": "catalog:",
+		"@types/jest-image-snapshot": "catalog:",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-reconciler": "^0.28.5",
+		"esbuild": "^0.19.4",
+		"jest-image-snapshot": "catalog:",
+		"react": "catalog:",
+		"react-fps": "^1.0.6",
+		"react-router-dom": "^6.23.0",
+		"terminal-image": "^2.0.0",
+		"tsx": "^4.7.0",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"react": "18"
+	}
 }

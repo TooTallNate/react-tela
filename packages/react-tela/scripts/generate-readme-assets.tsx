@@ -31,12 +31,6 @@ import {
 	BezierCurve,
 	QuadraticCurve,
 } from '../src/index';
-import initYoga from 'yoga-wasm-web/asm';
-import { createFlex } from '../src/flex';
-
-const yoga = initYoga();
-const Flex = createFlex(yoga);
-
 const assetsDir = join(__dirname, '..', 'assets');
 mkdirSync(assetsDir, { recursive: true });
 
@@ -218,47 +212,6 @@ async function main() {
 			<Rect width={400} height={60} fill='#2c3e50' />
 			<CenteredText>Centered with useTextMetrics</CenteredText>
 		</Group>
-	));
-
-	// Flex: basic row
-	await saveExample('example-flex-row', 300, 100, (
-		<Flex width={300} height={100} flexDirection='row' gap={10}>
-			<Flex flex={1}><Rect fill='#e74c3c' /></Flex>
-			<Flex flex={1}><Rect fill='#2ecc71' /></Flex>
-			<Flex flex={1}><Rect fill='#3498db' /></Flex>
-		</Flex>
-	));
-
-	// Flex: app layout
-	await saveExample('example-flex-layout', 400, 300, (
-		<Flex width={400} height={300} flexDirection='column' gap={4}>
-			<Flex height={40}>
-				<Rect fill='#2c3e50' />
-			</Flex>
-			<Flex flex={1} flexDirection='row' gap={4}>
-				<Flex width={100}>
-					<Rect fill='#7f8c8d' />
-				</Flex>
-				<Flex flex={1}>
-					<Rect fill='#bdc3c7' />
-				</Flex>
-			</Flex>
-			<Flex height={30}>
-				<Rect fill='#2c3e50' />
-			</Flex>
-		</Flex>
-	));
-
-	// Flex.Text
-	await saveExample('example-flex-text', 300, 80, (
-		<Flex width={300} height={80} flexDirection='row' alignItems='center' justifyContent='center' gap={10}>
-			<Flex width={40} height={40}>
-				<Circle fill='#3498db' radius={20} />
-			</Flex>
-			<Flex.Text fontSize={24} fontFamily='Geist' fill='#333'>
-				Hello Flex!
-			</Flex.Text>
-		</Flex>
 	));
 
 	// Gradient demo
