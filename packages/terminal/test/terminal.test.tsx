@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { expect, test as viTest } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
+import React, { useEffect, useRef } from 'react';
 import { render } from 'react-tela/render';
+import { expect, test as viTest } from 'vitest';
 import { Terminal, TerminalEntity } from '../src/index.js';
 
-const FONT = 'Geist Mono';
+const FONT = 'Geist Mono Test';
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 50));
 
@@ -19,7 +19,9 @@ async function renderAndWrite(
 	canvas = canvas ?? new Canvas(500, 400);
 	let entity: TerminalEntity | null = null;
 	let resolveRef: () => void;
-	const refReady = new Promise<void>((r) => { resolveRef = r; });
+	const refReady = new Promise<void>((r) => {
+		resolveRef = r;
+	});
 
 	function App() {
 		const ref = useRef<TerminalEntity>(null);
@@ -99,7 +101,15 @@ viTest('should render Terminal with alpha=0.5', async () => {
 viTest('should render Terminal with rotate=15', async () => {
 	const canvas = new Canvas(600, 500);
 	const { canvas: c } = await renderAndWrite(
-		{ cols: 30, rows: 8, fontSize: 14, fontFamily: FONT, rotate: 15, x: 50, y: 50 },
+		{
+			cols: 30,
+			rows: 8,
+			fontSize: 14,
+			fontFamily: FONT,
+			rotate: 15,
+			x: 50,
+			y: 50,
+		},
 		['Rotated terminal'],
 		canvas,
 	);
@@ -108,104 +118,119 @@ viTest('should render Terminal with rotate=15', async () => {
 
 // ─── Dynamic Resizing ───
 
-viTest('should auto-calculate cols/rows from width/height when not provided', async () => {
-	// charWidth = ceil(14 * 0.6) = 9, lineHeight = ceil(14 * 1.2) = 17
-	// 270 / 9 = 30 cols, 170 / 17 = 10 rows
-	const { canvas } = await renderAndWrite(
-		{ width: 270, height: 170, fontSize: 14, fontFamily: FONT },
-		['Auto-sized terminal'],
-	);
-	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
-});
-
-viTest('should recalculate cols when width changes (dynamic resize)', async () => {
-	const resizes: [number, number][] = [];
-	const canvas = new Canvas(600, 400);
-	let entity: TerminalEntity | null = null;
-	let resolveRef: () => void;
-	const refReady = new Promise<void>((r) => { resolveRef = r; });
-
-	function App({ width }: { width: number }) {
-		const ref = useRef<TerminalEntity>(null);
-		useEffect(() => {
-			entity = ref.current;
-			resolveRef();
-		}, []);
-		return (
-			<Terminal
-				ref={ref}
-				width={width}
-				height={170}
-				fontSize={14}
-				fontFamily={FONT}
-				onResize={(c, r) => resizes.push([c, r])}
-			/>
+viTest(
+	'should auto-calculate cols/rows from width/height when not provided',
+	async () => {
+		// charWidth = ceil(14 * 0.6) = 9, lineHeight = ceil(14 * 1.2) = 17
+		// 270 / 9 = 30 cols, 170 / 17 = 10 rows
+		const { canvas } = await renderAndWrite(
+			{ width: 270, height: 170, fontSize: 14, fontFamily: FONT },
+			['Auto-sized terminal'],
 		);
-	}
+		expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+	},
+);
 
-	const root = render(<App width={270} />, canvas, config);
-	await root;
-	await refReady;
+viTest(
+	'should recalculate cols when width changes (dynamic resize)',
+	async () => {
+		const resizes: [number, number][] = [];
+		const canvas = new Canvas(600, 400);
+		let entity: TerminalEntity | null = null;
+		let resolveRef: () => void;
+		const refReady = new Promise<void>((r) => {
+			resolveRef = r;
+		});
 
-	await entity!.write('Before resize\r\n');
-	await flush();
-	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+		function App({ width }: { width: number }) {
+			const ref = useRef<TerminalEntity>(null);
+			useEffect(() => {
+				entity = ref.current;
+				resolveRef();
+			}, []);
+			return (
+				<Terminal
+					ref={ref}
+					width={width}
+					height={170}
+					fontSize={14}
+					fontFamily={FONT}
+					onResize={(c, r) => resizes.push([c, r])}
+				/>
+			);
+		}
 
-	// Simulate a width change by directly setting width on the entity
-	entity!.width = 450;
-	await entity!.write('After resize wider\r\n');
-	await flush();
-	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+		const root = render(<App width={270} />, canvas, config);
+		await root;
+		await refReady;
 
-	// cols should have changed: 270/9=30, 450/9=50
-	expect(resizes.length).toBeGreaterThanOrEqual(1);
-	expect(resizes[resizes.length - 1][0]).toBe(50);
-});
+		await entity!.write('Before resize\r\n');
+		await flush();
+		expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 
-viTest('should recalculate rows when height changes (dynamic resize)', async () => {
-	const resizes: [number, number][] = [];
-	const canvas = new Canvas(500, 600);
-	let entity: TerminalEntity | null = null;
-	let resolveRef: () => void;
-	const refReady = new Promise<void>((r) => { resolveRef = r; });
+		// Simulate a width change by directly setting width on the entity
+		entity!.width = 450;
+		await entity!.write('After resize wider\r\n');
+		await flush();
+		expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 
-	function App() {
-		const ref = useRef<TerminalEntity>(null);
-		useEffect(() => {
-			entity = ref.current;
-			resolveRef();
-		}, []);
-		return (
-			<Terminal
-				ref={ref}
-				width={270}
-				height={170}
-				fontSize={14}
-				fontFamily={FONT}
-				onResize={(c, r) => resizes.push([c, r])}
-			/>
-		);
-	}
+		// cols should have changed: 270/9=30, 450/9=50
+		expect(resizes.length).toBeGreaterThanOrEqual(1);
+		expect(resizes[resizes.length - 1][0]).toBe(50);
+	},
+);
 
-	const root = render(<App />, canvas, config);
-	await root;
-	await refReady;
+viTest(
+	'should recalculate rows when height changes (dynamic resize)',
+	async () => {
+		const resizes: [number, number][] = [];
+		const canvas = new Canvas(500, 600);
+		let entity: TerminalEntity | null = null;
+		let resolveRef: () => void;
+		const refReady = new Promise<void>((r) => {
+			resolveRef = r;
+		});
 
-	// Change height: 170/17=10 rows -> 340/17=20 rows
-	entity!.height = 340;
-	await entity!.write('More rows now\r\n');
-	await flush();
-	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+		function App() {
+			const ref = useRef<TerminalEntity>(null);
+			useEffect(() => {
+				entity = ref.current;
+				resolveRef();
+			}, []);
+			return (
+				<Terminal
+					ref={ref}
+					width={270}
+					height={170}
+					fontSize={14}
+					fontFamily={FONT}
+					onResize={(c, r) => resizes.push([c, r])}
+				/>
+			);
+		}
 
-	expect(resizes.length).toBeGreaterThanOrEqual(1);
-	expect(resizes[resizes.length - 1][1]).toBe(20);
-});
+		const root = render(<App />, canvas, config);
+		await root;
+		await refReady;
+
+		// Change height: 170/17=10 rows -> 340/17=20 rows
+		entity!.height = 340;
+		await entity!.write('More rows now\r\n');
+		await flush();
+		expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+
+		expect(resizes.length).toBeGreaterThanOrEqual(1);
+		expect(resizes[resizes.length - 1][1]).toBe(20);
+	},
+);
 
 viTest('should wrap long line to next row after dynamic resize', async () => {
 	const canvas = new Canvas(600, 400);
 	let entity: TerminalEntity | null = null;
 	let resolveRef: () => void;
-	const refReady = new Promise<void>((r) => { resolveRef = r; });
+	const refReady = new Promise<void>((r) => {
+		resolveRef = r;
+	});
 
 	function App({ width }: { width: number }) {
 		const ref = useRef<TerminalEntity>(null);
@@ -249,7 +274,9 @@ viTest('should NOT auto-resize cols when cols is explicitly set', async () => {
 	const canvas = new Canvas(600, 400);
 	let entity: TerminalEntity | null = null;
 	let resolveRef: () => void;
-	const refReady = new Promise<void>((r) => { resolveRef = r; });
+	const refReady = new Promise<void>((r) => {
+		resolveRef = r;
+	});
 
 	function App() {
 		const ref = useRef<TerminalEntity>(null);
@@ -287,7 +314,9 @@ viTest('should fire onResize when both width and height change', async () => {
 	const canvas = new Canvas(600, 600);
 	let entity: TerminalEntity | null = null;
 	let resolveRef: () => void;
-	const refReady = new Promise<void>((r) => { resolveRef = r; });
+	const refReady = new Promise<void>((r) => {
+		resolveRef = r;
+	});
 
 	function App() {
 		const ref = useRef<TerminalEntity>(null);
@@ -312,7 +341,7 @@ viTest('should fire onResize when both width and height change', async () => {
 	await refReady;
 
 	// Change both dimensions
-	entity!.width = 450;  // 50 cols
+	entity!.width = 450; // 50 cols
 	entity!.height = 340; // 20 rows
 	await flush();
 
@@ -328,42 +357,47 @@ viTest('should render empty terminal with auto-calculated size', async () => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-viTest('should handle minimum 1 col/row for very small dimensions', async () => {
-	const canvas = new Canvas(100, 100);
-	let entity: TerminalEntity | null = null;
-	let resolveRef: () => void;
-	const refReady = new Promise<void>((r) => { resolveRef = r; });
+viTest(
+	'should handle minimum 1 col/row for very small dimensions',
+	async () => {
+		const canvas = new Canvas(100, 100);
+		let entity: TerminalEntity | null = null;
+		let resolveRef: () => void;
+		const refReady = new Promise<void>((r) => {
+			resolveRef = r;
+		});
 
-	function App() {
-		const ref = useRef<TerminalEntity>(null);
-		useEffect(() => {
-			entity = ref.current;
-			resolveRef();
-		}, []);
-		return (
-			<Terminal
-				ref={ref}
-				width={270}
-				height={170}
-				fontSize={14}
-				fontFamily={FONT}
-			/>
-		);
-	}
+		function App() {
+			const ref = useRef<TerminalEntity>(null);
+			useEffect(() => {
+				entity = ref.current;
+				resolveRef();
+			}, []);
+			return (
+				<Terminal
+					ref={ref}
+					width={270}
+					height={170}
+					fontSize={14}
+					fontFamily={FONT}
+				/>
+			);
+		}
 
-	const root = render(<App />, canvas, config);
-	await root;
-	await refReady;
+		const root = render(<App />, canvas, config);
+		await root;
+		await refReady;
 
-	// Shrink to very small — should clamp to 1 col, 1 row
-	entity!.width = 5;
-	entity!.height = 5;
-	await flush();
+		// Shrink to very small — should clamp to 1 col, 1 row
+		entity!.width = 5;
+		entity!.height = 5;
+		await flush();
 
-	// Should not crash, entity should still be functional
-	await entity!.write('x');
-	await flush();
-});
+		// Should not crash, entity should still be functional
+		await entity!.write('x');
+		await flush();
+	},
+);
 
 // ─── Cursor ───
 
