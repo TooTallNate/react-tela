@@ -80,6 +80,3 @@ Flex components nest naturally — the outermost `<Flex>` becomes the layout roo
 
 ![Nested layout example](./assets/example-nested.png)
 
-## Why a separate package?
-
-The Yoga WASM binary (`yoga-wasm-web`) adds significant weight to the bundle. By keeping Flex in its own package, apps that don't need Flexbox layout avoid pulling in this dependency.
