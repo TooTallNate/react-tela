@@ -1,9 +1,9 @@
 import './helpers/font';
+import config, { Canvas } from '@napi-rs/canvas';
 import React, { useState } from 'react';
 import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
 import { Text } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -67,17 +67,9 @@ test('should render <Text> with textAlign end', async (render) => {
 test('should render <Text> with multiple children (concatenated)', async (render) => {
 	const canvas = new Canvas(300, 80);
 	await render(
-		<Text
-			x={10}
-			y={10}
-			fontSize={30}
-			fontFamily='Geist Sans'
-			fill='teal'
-		>
+		<Text x={10} y={10} fontSize={30} fontFamily='Geist Sans' fill='teal'>
 			{'Hello '}
-			{'World'}
-			{' '}
-			{42}
+			{'World'} {42}
 		</Text>,
 		canvas,
 		config,
@@ -134,10 +126,35 @@ test('should render <Text> with alpha', async (render) => {
 			<Text x={10} y={10} fontSize={50} fontFamily='Geist Sans' fill='red'>
 				Behind
 			</Text>
-			<Text x={30} y={10} fontSize={50} fontFamily='Geist Sans' fill='blue' alpha={0.4}>
+			<Text
+				x={30}
+				y={10}
+				fontSize={50}
+				fontFamily='Geist Sans'
+				fill='blue'
+				alpha={0.4}
+			>
 				Front
 			</Text>
 		</>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render <Text> with comma-delimited fontFamily', async (render) => {
+	const canvas = new Canvas(300, 80);
+	await render(
+		<Text
+			x={10}
+			y={10}
+			fontSize={40}
+			fontFamily="'Geist Sans', sans-serif"
+			fill='black'
+		>
+			Fallback
+		</Text>,
 		canvas,
 		config,
 	);
