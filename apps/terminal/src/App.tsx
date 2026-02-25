@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	Circle,
 	Group,
-	Path,
 	Rect,
 	RoundRect,
 	Text,
@@ -65,42 +64,6 @@ function TrafficLights({ x, y, dpr }: { x: number; y: number; dpr: number }) {
 }
 
 /**
- * Renders a small mask to cover the area outside a rounded corner.
- * Used to mask the rectangular terminal Group at the bottom window corners.
- *
- * For bottom-left: The quarter-circle center is at (r, 0) in local coords.
- *   Arc from (0,0) to (r,r). Mask covers the triangle outside the arc.
- *
- * For bottom-right: The quarter-circle center is at (0, 0) in local coords.
- *   Arc from (r,0) to (0,r). Mask covers the triangle outside the arc.
- */
-function CornerMask({
-	x,
-	y,
-	r,
-	corner,
-	fill,
-}: {
-	x: number;
-	y: number;
-	r: number;
-	corner: 'bottom-left' | 'bottom-right';
-	fill: string;
-}) {
-	let d: string;
-	if (corner === 'bottom-left') {
-		// Start at (0,0), down to (0,r), right to (r,r), arc back to (0,0)
-		// Arc: from (r,r) to (0,0), center at (r,0), sweep clockwise
-		d = `M0,0 L0,${r} L${r},${r} A${r},${r} 0 0,1 0,0 Z`;
-	} else {
-		// Start at (r,0), down to (r,r), left to (0,r), arc back to (r,0)
-		// Arc: from (0,r) to (r,0), center at (0,0), sweep counterclockwise
-		d = `M${r},0 L${r},${r} L0,${r} A${r},${r} 0 0,0 ${r},0 Z`;
-	}
-	return <Path x={x} y={y} width={r} height={r} d={d} fill={fill} />;
-}
-
-/**
  * Inner react-tela scene rendered onto the canvas.
  * Renders macOS chrome + terminal, reading canvas dimensions reactively.
  */
@@ -120,9 +83,7 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 	const winW = width - padding * 2;
 	const winH = height - padding * 2;
 
-	// Terminal area (below title bar)
-	const termX = winX;
-	const termY = winY + titleBarH;
+	// Terminal area dimensions (relative to Group)
 	const termW = winW;
 	const termH = winH - titleBarH;
 
@@ -141,83 +102,67 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			{/* Page background */}
 			<Rect x={0} y={0} width={width} height={height} fill={PAGE_BG} />
 
-			{/* Window shadow (full window shape) */}
-			<RoundRect
-				x={winX}
-				y={winY}
-				width={winW}
-				height={winH}
-				radii={borderRadius}
-				fill={TERM_BG}
-				shadowColor='rgba(0,0,0,0.35)'
-				shadowBlur={40 * dpr}
-				shadowOffsetY={10 * dpr}
-			/>
+			{/* Entire window chrome inside a single rounded-corner Group */}
+			<Group x={winX} y={winY} width={winW} height={winH} borderRadius={borderRadius}>
+				{/* Window shadow (full window shape) */}
+				<RoundRect
+					x={0}
+					y={0}
+					width={winW}
+					height={winH}
+					radii={borderRadius}
+					fill={TERM_BG}
+					shadowColor='rgba(0,0,0,0.35)'
+					shadowBlur={40 * dpr}
+					shadowOffsetY={10 * dpr}
+				/>
 
-			{/* Terminal rendered inside a Group for isolation */}
-			<Group x={termX} y={termY} width={termW} height={termH}>
+				{/* Terminal area (below title bar) */}
 				<Terminal
 					ref={termRef}
 					x={0}
-					y={0}
+					y={titleBarH}
 					width={termW}
 					height={termH}
 					fontFamily='Geist Mono'
 					fontSize={FONT_SIZE * dpr}
 					theme={{ background: TERM_BG }}
 				/>
+
+				{/* Title bar background (painted on top of terminal) */}
+				<Rect
+					x={0}
+					y={0}
+					width={winW}
+					height={titleBarH}
+					fill='#2c2c2c'
+				/>
+
+				{/* Title bar bottom separator */}
+				<Rect
+					x={0}
+					y={titleBarH - 1 * dpr}
+					width={winW}
+					height={1 * dpr}
+					fill='#1a1a1a'
+				/>
+
+				{/* Traffic light buttons */}
+				<TrafficLights x={lightsX - winX} y={lightsY - winY} dpr={dpr} />
+
+				{/* Title text */}
+				<Text
+					x={winW / 2}
+					y={titleBarH / 2 - (13 * dpr) / 2}
+					fontSize={13 * dpr}
+					fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+					fontWeight='500'
+					fill='rgba(255,255,255,0.5)'
+					textAlign='center'
+				>
+					Terminal
+				</Text>
 			</Group>
-
-			{/* Bottom corner masks - fill the area outside the rounded corners */}
-			<CornerMask
-				x={winX}
-				y={winY + winH - borderRadius}
-				r={borderRadius}
-				corner='bottom-left'
-				fill={PAGE_BG}
-			/>
-			<CornerMask
-				x={winX + winW - borderRadius}
-				y={winY + winH - borderRadius}
-				r={borderRadius}
-				corner='bottom-right'
-				fill={PAGE_BG}
-			/>
-
-			{/* Title bar background (painted on top of terminal) */}
-			<RoundRect
-				x={winX}
-				y={winY}
-				width={winW}
-				height={titleBarH}
-				radii={[borderRadius, borderRadius, 0, 0]}
-				fill='#2c2c2c'
-			/>
-
-			{/* Title bar bottom separator */}
-			<Rect
-				x={winX}
-				y={winY + titleBarH - 1 * dpr}
-				width={winW}
-				height={1 * dpr}
-				fill='#1a1a1a'
-			/>
-
-			{/* Traffic light buttons */}
-			<TrafficLights x={lightsX} y={lightsY} dpr={dpr} />
-
-			{/* Title text */}
-			<Text
-				x={winX + winW / 2}
-				y={winY + titleBarH / 2 - (13 * dpr) / 2}
-				fontSize={13 * dpr}
-				fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-				fontWeight='500'
-				fill='rgba(255,255,255,0.5)'
-				textAlign='center'
-			>
-				Terminal
-			</Text>
 		</>
 	);
 }
@@ -363,9 +308,11 @@ export function App() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const rootRef = useRef<any>(null);
 	const shellRef = useRef<LocalShell | null>(null);
+	const termEntityRef = useRef<TerminalEntity | null>(null);
 
 	const handleReady = useCallback((entity: TerminalEntity) => {
 		if (shellRef.current) return; // Already initialized
+		termEntityRef.current = entity;
 		const shell = new LocalShell(entity);
 		shellRef.current = shell;
 		shell.start();
@@ -452,6 +399,24 @@ export function App() {
 
 		window.addEventListener('keydown', handleKeyDown);
 		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, []);
+
+	// Mouse wheel scrollback handler
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		const handleWheel = (e: WheelEvent) => {
+			const entity = termEntityRef.current;
+			if (!entity) return;
+			e.preventDefault();
+			// Scroll up (positive deltaY) increases offset (look further back)
+			const lines = Math.round(e.deltaY / 20);
+			entity.scrollOffset = Math.max(0, entity.scrollOffset + lines);
+		};
+
+		canvas.addEventListener('wheel', handleWheel, { passive: false });
+		return () => canvas.removeEventListener('wheel', handleWheel);
 	}, []);
 
 	return (

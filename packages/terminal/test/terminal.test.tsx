@@ -399,6 +399,104 @@ viTest(
 	},
 );
 
+// ─── Scroll Offset ───
+
+viTest('should render scrollback content with scrollOffset', async () => {
+	const canvas = new Canvas(500, 400);
+	const { entity } = await renderAndWrite(
+		{ cols: 40, rows: 5, fontSize: 14, fontFamily: FONT, scrollback: 100 },
+		[],
+		canvas,
+	);
+
+	// Write enough lines to create scrollback
+	for (let i = 1; i <= 20; i++) {
+		await entity.write(`Line ${i}\r\n`);
+	}
+	await flush();
+
+	// Default: shows latest lines (no scroll offset)
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+
+	// Scroll up by 10 rows
+	entity.scrollOffset = 10;
+	await flush();
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+
+	// Scroll back to bottom
+	entity.scrollOffset = 0;
+	await flush();
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+viTest('should clamp scrollOffset to available scrollback', async () => {
+	const canvas = new Canvas(500, 400);
+	const { entity } = await renderAndWrite(
+		{ cols: 40, rows: 5, fontSize: 14, fontFamily: FONT, scrollback: 100 },
+		[],
+		canvas,
+	);
+
+	// Write 10 lines — with 5 visible rows, baseY should be ~5
+	for (let i = 1; i <= 10; i++) {
+		await entity.write(`Line ${i}\r\n`);
+	}
+	await flush();
+
+	// Set offset way too high — should clamp
+	entity.scrollOffset = 9999;
+	expect(entity.scrollOffset).toBeLessThanOrEqual(10);
+	expect(entity.scrollOffset).toBeGreaterThan(0);
+});
+
+viTest('should clamp negative scrollOffset to 0', async () => {
+	const { entity } = await renderAndWrite(
+		{ cols: 40, rows: 5, fontSize: 14, fontFamily: FONT },
+		['Hello\r\n'],
+	);
+	entity.scrollOffset = -5;
+	expect(entity.scrollOffset).toBe(0);
+});
+
+viTest('should hide cursor when scrolled back', async () => {
+	const canvas = new Canvas(500, 400);
+	const { entity } = await renderAndWrite(
+		{ cols: 40, rows: 5, fontSize: 14, fontFamily: FONT, scrollback: 100 },
+		[],
+		canvas,
+	);
+
+	for (let i = 1; i <= 10; i++) {
+		await entity.write(`Line ${i}\r\n`);
+	}
+	await flush();
+
+	// Scroll up — cursor should not be visible
+	entity.scrollOffset = 3;
+	await flush();
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+viTest('should accept scrollOffset via props/update', async () => {
+	const canvas = new Canvas(500, 400);
+	const { entity } = await renderAndWrite(
+		{ cols: 40, rows: 5, fontSize: 14, fontFamily: FONT, scrollback: 100, scrollOffset: 0 },
+		[],
+		canvas,
+	);
+
+	for (let i = 1; i <= 15; i++) {
+		await entity.write(`Line ${i}\r\n`);
+	}
+	await flush();
+
+	// Update via update() method
+	entity.update({ scrollOffset: 5 });
+	await flush();
+	expect(entity.scrollOffset).toBe(5);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
 // ─── Cursor ───
 
 viTest('should render Terminal with visible cursor', async () => {

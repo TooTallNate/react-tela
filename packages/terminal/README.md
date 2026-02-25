@@ -104,10 +104,28 @@ export function App() {
 | `lineHeight` | `number` | Auto | Line height in pixels |
 | `theme` | `ITheme` | `{}` | xterm.js theme object |
 | `scrollback` | `number` | `500` | Scrollback buffer size |
+| `scrollOffset` | `number` | `0` | Rows scrolled back from the bottom. `0` = latest content. Positive values scroll up into history. Clamped to available scrollback. |
 | `onData` | `(data: string) => void` | — | Terminal output data callback |
 | `onResize` | `(cols: number, rows: number) => void` | — | Resize callback |
 
 Plus all standard [react-tela entity props](https://github.com/TooTallNate/react-tela) (`x`, `y`, `width`, `height`, `alpha`, `rotate`, etc.).
+
+## Scrollback
+
+The terminal maintains a scrollback buffer (default 500 lines). Use the `scrollOffset` prop to scroll up into history:
+
+```tsx
+// Show content 10 rows back from the bottom
+<Terminal ref={ref} scrollOffset={10} />
+
+// Or set it imperatively
+ref.current.scrollOffset = 10;
+
+// Back to latest
+ref.current.scrollOffset = 0;
+```
+
+The offset is clamped to the available scrollback — you can't scroll past the beginning of the buffer. The cursor is hidden when scrolled back. The viewport size stays the same; only which rows are displayed changes.
 
 ## Ref Methods
 
