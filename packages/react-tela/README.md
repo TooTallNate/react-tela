@@ -631,7 +631,6 @@ A `<Group>` can act as a scrollable viewport into a larger content area. Set `co
 | `contentHeight` | `number` | — | Height of the inner content canvas. When larger than `height`, enables vertical scrolling. |
 | `scrollTop` | `number` | `0` | Vertical offset into the content. Clamped to `[0, contentHeight - height]`. |
 | `scrollLeft` | `number` | `0` | Horizontal offset into the content. Clamped to `[0, contentWidth - width]`. |
-| `overflow` | `'hidden' \| 'scroll'` | `'hidden'` | Overflow behavior (both clip at bounds). |
 
 ```tsx asset="example-group-viewport" width=200 height=100
 import React, { useState, useEffect } from 'react';

@@ -35,13 +35,6 @@ export interface GroupProps extends EntityProps {
 	 * @default 0
 	 */
 	scrollLeft?: number;
-	/**
-	 * Overflow behavior. `'hidden'` clips content at the viewport bounds.
-	 * `'scroll'` behaves identically but semantically indicates scrollable content.
-	 *
-	 * @default 'hidden'
-	 */
-	overflow?: 'hidden' | 'scroll';
 }
 
 /**
@@ -62,7 +55,6 @@ export class Group extends Entity {
 	contentHeight?: number;
 	scrollTop: number;
 	scrollLeft: number;
-	overflow: 'hidden' | 'scroll';
 
 	constructor(opts: GroupProps & { root: GroupRoot }) {
 		super(opts);
@@ -71,7 +63,6 @@ export class Group extends Entity {
 		this.contentHeight = opts.contentHeight;
 		this.scrollTop = opts.scrollTop ?? 0;
 		this.scrollLeft = opts.scrollLeft ?? 0;
-		this.overflow = opts.overflow ?? 'hidden';
 		proxyEvents(this, this.subroot, false);
 	}
 
