@@ -1,5 +1,26 @@
 # react-tela
 
+## 1.0.0
+
+### Major Changes
+
+- f0ab0e7: Promote to v1.0.0 stable release
+
+### Minor Changes
+
+- 977098e: Add `borderRadius` prop to `<Group>` component for rounded-corner clipping of composited group output
+- e36b342: Merge `<RoundRect>` into `<Rect>` with a new `borderRadius` prop
+
+  When `borderRadius` is set on `<Rect>`, it renders with rounded corners via `ctx.roundRect()`. The separate `<RoundRect>` component has been removed.
+
+### Patch Changes
+
+- 4e23599: Add viewport/scroll behavior to `<Group>` component with `contentWidth`, `contentHeight`, `scrollTop`, and `scrollLeft` props for scrollable content areas
+- Updated dependencies [977098e]
+- Updated dependencies [4e23599]
+- Updated dependencies [e36b342]
+  - @react-tela/core@1.0.0
+
 ## 0.3.0
 
 ### Minor Changes

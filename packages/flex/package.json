@@ -1,6 +1,6 @@
 {
   "name": "@react-tela/flex",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Flex layout component for react-tela powered by Yoga",
   "type": "module",
   "main": "dist/index.js",
