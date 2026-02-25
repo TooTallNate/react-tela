@@ -17,14 +17,6 @@ export {
 export { QuadraticCurve, type QuadraticCurveProps } from './quadratic-curve.js';
 export { Rect, type RectProps } from './rect.js';
 export { Root, type RootParams } from './root.js';
-/**
- * @deprecated Use `Rect` with `borderRadius` instead.
- */
-export { Rect as RoundRect } from './rect.js';
-/**
- * @deprecated Use `RectProps` with `borderRadius` instead.
- */
-export type { RectProps as RoundRectProps } from './rect.js';
 export {
 	type FillStrokeInput,
 	type FillStrokeStyle,

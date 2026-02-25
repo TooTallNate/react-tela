@@ -15,7 +15,6 @@ import {
 	type PatternProps as _PatternProps,
 	Rect as _Rect,
 	type RectProps,
-	type RoundRectProps,
 	Arc as _Arc,
 	type ArcProps,
 	Ellipse as _Ellipse,
@@ -78,7 +77,6 @@ export {
 	CanvasProps,
 	EllipseProps,
 	RectProps,
-	RoundRectProps,
 	PathProps,
 	ImageProps,
 	LineProps,
@@ -100,13 +98,8 @@ export const Line = factory<_Line, LineProps>('Line');
 export const Path = factory<_Path, PathProps>('Path');
 /** Renders a quadratic Bézier curve. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/quadraticCurveTo | MDN quadraticCurveTo()} */
 export const QuadraticCurve = factory<_QuadraticCurve, QuadraticCurveProps>('QuadraticCurve');
-/** Renders a rectangle. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect | MDN rect()} */
+/** Renders a rectangle, optionally with rounded corners via `borderRadius`. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect | MDN rect()} */
 export const Rect = factory<_Rect, RectProps>('Rect');
-/** Renders a rectangle with rounded corners. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect | MDN roundRect()} */
-/**
- * @deprecated Use `<Rect borderRadius={...}>` instead.
- */
-export const RoundRect = factory<_Rect, RoundRectProps>('Rect');
 
 /**
  * Props for the `<Text>` component.
