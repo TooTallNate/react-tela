@@ -621,6 +621,46 @@ export function App() {
 
 ![Group example](./assets/example-group.png)
 
+#### Viewport / Scrolling
+
+A `<Group>` can act as a scrollable viewport into a larger content area. Set `contentWidth` and/or `contentHeight` to define the inner canvas dimensions independently from the rendered `width`/`height`, then use `scrollTop`/`scrollLeft` to control which portion of the content is visible.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `contentWidth` | `number` | — | Width of the inner content canvas. When larger than `width`, enables horizontal scrolling. |
+| `contentHeight` | `number` | — | Height of the inner content canvas. When larger than `height`, enables vertical scrolling. |
+| `scrollTop` | `number` | `0` | Vertical offset into the content. Out-of-bounds values show empty space (useful for overscroll effects). |
+| `scrollLeft` | `number` | `0` | Horizontal offset into the content. Out-of-bounds values show empty space (useful for overscroll effects). |
+
+```tsx asset="example-group-viewport" width=200 height=100
+import React, { useState, useEffect } from 'react';
+import { Group, Rect, Text } from 'react-tela';
+
+export function App() {
+  const [scrollTop, setScrollTop] = useState(0);
+
+  // Animate scrolling
+  useEffect(() => {
+    const id = setInterval(() => {
+      setScrollTop((prev) => (prev + 1) % 200);
+    }, 16);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <Group width={200} height={100} contentHeight={300} scrollTop={scrollTop}>
+      <Rect width={200} height={100} fill="red" />
+      <Rect y={100} width={200} height={100} fill="green" />
+      <Rect y={200} width={200} height={100} fill="blue" />
+    </Group>
+  );
+}
+```
+
+When `contentWidth`/`contentHeight` are not set, the `<Group>` renders its children at full size without any viewport clipping.
+
+**Key optimization:** When only `scrollTop`/`scrollLeft` change (and children haven't changed), the inner canvas is not re-rendered — only the source coordinates of the `drawImage` call change. This makes scrolling essentially free.
+
 #### `borderRadius` prop
 
 When set, the Group clips its composited output to a rounded rectangle. Accepts a single number for uniform corners or an array `[tl, tr, br, bl]` for per-corner radii — the same API as `<RoundRect>`.
@@ -635,7 +675,6 @@ When set, the Group clips its composited output to a rounded rectangle. Accepts 
   <Rect width={200} height={80} fill="blue" />
 </Group>
 ```
-
 ### `<Canvas>`
 
 Creates a sub-canvas that you can draw to imperatively via `getContext('2d')`. Useful for mixing imperative canvas drawing with React components.

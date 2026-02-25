@@ -12,6 +12,32 @@ import type { ICanvasRenderingContext2D } from './types.js';
  */
 export interface GroupProps extends EntityProps {
 	/**
+	 * The width of the inner (backing) content canvas. When larger than
+	 * `width`, the Group acts as a viewport window into a larger content area.
+	 */
+	contentWidth?: number;
+	/**
+	 * The height of the inner (backing) content canvas. When larger than
+	 * `height`, the Group acts as a viewport window into a larger content area.
+	 */
+	contentHeight?: number;
+	/**
+	 * Vertical scroll offset into the content. Positive values scroll
+	 * content upward. Values beyond `[0, contentHeight - height]` will
+	 * show empty (transparent) space, enabling overscroll effects.
+	 *
+	 * @default 0
+	 */
+	scrollTop?: number;
+	/**
+	 * Horizontal scroll offset into the content. Positive values scroll
+	 * content leftward. Values beyond `[0, contentWidth - width]` will
+	 * show empty (transparent) space, enabling overscroll effects.
+	 *
+	 * @default 0
+	 */
+	scrollLeft?: number;
+	/**
 	 * Border radius for clipping the composited group output.
 	 * A single number applies a uniform radius to all corners;
 	 * an array `[tl, tr, br, bl]` specifies per-corner radii.
@@ -38,6 +64,10 @@ export interface GroupProps extends EntityProps {
  */
 export class Group extends Entity {
 	subroot: Root;
+	contentWidth?: number;
+	contentHeight?: number;
+	scrollTop: number;
+	scrollLeft: number;
 	#borderRadius?: number | DOMPointInit | (number | DOMPointInit)[];
 
 	get borderRadius() {
@@ -52,6 +82,10 @@ export class Group extends Entity {
 	constructor(opts: GroupProps & { root: GroupRoot }) {
 		super(opts);
 		this.subroot = opts.root;
+		this.contentWidth = opts.contentWidth;
+		this.contentHeight = opts.contentHeight;
+		this.scrollTop = opts.scrollTop ?? 0;
+		this.scrollLeft = opts.scrollLeft ?? 0;
 		this.#borderRadius = opts.borderRadius;
 		proxyEvents(this, this.subroot, false);
 	}
@@ -61,6 +95,18 @@ export class Group extends Entity {
 		this.subroot.render();
 		const { ctx } = this.root;
 		const borderRadius = this.#borderRadius;
+
+		const cw = this.contentWidth;
+		const ch = this.contentHeight;
+
+		// Source coordinates for viewport mode (no clamping — allows overscroll)
+		let sx = 0;
+		let sy = 0;
+		if (cw !== undefined || ch !== undefined) {
+			sx = this.scrollLeft;
+			sy = this.scrollTop;
+		}
+
 		if (borderRadius != null) {
 			ctx.save();
 			ctx.beginPath();
@@ -68,12 +114,28 @@ export class Group extends Entity {
 			ctx.clip();
 			ctx.drawImage(
 				this.subroot.ctx.canvas,
+				sx,
+				sy,
+				this.width,
+				this.height,
 				0,
 				0,
 				this.width,
 				this.height,
 			);
 			ctx.restore();
+		} else if (cw !== undefined || ch !== undefined) {
+			ctx.drawImage(
+				this.subroot.ctx.canvas,
+				sx,
+				sy,
+				this.width,
+				this.height,
+				0,
+				0,
+				this.width,
+				this.height,
+			);
 		} else {
 			ctx.drawImage(
 				this.subroot.ctx.canvas,
