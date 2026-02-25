@@ -132,12 +132,11 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			</Group>
 
 			{/* Title bar background (painted on top of terminal) */}
-			<RoundRect
+			<Rect
 				x={winX}
 				y={winY}
 				width={winW}
 				height={titleBarH}
-				borderRadius={[borderRadius, borderRadius, 0, 0]}
 				fill='#2c2c2c'
 			/>
 
