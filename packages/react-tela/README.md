@@ -621,6 +621,21 @@ export function App() {
 
 ![Group example](./assets/example-group.png)
 
+#### `borderRadius` prop
+
+When set, the Group clips its composited output to a rounded rectangle. Accepts a single number for uniform corners or an array `[tl, tr, br, bl]` for per-corner radii — the same API as `<RoundRect>`.
+
+```tsx
+<Group x={50} y={20} width={200} height={80} borderRadius={10}>
+  <Rect width={200} height={80} fill="purple" />
+</Group>
+
+{/* Bottom corners only */}
+<Group x={50} y={120} width={200} height={80} borderRadius={[0, 0, 10, 10]}>
+  <Rect width={200} height={80} fill="blue" />
+</Group>
+```
+
 ### `<Canvas>`
 
 Creates a sub-canvas that you can draw to imperatively via `getContext('2d')`. Useful for mixing imperative canvas drawing with React components.
