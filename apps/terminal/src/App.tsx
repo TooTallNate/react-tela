@@ -5,7 +5,6 @@ import {
 	Group,
 	Path,
 	Rect,
-	RoundRect,
 	Text,
 	useParent,
 } from 'react-tela';
@@ -142,12 +141,12 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			<Rect x={0} y={0} width={width} height={height} fill={PAGE_BG} />
 
 			{/* Window shadow (full window shape) */}
-			<RoundRect
+			<Rect
 				x={winX}
 				y={winY}
 				width={winW}
 				height={winH}
-				radii={borderRadius}
+				borderRadius={borderRadius}
 				fill={TERM_BG}
 				shadowColor='rgba(0,0,0,0.35)'
 				shadowBlur={40 * dpr}
@@ -185,12 +184,12 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			/>
 
 			{/* Title bar background (painted on top of terminal) */}
-			<RoundRect
+			<Rect
 				x={winX}
 				y={winY}
 				width={winW}
 				height={titleBarH}
-				radii={[borderRadius, borderRadius, 0, 0]}
+				borderRadius={[borderRadius, borderRadius, 0, 0]}
 				fill='#2c2c2c'
 			/>
 

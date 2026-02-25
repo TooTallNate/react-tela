@@ -14,7 +14,6 @@ import {
 	QuadraticCurve,
 	Rect,
 	Root,
-	RoundRect,
 	Text,
 	type ICanvas,
 	type RootParams,
@@ -34,7 +33,6 @@ type Components = {
 	Path: C.PathProps;
 	QuadraticCurve: C.QuadraticCurveProps;
 	Rect: C.RectProps;
-	RoundRect: C.RoundRectProps;
 	Text: C.TextProps;
 };
 
@@ -131,9 +129,6 @@ const reconciler = ReactReconciler<
 		}
 		if (is('Rect', t)) {
 			return new Rect(t.props);
-		}
-		if (is('RoundRect', t)) {
-			return new RoundRect(t.props);
 		}
 		if (is('Text', t)) {
 			return new Text({ ...t.props, value: getText(t.props) });

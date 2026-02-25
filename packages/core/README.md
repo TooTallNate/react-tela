@@ -11,7 +11,6 @@ The rendering engine behind [react-tela](https://github.com/TooTallNate/react-te
 | Entity | Description |
 |--------|-------------|
 | `Rect` | Rectangle |
-| `RoundRect` | Rounded rectangle |
 | `Arc` | Arc / circle |
 | `Ellipse` | Ellipse |
 | `Path` | SVG path |

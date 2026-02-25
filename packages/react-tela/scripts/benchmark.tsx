@@ -11,7 +11,6 @@ import nodeConfig, { Canvas, GlobalFonts } from '@napi-rs/canvas';
 import { render } from '../src/render';
 import {
 	Rect,
-	RoundRect,
 	Circle,
 	Text,
 	Group,
@@ -104,10 +103,10 @@ async function main() {
 	);
 
 	await benchmark(
-		'Single RoundRect',
+		'Single Rect',
 		800,
 		600,
-		<RoundRect x={10} y={10} width={100} height={100} fill='blue' radii={10} />,
+		<Rect x={10} y={10} width={100} height={100} fill='blue' borderRadius={10} />,
 		RERENDERS,
 	);
 
@@ -229,7 +228,7 @@ async function main() {
 					width={250}
 					height={260}
 				>
-					<RoundRect fill='#16213e' radii={8} />
+					<Rect fill='#16213e' borderRadius={8} />
 					<Text x={10} y={10} fontSize={16} fontFamily='Geist' fill='#ccc'>
 						Card {i + 1}
 					</Text>

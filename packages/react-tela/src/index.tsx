@@ -15,7 +15,6 @@ import {
 	type PatternProps as _PatternProps,
 	Rect as _Rect,
 	type RectProps,
-	RoundRect as _RoundRect,
 	type RoundRectProps,
 	Arc as _Arc,
 	type ArcProps,
@@ -104,7 +103,10 @@ export const QuadraticCurve = factory<_QuadraticCurve, QuadraticCurveProps>('Qua
 /** Renders a rectangle. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect | MDN rect()} */
 export const Rect = factory<_Rect, RectProps>('Rect');
 /** Renders a rectangle with rounded corners. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect | MDN roundRect()} */
-export const RoundRect = factory<_RoundRect, RoundRectProps>('RoundRect');
+/**
+ * @deprecated Use `<Rect borderRadius={...}>` instead.
+ */
+export const RoundRect = factory<_Rect, RoundRectProps>('Rect');
 
 /**
  * Props for the `<Text>` component.

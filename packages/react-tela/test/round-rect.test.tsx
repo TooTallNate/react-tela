@@ -2,19 +2,19 @@ import React from 'react';
 import { expect } from 'vitest';
 import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
-import { RoundRect } from '../src';
+import { Rect } from '../src';
 
 const test = createStrictTest();
 
-test('should render <RoundRect> with uniform radii', async (render) => {
+test('should render <Rect> with uniform borderRadius', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
-		<RoundRect
+		<Rect
 			x={20}
 			y={20}
 			width={160}
 			height={110}
-			radii={20}
+			borderRadius={20}
 			fill='cornflowerblue'
 		/>,
 		canvas,
@@ -23,15 +23,15 @@ test('should render <RoundRect> with uniform radii', async (render) => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <RoundRect> with per-corner radii', async (render) => {
+test('should render <Rect> with per-corner borderRadius', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
-		<RoundRect
+		<Rect
 			x={20}
 			y={20}
 			width={160}
 			height={110}
-			radii={[5, 15, 25, 35]}
+			borderRadius={[5, 15, 25, 35]}
 			fill='salmon'
 			stroke='darkred'
 			lineWidth={2}
@@ -42,15 +42,15 @@ test('should render <RoundRect> with per-corner radii', async (render) => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <RoundRect> with zero radii (same as Rect)', async (render) => {
+test('should render <Rect> with zero borderRadius (same as plain Rect)', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
-		<RoundRect
+		<Rect
 			x={10}
 			y={10}
 			width={130}
 			height={80}
-			radii={0}
+			borderRadius={0}
 			fill='limegreen'
 		/>,
 		canvas,
@@ -59,15 +59,15 @@ test('should render <RoundRect> with zero radii (same as Rect)', async (render) 
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should render <RoundRect> with stroke only', async (render) => {
+test('should render <Rect> with borderRadius and stroke only', async (render) => {
 	const canvas = new Canvas(200, 150);
 	await render(
-		<RoundRect
+		<Rect
 			x={20}
 			y={20}
 			width={160}
 			height={110}
-			radii={15}
+			borderRadius={15}
 			stroke='navy'
 			lineWidth={3}
 		/>,
