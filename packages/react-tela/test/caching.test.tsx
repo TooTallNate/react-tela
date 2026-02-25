@@ -2,12 +2,12 @@ import React from 'react';
 import { expect, describe } from 'vitest';
 import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
-import { Rect, RoundRect, Arc, Ellipse, Line, Path } from '../src';
+import { Rect,  Arc, Ellipse, Line, Path } from '../src';
 import { Rect as _Rect } from '@react-tela/core';
 import { Arc as _Arc } from '@react-tela/core';
 import { Ellipse as _Ellipse } from '@react-tela/core';
 import { Line as _Line } from '@react-tela/core';
-import { RoundRect as _RoundRect } from '@react-tela/core';
+import { Rect as _Rect } from '@react-tela/core';
 
 const test = createStrictTest();
 
@@ -303,12 +303,12 @@ describe('Path caching - Line', () => {
 	});
 });
 
-describe('Path caching - RoundRect', () => {
+describe('Path caching - Rect', () => {
 	test('roundrect path is cached', async (render) => {
 		const canvas = new Canvas(150, 100);
-		let ref: _RoundRect | null = null;
+		let ref: _Rect | null = null;
 		await render(
-			<RoundRect ref={(r) => { ref = r; }} x={10} y={10} width={50} height={30} radii={5} fill='purple' />,
+			<Rect ref={(r) => { ref = r; }} x={10} y={10} width={50} height={30} borderRadius={5} fill='purple' />,
 			canvas,
 			config,
 		);
@@ -317,16 +317,16 @@ describe('Path caching - RoundRect', () => {
 		expect(path1).toBe(path2);
 	});
 
-	test('roundrect path recomputed when radii changes', async (render) => {
+	test('rect path recomputed when borderRadius changes', async (render) => {
 		const canvas = new Canvas(150, 100);
-		let ref: _RoundRect | null = null;
+		let ref: _Rect | null = null;
 		await render(
-			<RoundRect ref={(r) => { ref = r; }} x={10} y={10} width={50} height={30} radii={5} fill='purple' />,
+			<Rect ref={(r) => { ref = r; }} x={10} y={10} width={50} height={30} borderRadius={5} fill='purple' />,
 			canvas,
 			config,
 		);
 		const path1 = ref!.path;
-		ref!.radii = 15;
+		ref!.borderRadius = 15;
 		const path2 = ref!.path;
 		expect(path1).not.toBe(path2);
 	});

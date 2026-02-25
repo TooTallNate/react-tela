@@ -319,22 +319,22 @@ export function App() {
 
 ![Rect example](./assets/example-rect.png)
 
-### `<RoundRect>`
+#### Rounded corners
 
-Like `<Rect>` but with rounded corners.
+Add `borderRadius` to render a rectangle with rounded corners (uses [`ctx.roundRect()`](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/roundRect) under the hood):
 
 ```tsx asset="example-roundrect" width=130 height=70
 import React from 'react';
-import { RoundRect } from 'react-tela';
+import { Rect } from 'react-tela';
 
 export function App() {
-  return <RoundRect x={5} y={5} width={100} height={50} fill="blue" radii={10} />;
+  return <Rect x={5} y={5} width={100} height={50} fill="blue" borderRadius={10} />;
 }
 ```
 
-![RoundRect example](./assets/example-roundrect.png)
+![Rounded Rect example](./assets/example-roundrect.png)
 
-The `radii` prop accepts a single number, a `DOMPointInit`, or an array — matching the [`CanvasRenderingContext2D.roundRect()`](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/roundRect) spec.
+The `borderRadius` prop accepts a single number, a `DOMPointInit`, or an array — matching the [`CanvasRenderingContext2D.roundRect()`](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D/roundRect) spec.
 
 ### `<Circle>`
 
@@ -674,7 +674,7 @@ export function App() {
 
 ### Shape Props
 
-`<Rect>`, `<RoundRect>`, `<Circle>`, `<Ellipse>`, `<Arc>`, `<Path>`, `<Line>`, `<BezierCurve>`, and `<QuadraticCurve>` all share these shape-specific props:
+`<Rect>`, `<Circle>`, `<Ellipse>`, `<Arc>`, `<Path>`, `<Line>`, `<BezierCurve>`, and `<QuadraticCurve>` all share these shape-specific props:
 
 | Prop | Type | Description |
 |------|------|-------------|
@@ -755,7 +755,7 @@ export function App() {
 
 | Entry Point | Exports |
 |------------|---------|
-| `react-tela` | `Rect`, `RoundRect`, `Circle`, `Ellipse`, `Arc`, `Path`, `Line`, `Image`, `Text`, `Group`, `Canvas`, `useDimensions`, `useLayout`, `useParent`, `useTextMetrics`, `LayoutContext` |
+| `react-tela` | `Rect`, `Circle`, `Ellipse`, `Arc`, `Path`, `Line`, `Image`, `Text`, `Group`, `Canvas`, `useDimensions`, `useLayout`, `useParent`, `useTextMetrics`, `LayoutContext` |
 | `react-tela/render` | `render` |
 
 ## What is "tela"? 🇧🇷

@@ -47,7 +47,7 @@ Everything drawable extends `Entity`:
 ```
 Entity (base: x, y, opacity, filters, blendMode, shadow*, transforms)
   └─ Shape (adds: fill, stroke, lineWidth, lineCap, lineJoin, etc.)
-       └─ Rect, RoundRect, Arc, Ellipse, Line, Path
+       └─ Rect, Arc, Ellipse, Line, Path
   └─ Text (text rendering with font, textAlign, textBaseline, multiline)
   └─ Image (drawImage wrapper)
   └─ Canvas (offscreen canvas)

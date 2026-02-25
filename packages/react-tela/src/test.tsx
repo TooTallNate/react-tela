@@ -64,8 +64,7 @@ import {
 	Text,
 	Image,
 	useParent,
-	RoundRectProps,
-	RoundRect,
+	RectProps,
 	CanvasRef,
 	useTextMetrics,
 	TextProps,
@@ -114,7 +113,7 @@ const yoga = initYoga();
 //		.toString(16)
 //		.padStart(2, '0')}`;
 
-function Button({ children, ...props }: RoundRectProps & { children: string }) {
+function Button({ children, ...props }: RectProps & { children: string }) {
 	const root = useParent();
 	const rectRef = useRef();
 	const [hover, setHover] = useState(false);
@@ -127,7 +126,7 @@ function Button({ children, ...props }: RoundRectProps & { children: string }) {
 	}, [root]);
 	return (
 		<>
-			<RoundRect
+			<Rect
 				{...props}
 				fill={hover ? 'rgba(250, 250, 250, 0.9)' : props.fill}
 				onMouseEnter={() => {
@@ -203,7 +202,7 @@ function App() {
 					y={200}
 					width={150}
 					height={75}
-					radii={30}
+					borderRadius={30}
 					fill='rgb(250, 250, 250)'
 				>
 					Button
@@ -745,7 +744,7 @@ function FlexTest() {
 						</Flex>
 					)}
 					<Flex flex={2} justifyContent='center' alignItems='center'>
-						<RoundRect fill='yellow' alpha={0.8} radii={25} />
+						<Rect fill='yellow' alpha={0.8} borderRadius={25} />
 						<Flex.Text
 							fill='black'
 							fontFamily='Geist'

@@ -1,7 +1,6 @@
 export const DEFAULT_CODE = `import React, { useState } from "react";
 import {
   Rect,
-  RoundRect,
   Circle,
   Text,
   useDimensions,
@@ -45,10 +44,10 @@ function Button({
 
   return (
     <Flex height={40} paddingLeft={20} paddingRight={20} alignItems="center" justifyContent="center">
-      <RoundRect
+      <Rect
         fill={pressed ? color : hovered ? color : color}
         alpha={pressed ? 1 : hovered ? 0.85 : 0.65}
-        radii={8}
+        borderRadius={8}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => { setHovered(false); setPressed(false); }}
         onMouseDown={() => setPressed(true)}
@@ -85,10 +84,10 @@ function StatCard({
 
   return (
     <Flex flex={1} flexDirection="column" padding={20} gap={10}>
-      <RoundRect
+      <Rect
         fill={t.surface}
         alpha={hovered ? 0.9 : 1}
-        radii={14}
+        borderRadius={14}
         stroke={selected ? color : "transparent"}
         lineWidth={2}
         onMouseEnter={() => setHovered(true)}
@@ -97,7 +96,7 @@ function StatCard({
       />
       {/* Accent bar */}
       <Flex height={4}>
-        <RoundRect fill={color} alpha={selected ? 1 : 0.5} radii={2} />
+        <Rect fill={color} alpha={selected ? 1 : 0.5} borderRadius={2} />
       </Flex>
       <Flex height={20}>
         <Text fontSize={14} fill={t.textMuted}>
@@ -133,7 +132,7 @@ function BarChart({ highlight }: { highlight: string }) {
 
   return (
     <Flex flex={1} flexDirection="column" padding={20} gap={14}>
-      <RoundRect fill={t.surface} radii={14} />
+      <Rect fill={t.surface} borderRadius={14} />
       <Flex height={24}>
         <Text fontSize={18} fill={t.text}>
           Monthly Revenue
@@ -179,10 +178,10 @@ function Bar({
         </Flex>
       )}
       <Flex width={24} height={h}>
-        <RoundRect
+        <Rect
           fill={color}
           alpha={hovered ? 1 : 0.55}
-          radii={[6, 6, 0, 0]}
+          borderRadius={[6, 6, 0, 0]}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         />
@@ -209,7 +208,7 @@ function ActivityFeed() {
 
   return (
     <Flex width={280} flexDirection="column" padding={20} gap={10}>
-      <RoundRect fill={t.surface} radii={14} />
+      <Rect fill={t.surface} borderRadius={14} />
       <Flex height={24}>
         <Text fontSize={18} fill={t.text}>
           Activity
@@ -247,10 +246,10 @@ function ActivityRow({
       paddingLeft={8}
       paddingRight={8}
     >
-      <RoundRect
+      <Rect
         fill={hovered ? t.border : "transparent"}
         alpha={0.4}
-        radii={8}
+        borderRadius={8}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       />
@@ -299,11 +298,11 @@ function NavItem({
   return (
     <Flex height={36} paddingLeft={16} paddingRight={16} alignItems="center">
       {(active || hovered) && (
-        <RoundRect fill={t.accent} alpha={active ? 0.15 : 0.08} radii={8} />
+        <Rect fill={t.accent} alpha={active ? 0.15 : 0.08} borderRadius={8} />
       )}
-      <RoundRect
+      <Rect
         fill="transparent"
-        radii={8}
+        borderRadius={8}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={() => onClick?.()}
@@ -395,7 +394,7 @@ export default function App() {
 
         {/* Footer with interactive button */}
         <Flex height={52} flexDirection="row" alignItems="center" gap={14}>
-          <RoundRect fill={t.surface} radii={12} />
+          <Rect fill={t.surface} borderRadius={12} />
           <Flex flex={1} paddingLeft={16} height={20}>
             <Text fontSize={14} fill={t.textDim}>
               Clicks: {count} · Try clicking the stat cards and hovering the chart bars

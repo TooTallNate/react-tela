@@ -4,7 +4,6 @@ import {
 	Circle,
 	Group,
 	Rect,
-	RoundRect,
 	Text,
 	useParent,
 } from 'react-tela';
@@ -105,12 +104,12 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			{/* Entire window chrome inside a single rounded-corner Group */}
 			<Group x={winX} y={winY} width={winW} height={winH} borderRadius={borderRadius}>
 				{/* Window shadow (full window shape) */}
-				<RoundRect
+				<Rect
 					x={0}
 					y={0}
 					width={winW}
 					height={winH}
-					radii={borderRadius}
+					borderRadius={borderRadius}
 					fill={TERM_BG}
 					shadowColor='rgba(0,0,0,0.35)'
 					shadowBlur={40 * dpr}

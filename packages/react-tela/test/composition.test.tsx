@@ -3,7 +3,7 @@ import React from 'react';
 import { expect } from 'vitest';
 import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
-import { Rect, Circle, Ellipse, Text, Line, RoundRect } from '../src';
+import { Rect, Circle, Ellipse, Text, Line } from '../src';
 
 const test = createStrictTest();
 
@@ -20,7 +20,7 @@ test('should render a scene with mixed shape types', async (render) => {
 			{/* House body */}
 			<Rect x={100} y={150} width={120} height={70} fill='#e74c3c' />
 			{/* Door */}
-			<RoundRect x={140} y={180} width={40} height={40} fill='#8b4513' radii={[5, 5, 0, 0]} />
+			<Rect x={140} y={180} width={40} height={40} fill='#8b4513' borderRadius={[5, 5, 0, 0]} />
 			{/* Window */}
 			<Rect x={200} y={165} width={15} height={15} fill='lightyellow' stroke='#333' lineWidth={1} />
 			{/* Roof line */}
@@ -44,7 +44,7 @@ test('should render text over shapes', async (render) => {
 	const canvas = new Canvas(300, 100);
 	await render(
 		<>
-			<RoundRect x={10} y={10} width={280} height={80} fill='#3498db' radii={10} />
+			<Rect x={10} y={10} width={280} height={80} fill='#3498db' borderRadius={10} />
 			<Text x={30} y={30} fontSize={32} fontFamily='Geist Sans' fill='white'>
 				Button Text
 			</Text>
