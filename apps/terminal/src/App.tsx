@@ -110,7 +110,7 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 				y={winY}
 				width={winW}
 				height={winH}
-				radii={borderRadius}
+				borderRadius={borderRadius}
 				fill={TERM_BG}
 				shadowColor='rgba(0,0,0,0.35)'
 				shadowBlur={40 * dpr}
@@ -118,7 +118,7 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			/>
 
 			{/* Terminal rendered inside a Group for isolation, with rounded bottom corners */}
-			<Group x={termX} y={termY} width={termW} height={termH} radii={[0, 0, borderRadius, borderRadius]}>
+			<Group x={termX} y={termY} width={termW} height={termH} borderRadius={[0, 0, borderRadius, borderRadius]}>
 				<Terminal
 					ref={termRef}
 					x={0}
@@ -137,7 +137,7 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 				y={winY}
 				width={winW}
 				height={titleBarH}
-				radii={[borderRadius, borderRadius, 0, 0]}
+				borderRadius={[borderRadius, borderRadius, 0, 0]}
 				fill='#2c2c2c'
 			/>
 

@@ -12,7 +12,7 @@ import type { ICanvasRenderingContext2D } from './types.js';
  */
 export interface GroupProps extends EntityProps {
 	/**
-	 * Corner radii for clipping the composited group output.
+	 * Border radius for clipping the composited group output.
 	 * A single number applies a uniform radius to all corners;
 	 * an array `[tl, tr, br, bl]` specifies per-corner radii.
 	 *
@@ -21,7 +21,7 @@ export interface GroupProps extends EntityProps {
 	 *
 	 * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect | MDN roundRect()}
 	 */
-	radii?: number | DOMPointInit | (number | DOMPointInit)[];
+	borderRadius?: number | DOMPointInit | (number | DOMPointInit)[];
 }
 
 /**
@@ -38,21 +38,21 @@ export interface GroupProps extends EntityProps {
  */
 export class Group extends Entity {
 	subroot: Root;
-	#radii?: number | DOMPointInit | (number | DOMPointInit)[];
+	#borderRadius?: number | DOMPointInit | (number | DOMPointInit)[];
 
-	get radii() {
-		return this.#radii;
+	get borderRadius() {
+		return this.#borderRadius;
 	}
 
-	set radii(v: number | DOMPointInit | (number | DOMPointInit)[] | undefined) {
-		this.#radii = v;
+	set borderRadius(v: number | DOMPointInit | (number | DOMPointInit)[] | undefined) {
+		this.#borderRadius = v;
 		this.root?.queueRender();
 	}
 
 	constructor(opts: GroupProps & { root: GroupRoot }) {
 		super(opts);
 		this.subroot = opts.root;
-		this.#radii = opts.radii;
+		this.#borderRadius = opts.borderRadius;
 		proxyEvents(this, this.subroot, false);
 	}
 
@@ -60,11 +60,11 @@ export class Group extends Entity {
 		super.render();
 		this.subroot.render();
 		const { ctx } = this.root;
-		const radii = this.#radii;
-		if (radii != null) {
+		const borderRadius = this.#borderRadius;
+		if (borderRadius != null) {
 			ctx.save();
 			ctx.beginPath();
-			ctx.roundRect(0, 0, this.width, this.height, radii);
+			ctx.roundRect(0, 0, this.width, this.height, borderRadius);
 			ctx.clip();
 			ctx.drawImage(
 				this.subroot.ctx.canvas,
