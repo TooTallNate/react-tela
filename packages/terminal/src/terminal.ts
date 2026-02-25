@@ -200,6 +200,11 @@ export class Terminal extends Entity {
 
 	/** Write data into the terminal. Returns a Promise that resolves when the data has been processed. */
 	write(data: string): Promise<void> {
+		// Reset scroll position so the user sees the latest content
+		if (this.#scrollOffset !== 0) {
+			this.#scrollOffset = 0;
+			this._root?.queueRender();
+		}
 		return new Promise<void>((resolve) => {
 			this.#term.write(data, () => {
 				this._root?.queueRender();
