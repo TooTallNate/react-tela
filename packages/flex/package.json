@@ -21,12 +21,12 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@react-tela/core": "workspace:*",
+    "@react-tela/core": "workspace:^",
     "yoga-wasm-web": "catalog:"
   },
   "peerDependencies": {
-    "react": "18",
-    "react-tela": "workspace:*"
+    "react": ">=18",
+    "react-tela": "workspace:^"
   },
   "devDependencies": {
     "@napi-rs/canvas": "catalog:",

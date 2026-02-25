@@ -162,7 +162,7 @@ importers:
   packages/flex:
     dependencies:
       '@react-tela/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       yoga-wasm-web:
         specifier: 'catalog:'
@@ -199,7 +199,7 @@ importers:
   packages/react-tela:
     dependencies:
       '@react-tela/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       react-reconciler:
         specifier: ^0.29.0
@@ -257,7 +257,7 @@ importers:
   packages/terminal:
     dependencies:
       '@react-tela/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       '@xterm/headless':
         specifier: ^5.5.0

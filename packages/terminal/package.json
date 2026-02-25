@@ -29,7 +29,7 @@
     "vitest": "catalog:"
   },
   "dependencies": {
-    "@react-tela/core": "workspace:*",
+    "@react-tela/core": "workspace:^",
     "@xterm/headless": "^5.5.0"
   },
   "repository": {
@@ -39,6 +39,6 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-tela": "workspace:*"
+    "react-tela": "workspace:^"
   }
 }

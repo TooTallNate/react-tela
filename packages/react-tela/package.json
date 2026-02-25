@@ -38,7 +38,7 @@
   "license": "MIT",
   "dependencies": {
     "react-reconciler": "^0.29.0",
-    "@react-tela/core": "workspace:*"
+    "@react-tela/core": "workspace:^"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
