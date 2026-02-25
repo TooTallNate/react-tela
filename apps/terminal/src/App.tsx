@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	Circle,
 	Group,
-	Path,
 	Rect,
 	RoundRect,
 	Text,
@@ -65,42 +64,6 @@ function TrafficLights({ x, y, dpr }: { x: number; y: number; dpr: number }) {
 }
 
 /**
- * Renders a small mask to cover the area outside a rounded corner.
- * Used to mask the rectangular terminal Group at the bottom window corners.
- *
- * For bottom-left: The quarter-circle center is at (r, 0) in local coords.
- *   Arc from (0,0) to (r,r). Mask covers the triangle outside the arc.
- *
- * For bottom-right: The quarter-circle center is at (0, 0) in local coords.
- *   Arc from (r,0) to (0,r). Mask covers the triangle outside the arc.
- */
-function CornerMask({
-	x,
-	y,
-	r,
-	corner,
-	fill,
-}: {
-	x: number;
-	y: number;
-	r: number;
-	corner: 'bottom-left' | 'bottom-right';
-	fill: string;
-}) {
-	let d: string;
-	if (corner === 'bottom-left') {
-		// Start at (0,0), down to (0,r), right to (r,r), arc back to (0,0)
-		// Arc: from (r,r) to (0,0), center at (r,0), sweep clockwise
-		d = `M0,0 L0,${r} L${r},${r} A${r},${r} 0 0,1 0,0 Z`;
-	} else {
-		// Start at (r,0), down to (r,r), left to (0,r), arc back to (r,0)
-		// Arc: from (0,r) to (r,0), center at (0,0), sweep counterclockwise
-		d = `M${r},0 L${r},${r} L0,${r} A${r},${r} 0 0,0 ${r},0 Z`;
-	}
-	return <Path x={x} y={y} width={r} height={r} d={d} fill={fill} />;
-}
-
-/**
  * Inner react-tela scene rendered onto the canvas.
  * Renders macOS chrome + terminal, reading canvas dimensions reactively.
  */
@@ -154,8 +117,8 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 				shadowOffsetY={10 * dpr}
 			/>
 
-			{/* Terminal rendered inside a Group for isolation */}
-			<Group x={termX} y={termY} width={termW} height={termH}>
+			{/* Terminal rendered inside a Group for isolation, with rounded bottom corners */}
+			<Group x={termX} y={termY} width={termW} height={termH} radii={[0, 0, borderRadius, borderRadius]}>
 				<Terminal
 					ref={termRef}
 					x={0}
@@ -167,22 +130,6 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 					theme={{ background: TERM_BG }}
 				/>
 			</Group>
-
-			{/* Bottom corner masks - fill the area outside the rounded corners */}
-			<CornerMask
-				x={winX}
-				y={winY + winH - borderRadius}
-				r={borderRadius}
-				corner='bottom-left'
-				fill={PAGE_BG}
-			/>
-			<CornerMask
-				x={winX + winW - borderRadius}
-				y={winY + winH - borderRadius}
-				r={borderRadius}
-				corner='bottom-right'
-				fill={PAGE_BG}
-			/>
 
 			{/* Title bar background (painted on top of terminal) */}
 			<RoundRect

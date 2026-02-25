@@ -10,7 +10,19 @@ import type { ICanvasRenderingContext2D } from './types.js';
  * then draws the result into the parent context. This enables isolated
  * transforms, opacity, and event handling for a subtree.
  */
-export interface GroupProps extends EntityProps {}
+export interface GroupProps extends EntityProps {
+	/**
+	 * Corner radii for clipping the composited group output.
+	 * A single number applies a uniform radius to all corners;
+	 * an array `[tl, tr, br, bl]` specifies per-corner radii.
+	 *
+	 * When set, the group's composited image is clipped to a
+	 * rounded rectangle before being drawn onto the parent canvas.
+	 *
+	 * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/roundRect | MDN roundRect()}
+	 */
+	radii?: number | DOMPointInit | (number | DOMPointInit)[];
+}
 
 /**
  * Groups child entities into a separate offscreen canvas that is composited
@@ -26,23 +38,51 @@ export interface GroupProps extends EntityProps {}
  */
 export class Group extends Entity {
 	subroot: Root;
+	#radii?: number | DOMPointInit | (number | DOMPointInit)[];
+
+	get radii() {
+		return this.#radii;
+	}
+
+	set radii(v: number | DOMPointInit | (number | DOMPointInit)[] | undefined) {
+		this.#radii = v;
+		this.root?.queueRender();
+	}
 
 	constructor(opts: GroupProps & { root: GroupRoot }) {
 		super(opts);
 		this.subroot = opts.root;
+		this.#radii = opts.radii;
 		proxyEvents(this, this.subroot, false);
 	}
 
 	render(): void {
 		super.render();
 		this.subroot.render();
-		this.root.ctx.drawImage(
-			this.subroot.ctx.canvas,
-			0,
-			0,
-			this.width,
-			this.height,
-		);
+		const { ctx } = this.root;
+		const radii = this.#radii;
+		if (radii != null) {
+			ctx.save();
+			ctx.beginPath();
+			ctx.roundRect(0, 0, this.width, this.height, radii);
+			ctx.clip();
+			ctx.drawImage(
+				this.subroot.ctx.canvas,
+				0,
+				0,
+				this.width,
+				this.height,
+			);
+			ctx.restore();
+		} else {
+			ctx.drawImage(
+				this.subroot.ctx.canvas,
+				0,
+				0,
+				this.width,
+				this.height,
+			);
+		}
 	}
 }
 

@@ -52,6 +52,30 @@ test('should render <Group> with scale', async (render) => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
+test('should render <Group> with uniform radii', async (render) => {
+	const canvas = new Canvas(200, 150);
+	await render(
+		<Group x={20} y={20} width={160} height={110} radii={20}>
+			<Rect fill='#e74c3c' />
+		</Group>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render <Group> with per-corner radii', async (render) => {
+	const canvas = new Canvas(200, 150);
+	await render(
+		<Group x={20} y={20} width={160} height={110} radii={[0, 0, 20, 20]}>
+			<Rect fill='#3498db' />
+		</Group>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
 test('should correctly report useDimensions inside <Group>', async (render) => {
 	const canvas = new Canvas(200, 100);
 	let dims: { width: number; height: number };
