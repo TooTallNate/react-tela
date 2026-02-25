@@ -23,14 +23,16 @@ export interface GroupProps extends EntityProps {
 	contentHeight?: number;
 	/**
 	 * Vertical scroll offset into the content. Positive values scroll
-	 * content upward. Clamped to `[0, max(0, contentHeight - height)]`.
+	 * content upward. Values beyond `[0, contentHeight - height]` will
+	 * show empty (transparent) space, enabling overscroll effects.
 	 *
 	 * @default 0
 	 */
 	scrollTop?: number;
 	/**
 	 * Horizontal scroll offset into the content. Positive values scroll
-	 * content leftward. Clamped to `[0, max(0, contentWidth - width)]`.
+	 * content leftward. Values beyond `[0, contentWidth - width]` will
+	 * show empty (transparent) space, enabling overscroll effects.
 	 *
 	 * @default 0
 	 */
@@ -97,14 +99,12 @@ export class Group extends Entity {
 		const cw = this.contentWidth;
 		const ch = this.contentHeight;
 
-		// Calculate source coordinates for viewport mode
+		// Source coordinates for viewport mode (no clamping — allows overscroll)
 		let sx = 0;
 		let sy = 0;
 		if (cw !== undefined || ch !== undefined) {
-			const maxScrollLeft = Math.max(0, (cw ?? this.width) - this.width);
-			const maxScrollTop = Math.max(0, (ch ?? this.height) - this.height);
-			sx = Math.max(0, Math.min(this.scrollLeft, maxScrollLeft));
-			sy = Math.max(0, Math.min(this.scrollTop, maxScrollTop));
+			sx = this.scrollLeft;
+			sy = this.scrollTop;
 		}
 
 		if (borderRadius != null) {

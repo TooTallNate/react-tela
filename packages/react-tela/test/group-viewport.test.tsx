@@ -52,10 +52,10 @@ test('should scroll content with scrollLeft', async (render) => {
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should clamp scrollTop to max value', async (render) => {
+test('should allow overscroll past max (no clamping)', async (render) => {
 	const canvas = new Canvas(200, 100);
 	await render(
-		<Group x={0} y={0} width={200} height={100} contentHeight={300} scrollTop={9999}>
+		<Group x={0} y={0} width={200} height={100} contentHeight={300} scrollTop={250}>
 			<Rect width={200} height={100} fill="red" />
 			<Rect y={100} width={200} height={100} fill="green" />
 			<Rect y={200} width={200} height={100} fill="blue" />
@@ -63,11 +63,11 @@ test('should clamp scrollTop to max value', async (render) => {
 		canvas,
 		config,
 	);
-	// scrollTop clamped to 200, shows the blue rect
+	// scrollTop=250 with contentHeight=300, height=100: shows bottom 50px of blue + 50px empty
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
-test('should clamp scrollTop to 0 for negative values', async (render) => {
+test('should allow negative overscroll (no clamping)', async (render) => {
 	const canvas = new Canvas(200, 100);
 	await render(
 		<Group x={0} y={0} width={200} height={100} contentHeight={300} scrollTop={-50}>
@@ -78,7 +78,7 @@ test('should clamp scrollTop to 0 for negative values', async (render) => {
 		canvas,
 		config,
 	);
-	// scrollTop clamped to 0, shows the red rect
+	// scrollTop=-50: shows 50px empty space at top + top 50px of red
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
 
