@@ -621,6 +621,47 @@ export function App() {
 
 ![Group example](./assets/example-group.png)
 
+#### Viewport / Scrolling
+
+A `<Group>` can act as a scrollable viewport into a larger content area. Set `contentWidth` and/or `contentHeight` to define the inner canvas dimensions independently from the rendered `width`/`height`, then use `scrollTop`/`scrollLeft` to control which portion of the content is visible.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `contentWidth` | `number` | — | Width of the inner content canvas. When larger than `width`, enables horizontal scrolling. |
+| `contentHeight` | `number` | — | Height of the inner content canvas. When larger than `height`, enables vertical scrolling. |
+| `scrollTop` | `number` | `0` | Vertical offset into the content. Clamped to `[0, contentHeight - height]`. |
+| `scrollLeft` | `number` | `0` | Horizontal offset into the content. Clamped to `[0, contentWidth - width]`. |
+| `overflow` | `'hidden' \| 'scroll'` | `'hidden'` | Overflow behavior (both clip at bounds). |
+
+```tsx asset="example-group-viewport" width=200 height=100
+import React, { useState, useEffect } from 'react';
+import { Group, Rect, Text } from 'react-tela';
+
+export function App() {
+  const [scrollTop, setScrollTop] = useState(0);
+
+  // Animate scrolling
+  useEffect(() => {
+    const id = setInterval(() => {
+      setScrollTop((prev) => (prev + 1) % 200);
+    }, 16);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <Group width={200} height={100} contentHeight={300} scrollTop={scrollTop}>
+      <Rect width={200} height={100} fill="red" />
+      <Rect y={100} width={200} height={100} fill="green" />
+      <Rect y={200} width={200} height={100} fill="blue" />
+    </Group>
+  );
+}
+```
+
+When `contentWidth`/`contentHeight` are not set, the `<Group>` behaves exactly as before — no viewport clipping occurs.
+
+**Key optimization:** When only `scrollTop`/`scrollLeft` change (and children haven't changed), the inner canvas is not re-rendered — only the source coordinates of the `drawImage` call change. This makes scrolling essentially free.
+
 ### `<Canvas>`
 
 Creates a sub-canvas that you can draw to imperatively via `getContext('2d')`. Useful for mixing imperative canvas drawing with React components.

@@ -186,21 +186,25 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 	const adjusted = useAdjustedLayout(props);
 	const w = adjusted === props ? (props.width ?? 0) : adjusted.width;
 	const h = adjusted === props ? (props.height ?? 0) : adjusted.height;
+	// When contentWidth/contentHeight are set, the backing canvas uses
+	// those dimensions so children render into the full content area.
+	const canvasW = props.contentWidth ?? w;
+	const canvasH = props.contentHeight ?? h;
 	if (rootRef.current) {
 		canvas = rootRef.current.ctx.canvas;
 	} else {
-		canvas = new root.Canvas(w || 300, h || 150);
+		canvas = new root.Canvas(canvasW || 300, canvasH || 150);
 		const ctx = canvas.getContext('2d');
 		if (!ctx) {
 			throw new Error('Could not get "2d" canvas context');
 		}
 		rootRef.current = new GroupRoot(ctx, root);
 	}
-	if (w > 0 && w !== canvas.width) {
-		canvas.width = w;
+	if (canvasW > 0 && canvasW !== canvas.width) {
+		canvas.width = canvasW;
 	}
-	if (h > 0 && h !== canvas.height) {
-		canvas.height = h;
+	if (canvasH > 0 && canvasH !== canvas.height) {
+		canvas.height = canvasH;
 	}
 	return (
 		<ParentContext.Provider value={rootRef.current}>
