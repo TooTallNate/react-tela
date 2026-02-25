@@ -1,6 +1,6 @@
 {
   "name": "@react-tela/core",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Core Canvas2D rendering engine for react-tela",
   "type": "module",
   "main": "dist/index.js",

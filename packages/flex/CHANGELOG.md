@@ -1,5 +1,16 @@
 # @react-tela/flex
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [977098e]
+- Updated dependencies [4e23599]
+- Updated dependencies [e36b342]
+- Updated dependencies [f0ab0e7]
+  - @react-tela/core@1.0.0
+  - react-tela@1.0.0
+
 ## 1.0.0
 
 ### Minor Changes
