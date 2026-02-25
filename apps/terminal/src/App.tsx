@@ -83,9 +83,7 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 	const winW = width - padding * 2;
 	const winH = height - padding * 2;
 
-	// Terminal area (below title bar)
-	const termX = winX;
-	const termY = winY + titleBarH;
+	// Terminal area dimensions (relative to Group)
 	const termW = winW;
 	const termH = winH - titleBarH;
 
@@ -104,66 +102,67 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			{/* Page background */}
 			<Rect x={0} y={0} width={width} height={height} fill={PAGE_BG} />
 
-			{/* Window shadow (full window shape) */}
-			<RoundRect
-				x={winX}
-				y={winY}
-				width={winW}
-				height={winH}
-				radii={borderRadius}
-				fill={TERM_BG}
-				shadowColor='rgba(0,0,0,0.35)'
-				shadowBlur={40 * dpr}
-				shadowOffsetY={10 * dpr}
-			/>
+			{/* Entire window chrome inside a single rounded-corner Group */}
+			<Group x={winX} y={winY} width={winW} height={winH} borderRadius={borderRadius}>
+				{/* Window shadow (full window shape) */}
+				<RoundRect
+					x={0}
+					y={0}
+					width={winW}
+					height={winH}
+					radii={borderRadius}
+					fill={TERM_BG}
+					shadowColor='rgba(0,0,0,0.35)'
+					shadowBlur={40 * dpr}
+					shadowOffsetY={10 * dpr}
+				/>
 
-			{/* Terminal rendered inside a Group for isolation, with rounded bottom corners */}
-			<Group x={termX} y={termY} width={termW} height={termH} borderRadius={[0, 0, borderRadius, borderRadius]}>
+				{/* Terminal area (below title bar) */}
 				<Terminal
 					ref={termRef}
 					x={0}
-					y={0}
+					y={titleBarH}
 					width={termW}
 					height={termH}
 					fontFamily='Geist Mono'
 					fontSize={FONT_SIZE * dpr}
 					theme={{ background: TERM_BG }}
 				/>
+
+				{/* Title bar background (painted on top of terminal) */}
+				<Rect
+					x={0}
+					y={0}
+					width={winW}
+					height={titleBarH}
+					fill='#2c2c2c'
+				/>
+
+				{/* Title bar bottom separator */}
+				<Rect
+					x={0}
+					y={titleBarH - 1 * dpr}
+					width={winW}
+					height={1 * dpr}
+					fill='#1a1a1a'
+				/>
+
+				{/* Traffic light buttons */}
+				<TrafficLights x={lightsX - winX} y={lightsY - winY} dpr={dpr} />
+
+				{/* Title text */}
+				<Text
+					x={winW / 2}
+					y={titleBarH / 2 - (13 * dpr) / 2}
+					fontSize={13 * dpr}
+					fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+					fontWeight='500'
+					fill='rgba(255,255,255,0.5)'
+					textAlign='center'
+				>
+					Terminal
+				</Text>
 			</Group>
-
-			{/* Title bar background (painted on top of terminal) */}
-			<Rect
-				x={winX}
-				y={winY}
-				width={winW}
-				height={titleBarH}
-				fill='#2c2c2c'
-			/>
-
-			{/* Title bar bottom separator */}
-			<Rect
-				x={winX}
-				y={winY + titleBarH - 1 * dpr}
-				width={winW}
-				height={1 * dpr}
-				fill='#1a1a1a'
-			/>
-
-			{/* Traffic light buttons */}
-			<TrafficLights x={lightsX} y={lightsY} dpr={dpr} />
-
-			{/* Title text */}
-			<Text
-				x={winX + winW / 2}
-				y={winY + titleBarH / 2 - (13 * dpr) / 2}
-				fontSize={13 * dpr}
-				fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-				fontWeight='500'
-				fill='rgba(255,255,255,0.5)'
-				textAlign='center'
-			>
-				Terminal
-			</Text>
 		</>
 	);
 }
