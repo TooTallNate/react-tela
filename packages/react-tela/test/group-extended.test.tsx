@@ -7,16 +7,21 @@ import { Group, Rect, Text, useDimensions } from '../src';
 
 const test = createStrictTest();
 
+function FillRect({ fill }: { fill: string }) {
+	const { width, height } = useDimensions();
+	return <Rect width={width} height={height} fill={fill} />;
+}
+
 test('should render nested <Group> components', async (render) => {
 	const canvas = new Canvas(300, 200);
 	await render(
 		<Group x={10} y={10} width={280} height={180}>
-			<Rect fill='#2c3e50' />
+			<FillRect fill='#2c3e50' />
 			<Group x={20} y={20} width={100} height={60}>
-				<Rect fill='#e74c3c' />
+				<FillRect fill='#e74c3c' />
 			</Group>
 			<Group x={140} y={20} width={100} height={60}>
-				<Rect fill='#3498db' />
+				<FillRect fill='#3498db' />
 			</Group>
 		</Group>,
 		canvas,
@@ -31,7 +36,7 @@ test('should render <Group> with alpha', async (render) => {
 		<>
 			<Rect x={20} y={20} width={100} height={100} fill='red' />
 			<Group x={60} y={40} width={120} height={100} alpha={0.5}>
-				<Rect fill='blue' />
+				<FillRect fill='blue' />
 			</Group>
 		</>,
 		canvas,
@@ -44,7 +49,31 @@ test('should render <Group> with scale', async (render) => {
 	const canvas = new Canvas(300, 200);
 	await render(
 		<Group x={20} y={20} width={100} height={80} scaleX={2} scaleY={1.5}>
-			<Rect fill='seagreen' />
+			<FillRect fill='seagreen' />
+		</Group>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render <Group> with uniform borderRadius', async (render) => {
+	const canvas = new Canvas(200, 150);
+	await render(
+		<Group x={20} y={20} width={160} height={110} borderRadius={20}>
+			<FillRect fill='#e74c3c' />
+		</Group>,
+		canvas,
+		config,
+	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render <Group> with per-corner borderRadius', async (render) => {
+	const canvas = new Canvas(200, 150);
+	await render(
+		<Group x={20} y={20} width={160} height={110} borderRadius={[0, 0, 20, 20]}>
+			<FillRect fill='#3498db' />
 		</Group>,
 		canvas,
 		config,
@@ -57,7 +86,7 @@ test('should correctly report useDimensions inside <Group>', async (render) => {
 	let dims: { width: number; height: number };
 	function Inner() {
 		dims = useDimensions();
-		return <Rect fill='orange' />;
+		return <FillRect fill='orange' />;
 	}
 	await render(
 		<Group x={10} y={10} width={150} height={60}>
