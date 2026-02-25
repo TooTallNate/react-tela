@@ -29,6 +29,12 @@ export interface TerminalProps extends EntityProps {
 	theme?: ITheme;
 	/** Scrollback buffer size. @default 500 */
 	scrollback?: number;
+	/**
+	 * Number of rows to scroll back from the bottom of the buffer.
+	 * `0` (default) shows the latest content. Positive values scroll
+	 * up into the scrollback history. Clamped to the available scrollback.
+	 */
+	scrollOffset?: number;
 	/** Called when the terminal produces output data (e.g. from user input responses). */
 	onData?: (data: string) => void;
 	/** Called when the terminal is resized. */
@@ -57,6 +63,7 @@ export class Terminal extends Entity {
 	#explicitCols: boolean;
 	/** Whether rows was explicitly provided (not auto-calculated). */
 	#explicitRows: boolean;
+	#scrollOffset: number;
 
 	constructor(opts: TerminalProps = {}) {
 		const fontSize = opts.fontSize ?? 16;
@@ -110,6 +117,7 @@ export class Terminal extends Entity {
 		this.#theme = opts.theme ?? {};
 		this.#onData = opts.onData;
 		this.#onResize = opts.onResize;
+		this.#scrollOffset = opts.scrollOffset ?? 0;
 
 		this.#term = new XTerminal({
 			cols,
@@ -173,6 +181,18 @@ export class Terminal extends Entity {
 		}
 	}
 
+	/** Number of rows scrolled back from the bottom. */
+	get scrollOffset(): number {
+		return this.#scrollOffset;
+	}
+	set scrollOffset(v: number) {
+		const clamped = Math.max(0, Math.min(v, this.#term.buffer.active.baseY));
+		if (clamped !== this.#scrollOffset) {
+			this.#scrollOffset = clamped;
+			this._root?.queueRender();
+		}
+	}
+
 	/** The underlying xterm.js Terminal instance. */
 	get terminal(): XTerminal {
 		return this.#term;
@@ -180,6 +200,11 @@ export class Terminal extends Entity {
 
 	/** Write data into the terminal. Returns a Promise that resolves when the data has been processed. */
 	write(data: string): Promise<void> {
+		// Reset scroll position so the user sees the latest content
+		if (this.#scrollOffset !== 0) {
+			this.#scrollOffset = 0;
+			this._root?.queueRender();
+		}
 		return new Promise<void>((resolve) => {
 			this.#term.write(data, () => {
 				this._root?.queueRender();
@@ -246,6 +271,10 @@ export class Terminal extends Entity {
 			this.#onResize = opts.onResize;
 		}
 
+		if (opts.scrollOffset !== undefined) {
+			this.scrollOffset = opts.scrollOffset;
+		}
+
 		// Track whether cols/rows are explicitly provided
 		this.#explicitCols = opts.cols != null;
 		this.#explicitRows = opts.rows != null;
@@ -279,6 +308,18 @@ export class Terminal extends Entity {
 		const buff = this.#term.buffer.active;
 		const cell = buff.getNullCell();
 
+		// Clamp scrollOffset to available scrollback
+		const maxOffset = buff.baseY;
+		const offset = Math.max(0, Math.min(this.#scrollOffset, maxOffset));
+		if (offset !== this.#scrollOffset) {
+			this.#scrollOffset = offset;
+		}
+
+		// The start row in the buffer. viewportY points to the top of the
+		// current viewport (baseY when not scrolled in xterm). We subtract
+		// scrollOffset to look further back into history.
+		const startRow = buff.viewportY - offset;
+
 		// Draw background
 		ctx.fillStyle = this.#theme.background ?? '#000';
 		ctx.fillRect(0, 0, this.width, this.height);
@@ -288,7 +329,7 @@ export class Terminal extends Entity {
 		ctx.textBaseline = 'top';
 
 		for (let y = 0; y < this.#rows; y++) {
-			const line = buff.getLine(buff.viewportY + y);
+			const line = buff.getLine(startRow + y);
 			if (!line) continue;
 			for (let x = 0; x < line.length; x++) {
 				line.getCell(x, cell);
@@ -324,18 +365,20 @@ export class Terminal extends Entity {
 			}
 		}
 
-		// Draw cursor
-		const cursorX = buff.cursorX;
-		const cursorY = buff.cursorY;
-		ctx.fillStyle = this.#theme.cursor ?? '#fff';
-		ctx.globalAlpha = 0.5;
-		ctx.fillRect(
-			cursorX * this.#charWidth,
-			cursorY * this.#lineHeight,
-			this.#charWidth,
-			this.#lineHeight,
-		);
-		ctx.globalAlpha = this.alpha;
+		// Draw cursor (only when not scrolled back)
+		if (offset === 0) {
+			const cursorX = buff.cursorX;
+			const cursorY = buff.cursorY;
+			ctx.fillStyle = this.#theme.cursor ?? '#fff';
+			ctx.globalAlpha = 0.5;
+			ctx.fillRect(
+				cursorX * this.#charWidth,
+				cursorY * this.#lineHeight,
+				this.#charWidth,
+				this.#lineHeight,
+			);
+			ctx.globalAlpha = this.alpha;
+		}
 	}
 
 	dispose(): void {

@@ -363,9 +363,11 @@ export function App() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const rootRef = useRef<any>(null);
 	const shellRef = useRef<LocalShell | null>(null);
+	const termEntityRef = useRef<TerminalEntity | null>(null);
 
 	const handleReady = useCallback((entity: TerminalEntity) => {
 		if (shellRef.current) return; // Already initialized
+		termEntityRef.current = entity;
 		const shell = new LocalShell(entity);
 		shellRef.current = shell;
 		shell.start();
@@ -452,6 +454,24 @@ export function App() {
 
 		window.addEventListener('keydown', handleKeyDown);
 		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, []);
+
+	// Mouse wheel scrollback handler
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		const handleWheel = (e: WheelEvent) => {
+			const entity = termEntityRef.current;
+			if (!entity) return;
+			e.preventDefault();
+			// Scroll up (positive deltaY) increases offset (look further back)
+			const lines = Math.round(e.deltaY / 20);
+			entity.scrollOffset = Math.max(0, entity.scrollOffset + lines);
+		};
+
+		canvas.addEventListener('wheel', handleWheel, { passive: false });
+		return () => canvas.removeEventListener('wheel', handleWheel);
 	}, []);
 
 	return (
