@@ -657,7 +657,7 @@ export function App() {
 }
 ```
 
-When `contentWidth`/`contentHeight` are not set, the `<Group>` behaves exactly as before — no viewport clipping occurs.
+When `contentWidth`/`contentHeight` are not set, the `<Group>` renders its children at full size without any viewport clipping.
 
 **Key optimization:** When only `scrollTop`/`scrollLeft` change (and children haven't changed), the inner canvas is not re-rendered — only the source coordinates of the `drawImage` call change. This makes scrolling essentially free.
 
