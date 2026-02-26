@@ -1,8 +1,8 @@
+import config, { Canvas as NativeCanvas } from '@napi-rs/canvas';
 import React, { useState, useEffect } from 'react';
 import { expect } from 'vitest';
+import { Canvas, type CanvasRef, Rect, useParent } from '../src';
 import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas as NativeCanvas } from '@napi-rs/canvas';
-import { Canvas, Rect, useParent, type CanvasRef } from '../src';
 
 const test = createStrictTest();
 

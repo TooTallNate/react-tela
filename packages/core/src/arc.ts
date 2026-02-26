@@ -1,6 +1,6 @@
 import { Shape, type ShapeProps } from './shape.js';
-import { degreesToRadians } from './util.js';
 import type { IPath2D } from './types.js';
+import { degreesToRadians } from './util.js';
 
 /**
  * Props for the {@link Arc} component.

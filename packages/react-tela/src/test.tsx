@@ -10,7 +10,6 @@ import React, {
 	useCallback,
 	useMemo,
 } from 'react';
-import { render } from './render.js';
 import {
 	Await,
 	RouteObject,
@@ -58,19 +57,20 @@ import initYoga, {
 } from 'yoga-wasm-web/asm';
 import {
 	Canvas,
+	CanvasRef,
 	Circle,
 	Group,
-	Rect,
-	Text,
 	Image,
-	useParent,
+	LayoutContext,
+	Rect,
 	RectProps,
-	CanvasRef,
-	useTextMetrics,
+	Text,
 	TextProps,
 	useDimensions,
-	LayoutContext,
+	useParent,
+	useTextMetrics,
 } from './index.js';
+import { render } from './render.js';
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 
 const yoga = initYoga();

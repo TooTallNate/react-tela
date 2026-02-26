@@ -1,12 +1,6 @@
 import { Terminal, TerminalEntity } from '@react-tela/terminal';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	Circle,
-	Group,
-	Rect,
-	Text,
-	useParent,
-} from 'react-tela';
+import { Circle, Group, Rect, Text, useParent } from 'react-tela';
 import { render } from 'react-tela/render';
 
 // Terminal settings
@@ -102,7 +96,13 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 			<Rect x={0} y={0} width={width} height={height} fill={PAGE_BG} />
 
 			{/* Entire window chrome inside a single rounded-corner Group */}
-			<Group x={winX} y={winY} width={winW} height={winH} borderRadius={borderRadius}>
+			<Group
+				x={winX}
+				y={winY}
+				width={winW}
+				height={winH}
+				borderRadius={borderRadius}
+			>
 				{/* Window shadow (full window shape) */}
 				<Rect
 					x={0}
@@ -129,13 +129,7 @@ function Scene({ onReady }: { onReady: (entity: TerminalEntity) => void }) {
 				/>
 
 				{/* Title bar background (painted on top of terminal) */}
-				<Rect
-					x={0}
-					y={0}
-					width={winW}
-					height={titleBarH}
-					fill='#2c2c2c'
-				/>
+				<Rect x={0} y={0} width={winW} height={titleBarH} fill='#2c2c2c' />
 
 				{/* Title bar bottom separator */}
 				<Rect

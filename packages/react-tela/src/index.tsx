@@ -1,44 +1,44 @@
+import {
+	type ArcProps,
+	type BezierCurveProps,
+	type CanvasProps,
+	type EllipseProps,
+	type EntityProps,
+	GroupRoot,
+	type ICanvas,
+	type ImageProps,
+	type LineProps,
+	type PathProps,
+	type QuadraticCurveProps,
+	type RectProps,
+	Arc as _Arc,
+	BezierCurve as _BezierCurve,
+	Canvas as _Canvas,
+	Ellipse as _Ellipse,
+	Group as _Group,
+	type GroupProps as _GroupProps,
+	Image as _Image,
+	Line as _Line,
+	Path as _Path,
+	Pattern as _Pattern,
+	type PatternProps as _PatternProps,
+	QuadraticCurve as _QuadraticCurve,
+	Rect as _Rect,
+	Text as _Text,
+	type TextProps as _TextProps,
+} from '@react-tela/core';
 import React, {
 	createElement,
 	forwardRef,
 	useRef,
 	type PropsWithChildren,
 } from 'react';
-import { ParentContext, useParent } from './hooks/use-parent.js';
-import {
-	Canvas as _Canvas,
-	type CanvasProps,
-	GroupRoot,
-	Group as _Group,
-	type GroupProps as _GroupProps,
-	Pattern as _Pattern,
-	type PatternProps as _PatternProps,
-	Rect as _Rect,
-	type RectProps,
-	Arc as _Arc,
-	type ArcProps,
-	Ellipse as _Ellipse,
-	type EllipseProps,
-	Path as _Path,
-	type PathProps,
-	Image as _Image,
-	type ImageProps,
-	BezierCurve as _BezierCurve,
-	type BezierCurveProps,
-	Line as _Line,
-	type LineProps,
-	QuadraticCurve as _QuadraticCurve,
-	type QuadraticCurveProps,
-	Text as _Text,
-	type TextProps as _TextProps,
-	type ICanvas,
-	type EntityProps,
-} from '@react-tela/core';
 import {
 	DEFAULT_LAYOUT,
 	LayoutContext,
 	useLayout,
 } from './hooks/use-layout.js';
+import { ParentContext, useParent } from './hooks/use-parent.js';
 
 type MaybeArray<T> = T | T[];
 
@@ -61,7 +61,10 @@ function useAdjustedLayout(props: any) {
 const factory = <Ref, Props extends EntityProps>(type: string) => {
 	const c = forwardRef<Ref, Props>((props, ref) => {
 		const adjusted = useAdjustedLayout(props);
-		return createElement(type, adjusted === props ? { ...props, ref } : { ...adjusted, ref });
+		return createElement(
+			type,
+			adjusted === props ? { ...props, ref } : { ...adjusted, ref },
+		);
 	});
 	c.displayName = type;
 	return c;
@@ -85,7 +88,9 @@ export {
 export type { _Canvas as CanvasRef };
 
 /** Renders a cubic Bézier curve. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/bezierCurveTo | MDN bezierCurveTo()} */
-export const BezierCurve = factory<_BezierCurve, BezierCurveProps>('BezierCurve');
+export const BezierCurve = factory<_BezierCurve, BezierCurveProps>(
+	'BezierCurve',
+);
 /** An offscreen sub-canvas entity for imperative 2D drawing. */
 export const Canvas = factory<_Canvas, CanvasProps>('Canvas');
 /** Renders an ellipse. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/ellipse | MDN ellipse()} */
@@ -97,7 +102,9 @@ export const Line = factory<_Line, LineProps>('Line');
 /** Renders an SVG path. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Path2D | MDN Path2D} */
 export const Path = factory<_Path, PathProps>('Path');
 /** Renders a quadratic Bézier curve. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/quadraticCurveTo | MDN quadraticCurveTo()} */
-export const QuadraticCurve = factory<_QuadraticCurve, QuadraticCurveProps>('QuadraticCurve');
+export const QuadraticCurve = factory<_QuadraticCurve, QuadraticCurveProps>(
+	'QuadraticCurve',
+);
 /** Renders a rectangle, optionally with rounded corners via `borderRadius`. @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/rect | MDN rect()} */
 export const Rect = factory<_Rect, RectProps>('Rect');
 
@@ -221,43 +228,41 @@ Group.displayName = 'Group';
  *
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createPattern | MDN createPattern()}
  */
-export const Pattern = forwardRef<_Pattern, PatternProps>(
-	(props, ref) => {
-		const root = useParent();
-		const rootRef = useRef<GroupRoot>();
-		let canvas: ICanvas;
-		const adjusted = useAdjustedLayout(props);
-		const w = adjusted === props ? props.width : adjusted.width;
-		const h = adjusted === props ? props.height : adjusted.height;
-		if (rootRef.current) {
-			canvas = rootRef.current.ctx.canvas;
-		} else {
-			canvas = new root.Canvas(w, h);
-			const ctx = canvas.getContext('2d');
-			if (!ctx) {
-				throw new Error('Could not get "2d" canvas context');
-			}
-			rootRef.current = new GroupRoot(ctx, root);
+export const Pattern = forwardRef<_Pattern, PatternProps>((props, ref) => {
+	const root = useParent();
+	const rootRef = useRef<GroupRoot>();
+	let canvas: ICanvas;
+	const adjusted = useAdjustedLayout(props);
+	const w = adjusted === props ? props.width : adjusted.width;
+	const h = adjusted === props ? props.height : adjusted.height;
+	if (rootRef.current) {
+		canvas = rootRef.current.ctx.canvas;
+	} else {
+		canvas = new root.Canvas(w, h);
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			throw new Error('Could not get "2d" canvas context');
 		}
-		if (w > 0 && w !== canvas.width) {
-			canvas.width = w;
-		}
-		if (h > 0 && h !== canvas.height) {
-			canvas.height = h;
-		}
-		return (
-			<ParentContext.Provider value={rootRef.current}>
-				<LayoutContext.Provider value={DEFAULT_LAYOUT}>
-					{createElement('Pattern', {
-						...(adjusted === props ? props : adjusted),
-						root: rootRef.current,
-						ref,
-					})}
-				</LayoutContext.Provider>
-			</ParentContext.Provider>
-		);
-	},
-);
+		rootRef.current = new GroupRoot(ctx, root);
+	}
+	if (w > 0 && w !== canvas.width) {
+		canvas.width = w;
+	}
+	if (h > 0 && h !== canvas.height) {
+		canvas.height = h;
+	}
+	return (
+		<ParentContext.Provider value={rootRef.current}>
+			<LayoutContext.Provider value={DEFAULT_LAYOUT}>
+				{createElement('Pattern', {
+					...(adjusted === props ? props : adjusted),
+					root: rootRef.current,
+					ref,
+				})}
+			</LayoutContext.Provider>
+		</ParentContext.Provider>
+	);
+});
 Pattern.displayName = 'Pattern';
 
 export { type ColorStop } from '@react-tela/core';

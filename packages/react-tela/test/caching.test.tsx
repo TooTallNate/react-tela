@@ -1,13 +1,13 @@
-import React from 'react';
-import { expect, describe } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
-import { Rect,  Arc, Ellipse, Line, Path } from '../src';
 import { Rect as _Rect } from '@react-tela/core';
 import { Arc as _Arc } from '@react-tela/core';
 import { Ellipse as _Ellipse } from '@react-tela/core';
 import { Line as _Line } from '@react-tela/core';
 import { Rect as _Rect } from '@react-tela/core';
+import React from 'react';
+import { describe, expect } from 'vitest';
+import { Arc, Ellipse, Line, Path, Rect } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -16,7 +16,16 @@ describe('Matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -30,7 +39,16 @@ describe('Matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -45,7 +63,16 @@ describe('Matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -59,7 +86,16 @@ describe('Matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -73,7 +109,16 @@ describe('Matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -87,7 +132,16 @@ describe('Matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -103,7 +157,16 @@ describe('Inverse matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -116,7 +179,16 @@ describe('Inverse matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -130,7 +202,16 @@ describe('Inverse matrix caching', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -150,7 +231,16 @@ describe('Path caching - Rect', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -163,7 +253,16 @@ describe('Path caching - Rect', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -177,7 +276,16 @@ describe('Path caching - Rect', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -191,7 +299,16 @@ describe('Path caching - Rect', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={20} width={50} height={30} fill='red' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={20}
+				width={50}
+				height={30}
+				fill='red'
+			/>,
 			canvas,
 			config,
 		);
@@ -207,7 +324,17 @@ describe('Path caching - Arc', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Arc | null = null;
 		await render(
-			<Arc ref={(r) => { ref = r; }} x={50} y={50} radius={25} startAngle={0} endAngle={360} fill='green' />,
+			<Arc
+				ref={(r) => {
+					ref = r;
+				}}
+				x={50}
+				y={50}
+				radius={25}
+				startAngle={0}
+				endAngle={360}
+				fill='green'
+			/>,
 			canvas,
 			config,
 		);
@@ -220,7 +347,17 @@ describe('Path caching - Arc', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Arc | null = null;
 		await render(
-			<Arc ref={(r) => { ref = r; }} x={50} y={50} radius={25} startAngle={0} endAngle={360} fill='green' />,
+			<Arc
+				ref={(r) => {
+					ref = r;
+				}}
+				x={50}
+				y={50}
+				radius={25}
+				startAngle={0}
+				endAngle={360}
+				fill='green'
+			/>,
 			canvas,
 			config,
 		);
@@ -234,7 +371,17 @@ describe('Path caching - Arc', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Arc | null = null;
 		await render(
-			<Arc ref={(r) => { ref = r; }} x={50} y={50} radius={25} startAngle={0} endAngle={360} fill='green' />,
+			<Arc
+				ref={(r) => {
+					ref = r;
+				}}
+				x={50}
+				y={50}
+				radius={25}
+				startAngle={0}
+				endAngle={360}
+				fill='green'
+			/>,
 			canvas,
 			config,
 		);
@@ -250,7 +397,16 @@ describe('Path caching - Ellipse', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Ellipse | null = null;
 		await render(
-			<Ellipse ref={(r) => { ref = r; }} x={50} y={50} radiusX={30} radiusY={20} fill='blue' />,
+			<Ellipse
+				ref={(r) => {
+					ref = r;
+				}}
+				x={50}
+				y={50}
+				radiusX={30}
+				radiusY={20}
+				fill='blue'
+			/>,
 			canvas,
 			config,
 		);
@@ -263,7 +419,16 @@ describe('Path caching - Ellipse', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Ellipse | null = null;
 		await render(
-			<Ellipse ref={(r) => { ref = r; }} x={50} y={50} radiusX={30} radiusY={20} fill='blue' />,
+			<Ellipse
+				ref={(r) => {
+					ref = r;
+				}}
+				x={50}
+				y={50}
+				radiusX={30}
+				radiusY={20}
+				fill='blue'
+			/>,
 			canvas,
 			config,
 		);
@@ -279,7 +444,16 @@ describe('Path caching - Line', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Line | null = null;
 		await render(
-			<Line ref={(r) => { ref = r; }} points={[{ x: 0, y: 0 }, { x: 100, y: 100 }]} stroke='white' />,
+			<Line
+				ref={(r) => {
+					ref = r;
+				}}
+				points={[
+					{ x: 0, y: 0 },
+					{ x: 100, y: 100 },
+				]}
+				stroke='white'
+			/>,
 			canvas,
 			config,
 		);
@@ -292,12 +466,24 @@ describe('Path caching - Line', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Line | null = null;
 		await render(
-			<Line ref={(r) => { ref = r; }} points={[{ x: 0, y: 0 }, { x: 100, y: 100 }]} stroke='white' />,
+			<Line
+				ref={(r) => {
+					ref = r;
+				}}
+				points={[
+					{ x: 0, y: 0 },
+					{ x: 100, y: 100 },
+				]}
+				stroke='white'
+			/>,
 			canvas,
 			config,
 		);
 		const path1 = ref!.path;
-		ref!.points = [{ x: 0, y: 0 }, { x: 50, y: 50 }];
+		ref!.points = [
+			{ x: 0, y: 0 },
+			{ x: 50, y: 50 },
+		];
 		const path2 = ref!.path;
 		expect(path1).not.toBe(path2);
 	});
@@ -308,7 +494,17 @@ describe('Path caching - Rect', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={10} width={50} height={30} borderRadius={5} fill='purple' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={10}
+				width={50}
+				height={30}
+				borderRadius={5}
+				fill='purple'
+			/>,
 			canvas,
 			config,
 		);
@@ -321,7 +517,17 @@ describe('Path caching - Rect', () => {
 		const canvas = new Canvas(150, 100);
 		let ref: _Rect | null = null;
 		await render(
-			<Rect ref={(r) => { ref = r; }} x={10} y={10} width={50} height={30} borderRadius={5} fill='purple' />,
+			<Rect
+				ref={(r) => {
+					ref = r;
+				}}
+				x={10}
+				y={10}
+				width={50}
+				height={30}
+				borderRadius={5}
+				fill='purple'
+			/>,
 			canvas,
 			config,
 		);

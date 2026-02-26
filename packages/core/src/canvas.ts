@@ -1,5 +1,5 @@
-import { Root } from './root.js';
 import { Entity, EntityProps } from './entity.js';
+import { Root } from './root.js';
 import type { ICanvas, ICanvasRenderingContext2D } from './types.js';
 
 /**
@@ -31,7 +31,9 @@ export class Canvas extends Entity {
 		this.subcanvas = new root.Canvas(this.width, this.height);
 	}
 
-	getContext(...args: Parameters<ICanvas['getContext']>): ICanvasRenderingContext2D | null {
+	getContext(
+		...args: Parameters<ICanvas['getContext']>
+	): ICanvasRenderingContext2D | null {
 		return this.subcanvas.getContext(...args);
 	}
 

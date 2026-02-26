@@ -1,14 +1,18 @@
+import config, { Canvas } from '@napi-rs/canvas';
 import React from 'react';
 import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
 test('render() returns a Root with renderCount tracking', async (render) => {
 	const canvas = new Canvas(100, 100);
-	const root = render(<Rect width={100} height={100} fill='blue' />, canvas, config);
+	const root = render(
+		<Rect width={100} height={100} fill='blue' />,
+		canvas,
+		config,
+	);
 	expect(root.renderCount).toBe(0);
 	await root;
 	expect(root.renderCount).toBe(1);

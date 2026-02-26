@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import terminalImage from 'terminal-image';
 import config, { Canvas, GlobalFonts } from '@napi-rs/canvas';
-import { render } from '../src/render';
-import { Group, Text, Rect, Image } from '../src';
+import React, { useEffect, useState } from 'react';
 import {
 	RouterProvider,
 	createMemoryRouter,
 	useNavigate,
 } from 'react-router-dom';
+import terminalImage from 'terminal-image';
+import { Group, Image, Rect, Text } from '../src';
+import { render } from '../src/render';
 
 GlobalFonts.registerFromPath(
 	'/Users/nrajlich/Downloads/NINTENDOSWITCHUI.TTF',

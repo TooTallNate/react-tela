@@ -1,9 +1,9 @@
-import React from 'react';
 import { join } from 'path';
-import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
+import React from 'react';
+import { expect } from 'vitest';
 import { Image, Rect } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 

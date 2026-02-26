@@ -1,21 +1,23 @@
 {
-	"private": true,
-	"name": "react-tela-monorepo",
-	"packageManager": "pnpm@10.29.3",
-	"scripts": {
-		"generate:assets": "bun scripts/generate-readme-assets.tsx",
-		"build": "turbo run build",
-		"test": "turbo run test",
-		"dev": "turbo run dev",
-		"version": "changeset version",
-		"release": "turbo run build && changeset publish --provenance",
-		"changeset": "changeset"
-	},
-	"devDependencies": {
-		"@changesets/cli": "^2.29.8",
-		"@napi-rs/canvas": "catalog:",
-		"bun": "^1.3.9",
-		"geist": "catalog:",
-		"turbo": "^2.8.10"
-	}
+  "private": true,
+  "name": "react-tela-monorepo",
+  "packageManager": "pnpm@10.29.3",
+  "scripts": {
+    "generate:assets": "bun scripts/generate-readme-assets.tsx",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "dev": "turbo run dev",
+    "format": "biome format --write .",
+    "version": "changeset version",
+    "release": "turbo run build && changeset publish --provenance",
+    "changeset": "changeset"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.5.3",
+    "@changesets/cli": "^2.29.8",
+    "@napi-rs/canvas": "catalog:",
+    "bun": "^1.3.9",
+    "geist": "catalog:",
+    "turbo": "^2.8.10"
+  }
 }

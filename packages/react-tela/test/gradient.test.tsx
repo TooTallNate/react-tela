@@ -1,15 +1,15 @@
 import './helpers/font';
+import config, { Canvas } from '@napi-rs/canvas';
 import React from 'react';
 import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
 import {
+	type ColorStop,
 	Rect,
 	Text,
 	useLinearGradient,
 	useRadialGradient,
-	type ColorStop,
 } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -102,7 +102,7 @@ function LinearGradientText({
 }) {
 	const gradient = useLinearGradient(0, 0, 300, 0, stops);
 	return (
-		<Text fontFamily="Geist Sans" fontSize={48} fill={gradient}>
+		<Text fontFamily='Geist Sans' fontSize={48} fill={gradient}>
 			Gradient
 		</Text>
 	);
@@ -197,10 +197,6 @@ test('should render <Text> with linearGradient fill', async (render) => {
 
 test('string fill still works (backward compat)', async (render) => {
 	const canvas = new Canvas(100, 100);
-	await render(
-		<Rect width={100} height={100} fill="red" />,
-		canvas,
-		config,
-	);
+	await render(<Rect width={100} height={100} fill='red' />, canvas, config);
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });

@@ -1,12 +1,24 @@
 import { Entity, type EntityProps } from '@react-tela/core';
-import { Terminal as XTerminal, type ITheme } from '@xterm/headless';
+import { type ITheme, Terminal as XTerminal } from '@xterm/headless';
 
 // ANSI 256-color palette (first 16 standard colors)
 const ANSI_COLORS = [
-	'#000000', '#cd0000', '#00cd00', '#cdcd00',
-	'#0000ee', '#cd00cd', '#00cdcd', '#e5e5e5',
-	'#7f7f7f', '#ff0000', '#00ff00', '#ffff00',
-	'#5c5cff', '#ff00ff', '#00ffff', '#ffffff',
+	'#000000',
+	'#cd0000',
+	'#00cd00',
+	'#cdcd00',
+	'#0000ee',
+	'#cd00cd',
+	'#00cdcd',
+	'#e5e5e5',
+	'#7f7f7f',
+	'#ff0000',
+	'#00ff00',
+	'#ffff00',
+	'#5c5cff',
+	'#ff00ff',
+	'#00ffff',
+	'#ffffff',
 ];
 
 /**
@@ -213,7 +225,11 @@ export class Terminal extends Entity {
 		});
 	}
 
-	#getCellColor(colorCode: number, isBold: boolean, isDefault: boolean): string {
+	#getCellColor(
+		colorCode: number,
+		isBold: boolean,
+		isDefault: boolean,
+	): string {
 		const fg = this.#theme.foreground ?? '#fff';
 
 		if (isDefault || colorCode === -1) {
@@ -339,7 +355,11 @@ export class Terminal extends Entity {
 				// Draw cell background if set
 				const bgColor = cell.getBgColor();
 				if (!cell.isBgDefault() && bgColor >= 0) {
-					ctx.fillStyle = this.#getCellColor(bgColor, false, cell.isBgDefault());
+					ctx.fillStyle = this.#getCellColor(
+						bgColor,
+						false,
+						cell.isBgDefault(),
+					);
 					ctx.fillRect(
 						x * this.#charWidth,
 						y * this.#lineHeight,
@@ -357,11 +377,7 @@ export class Terminal extends Entity {
 				ctx.font = cell.isBold()
 					? `bold ${this.#fontSize}px "${this.#fontFamily}"`
 					: `${this.#fontSize}px "${this.#fontFamily}"`;
-				ctx.fillText(
-					char,
-					x * this.#charWidth,
-					y * this.#lineHeight,
-				);
+				ctx.fillText(char, x * this.#charWidth, y * this.#lineHeight);
 			}
 		}
 

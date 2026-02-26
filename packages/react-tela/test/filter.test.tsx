@@ -1,16 +1,23 @@
 import './helpers/font';
+import config, { Canvas } from '@napi-rs/canvas';
 import React from 'react';
 import { expect } from 'vitest';
+import { Circle, Line, Rect, Text } from '../src';
 import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
-import { Rect, Circle, Text, Line } from '../src';
 
 const test = createStrictTest();
 
 test('should render <Rect> with blur filter', async (render) => {
 	const canvas = new Canvas(150, 100);
 	await render(
-		<Rect x={10} y={10} width={100} height={50} fill="red" filter="blur(4px)" />,
+		<Rect
+			x={10}
+			y={10}
+			width={100}
+			height={50}
+			fill='red'
+			filter='blur(4px)'
+		/>,
 		canvas,
 		config,
 	);
@@ -24,8 +31,8 @@ test('should render <Circle> with drop-shadow filter', async (render) => {
 			x={100}
 			y={75}
 			radius={40}
-			fill="blue"
-			filter="drop-shadow(4px 4px 4px black)"
+			fill='blue'
+			filter='drop-shadow(4px 4px 4px black)'
 		/>,
 		canvas,
 		config,
@@ -36,7 +43,14 @@ test('should render <Circle> with drop-shadow filter', async (render) => {
 test('should render <Text> with brightness filter', async (render) => {
 	const canvas = new Canvas(200, 60);
 	await render(
-		<Text x={10} y={40} fill="green" fontFamily="Geist Sans" fontSize={32} filter="brightness(1.5)">
+		<Text
+			x={10}
+			y={40}
+			fill='green'
+			fontFamily='Geist Sans'
+			fontSize={32}
+			filter='brightness(1.5)'
+		>
 			Hello
 		</Text>,
 		canvas,
@@ -53,9 +67,9 @@ test('should render <Line> with combined filters', async (render) => {
 				{ x: 10, y: 10 },
 				{ x: 180, y: 130 },
 			]}
-			stroke="purple"
+			stroke='purple'
 			lineWidth={6}
-			filter="blur(2px) brightness(1.2)"
+			filter='blur(2px) brightness(1.2)'
 		/>,
 		canvas,
 		config,

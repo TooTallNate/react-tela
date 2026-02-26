@@ -93,7 +93,9 @@ export class Image extends Entity {
 		const controller = new AbortController();
 		this.#abortController = controller;
 		try {
-			const img = await this.#root.loadImage(this.#src, { signal: controller.signal });
+			const img = await this.#root.loadImage(this.#src, {
+				signal: controller.signal,
+			});
 			this.#image = img;
 			if (this.width === 0) {
 				this.width = img.naturalWidth;

@@ -12,13 +12,17 @@ export type FillStrokeStyle = string | CanvasGradient | CanvasPattern;
  * or a React ref object (`{ current: FillStrokeStyle | null }`), which is
  * useful for patterns created via the `usePattern` hook.
  */
-export type FillStrokeInput = FillStrokeStyle | { current?: FillStrokeStyle | null };
+export type FillStrokeInput =
+	| FillStrokeStyle
+	| { current?: FillStrokeStyle | null };
 
 /**
  * Resolve a fill/stroke value, unwrapping React ref objects if needed.
  * If the ref points to a Pattern instance, read its `.pattern` property.
  */
-export function resolveFillStroke(v: FillStrokeInput | undefined): FillStrokeStyle | undefined {
+export function resolveFillStroke(
+	v: FillStrokeInput | undefined,
+): FillStrokeStyle | undefined {
 	if (!v) return undefined;
 	if (typeof v === 'object' && 'current' in v) {
 		const c = v.current;

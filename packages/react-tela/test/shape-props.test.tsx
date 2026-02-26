@@ -1,8 +1,8 @@
+import config, { Canvas } from '@napi-rs/canvas';
 import React from 'react';
 import { expect } from 'vitest';
+import { Ellipse, Line, Rect } from '../src';
 import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
-import { Rect, Ellipse, Line } from '../src';
 
 const test = createStrictTest();
 

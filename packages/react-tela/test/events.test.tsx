@@ -1,9 +1,9 @@
+import config, { Canvas } from '@napi-rs/canvas';
 import React, { useState } from 'react';
 import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
 import { Rect } from '../src';
-import { enableEvents, dispatchEvent } from './helpers/event';
+import { dispatchEvent, enableEvents } from './helpers/event';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -21,8 +21,12 @@ test('should receive "mousedown" and "mouseup" events', async (render) => {
 				width={50}
 				height={50}
 				fill='blue'
-				onMouseDown={(e) => { downEvent = e; }}
-				onMouseUp={(e) => { upEvent = e; }}
+				onMouseDown={(e) => {
+					downEvent = e;
+				}}
+				onMouseUp={(e) => {
+					upEvent = e;
+				}}
 			/>
 		);
 	}
@@ -59,7 +63,9 @@ test('should receive "mousemove" events', async (render) => {
 				width={100}
 				height={80}
 				fill='green'
-				onMouseMove={(e) => { moves.push(e); }}
+				onMouseMove={(e) => {
+					moves.push(e);
+				}}
 			/>
 		);
 	}
@@ -70,7 +76,10 @@ test('should receive "mousemove" events', async (render) => {
 	for (let i = 0; i < 3; i++) {
 		dispatchEvent(
 			canvas,
-			Object.assign(new Event('mousemove'), { layerX: 20 + i * 20, layerY: 30 }),
+			Object.assign(new Event('mousemove'), {
+				layerX: 20 + i * 20,
+				layerY: 30,
+			}),
 		);
 	}
 	expect(moves.length).toBe(3);
@@ -90,8 +99,12 @@ test('should receive "mouseenter" and "mouseleave" events', async (render) => {
 				width={50}
 				height={50}
 				fill='orange'
-				onMouseEnter={() => { entered = true; }}
-				onMouseLeave={() => { left = true; }}
+				onMouseEnter={() => {
+					entered = true;
+				}}
+				onMouseLeave={() => {
+					left = true;
+				}}
 			/>
 		);
 	}
@@ -127,7 +140,9 @@ test('should NOT receive events when pointerEvents is false', async (render) => 
 				height={50}
 				fill='red'
 				pointerEvents={false}
-				onClick={() => { clicked = true; }}
+				onClick={() => {
+					clicked = true;
+				}}
 			/>
 		);
 	}
@@ -157,7 +172,9 @@ test('click should target topmost entity (z-order)', async (render) => {
 					width={80}
 					height={80}
 					fill='red'
-					onClick={() => { clickedBottom = true; }}
+					onClick={() => {
+						clickedBottom = true;
+					}}
 				/>
 				<Rect
 					x={30}
@@ -165,7 +182,9 @@ test('click should target topmost entity (z-order)', async (render) => {
 					width={80}
 					height={60}
 					fill='blue'
-					onClick={() => { clickedTop = true; }}
+					onClick={() => {
+						clickedTop = true;
+					}}
 				/>
 			</>
 		);

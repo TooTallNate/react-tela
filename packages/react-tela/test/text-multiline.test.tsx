@@ -1,9 +1,9 @@
 import './helpers/font';
+import config, { Canvas } from '@napi-rs/canvas';
 import React from 'react';
 import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
 import { Text } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -18,7 +18,8 @@ test('should wrap text to multiple lines with maxWidth', async (render) => {
 			fill='black'
 			maxWidth={200}
 		>
-			This is a long paragraph that will automatically wrap to fit within the given width.
+			This is a long paragraph that will automatically wrap to fit within the
+			given width.
 		</Text>,
 		canvas,
 		config,
@@ -89,13 +90,7 @@ test('should clip text when overflow is clip', async (render) => {
 test('should handle explicit newlines', async (render) => {
 	const canvas = new Canvas(300, 150);
 	await render(
-		<Text
-			x={10}
-			y={10}
-			fontSize={20}
-			fontFamily='Geist Sans'
-			fill='darkblue'
-		>
+		<Text x={10} y={10} fontSize={20} fontFamily='Geist Sans' fill='darkblue'>
 			{'Line one\nLine two\nLine three'}
 		</Text>,
 		canvas,

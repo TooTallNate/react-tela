@@ -1,8 +1,8 @@
+import config, { Canvas } from '@napi-rs/canvas';
 import React, { useState } from 'react';
 import { expect } from 'vitest';
+import { Circle, Ellipse, Rect } from '../src';
 import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
-import { Rect, Ellipse, Circle } from '../src';
 
 const test = createStrictTest();
 
@@ -29,14 +29,7 @@ test('should render <Rect> with scaleX and scaleY', async (render) => {
 test('should render <Rect> with scaleX only (horizontal stretch)', async (render) => {
 	const canvas = new Canvas(200, 100);
 	await render(
-		<Rect
-			x={30}
-			y={20}
-			width={30}
-			height={30}
-			fill='coral'
-			scaleX={3}
-		/>,
+		<Rect x={30} y={20} width={30} height={30} fill='coral' scaleX={3} />,
 		canvas,
 		config,
 	);

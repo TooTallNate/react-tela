@@ -1,3 +1,6 @@
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import nodeConfig, { Canvas, GlobalFonts } from '@napi-rs/canvas';
 /**
  * Performance benchmark for react-tela rendering.
  * Run with: npx tsx scripts/benchmark.tsx
@@ -5,17 +8,8 @@
  * Measures render performance for various scenarios.
  */
 import React, { useState, useEffect } from 'react';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import nodeConfig, { Canvas, GlobalFonts } from '@napi-rs/canvas';
+import { Circle, Group, Rect, Text, useDimensions } from '../src/index';
 import { render } from '../src/render';
-import {
-	Rect,
-	Circle,
-	Text,
-	Group,
-	useDimensions,
-} from '../src/index';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +19,10 @@ import { resolve } from 'path';
 const require = createRequire(import.meta.url);
 const geistDir = resolve(dirname(require.resolve('geist/font/sans')), '..');
 try {
-	GlobalFonts.registerFromPath(join(geistDir, 'dist/fonts/geist-sans/Geist-Regular.ttf'), 'Geist');
+	GlobalFonts.registerFromPath(
+		join(geistDir, 'dist/fonts/geist-sans/Geist-Regular.ttf'),
+		'Geist',
+	);
 } catch {}
 
 interface BenchmarkResult {
@@ -98,7 +95,15 @@ async function main() {
 		'Single Rect (stroke + fill)',
 		800,
 		600,
-		<Rect x={10} y={10} width={100} height={100} fill='red' stroke='blue' lineWidth={3} />,
+		<Rect
+			x={10}
+			y={10}
+			width={100}
+			height={100}
+			fill='red'
+			stroke='blue'
+			lineWidth={3}
+		/>,
 		RERENDERS,
 	);
 
@@ -106,7 +111,14 @@ async function main() {
 		'Single Rect',
 		800,
 		600,
-		<Rect x={10} y={10} width={100} height={100} fill='blue' borderRadius={10} />,
+		<Rect
+			x={10}
+			y={10}
+			width={100}
+			height={100}
+			fill='blue'
+			borderRadius={10}
+		/>,
 		RERENDERS,
 	);
 
@@ -173,7 +185,14 @@ async function main() {
 			{Array.from({ length: 5 }, (_, g) => (
 				<Group key={g} x={0} y={g * 120} width={800} height={100}>
 					{Array.from({ length: 10 }, (_, i) => (
-						<Rect key={i} x={i * 75} y={10} width={60} height={60} fill='blue' />
+						<Rect
+							key={i}
+							x={i * 75}
+							y={10}
+							width={60}
+							height={60}
+							fill='blue'
+						/>
 					))}
 				</Group>
 			))}

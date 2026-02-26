@@ -1,6 +1,6 @@
-import { Root } from './root.js';
 import { Entity, EntityProps } from './entity.js';
 import { proxyEvents } from './events.js';
+import { Root } from './root.js';
 import type { ICanvasRenderingContext2D } from './types.js';
 
 /**
@@ -74,7 +74,11 @@ export class Group extends Entity {
 		return this.#borderRadius;
 	}
 
-	set borderRadius(v: number | DOMPointInit | (number | DOMPointInit)[] | undefined) {
+	set borderRadius(v:
+		| number
+		| DOMPointInit
+		| (number | DOMPointInit)[]
+		| undefined) {
 		this.#borderRadius = v;
 		this.root?.queueRender();
 	}
@@ -137,13 +141,7 @@ export class Group extends Entity {
 				this.height,
 			);
 		} else {
-			ctx.drawImage(
-				this.subroot.ctx.canvas,
-				0,
-				0,
-				this.width,
-				this.height,
-			);
+			ctx.drawImage(this.subroot.ctx.canvas, 0, 0, this.width, this.height);
 		}
 	}
 }

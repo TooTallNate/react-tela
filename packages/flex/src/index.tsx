@@ -1,3 +1,4 @@
+import type { TextProps as _TextProps } from '@react-tela/core';
 import React, {
 	createContext,
 	useContext,
@@ -6,8 +7,13 @@ import React, {
 	useState,
 	type PropsWithChildren,
 } from 'react';
-import type { TextProps as _TextProps } from '@react-tela/core';
-import { LayoutContext, type Layout, useTextMetrics, useDimensions, Text } from 'react-tela';
+import {
+	type Layout,
+	LayoutContext,
+	Text,
+	useDimensions,
+	useTextMetrics,
+} from 'react-tela';
 
 export type { Layout };
 
@@ -49,11 +55,20 @@ interface YogaNode {
 	insertChild(child: YogaNode, index: number): void;
 	removeChild(child: YogaNode): void;
 	getChildCount(): number;
-	getComputedLayout(): { left: number; top: number; width: number; height: number };
+	getComputedLayout(): {
+		left: number;
+		top: number;
+		width: number;
+		height: number;
+	};
 	getComputedLeft(): number;
 	getComputedTop(): number;
 	getParent(): YogaNode | null;
-	calculateLayout(width: number | undefined, height: number | undefined, direction: number): void;
+	calculateLayout(
+		width: number | undefined,
+		height: number | undefined,
+		direction: number,
+	): void;
 	free(): void;
 }
 
@@ -68,10 +83,31 @@ interface Yoga {
 
 // ─── Yoga constant values ───
 
-const ALIGN = { auto: 0, 'flex-start': 1, center: 2, 'flex-end': 3, stretch: 4, baseline: 5, 'space-between': 6, 'space-around': 7 } as const;
-const JUSTIFY = { 'flex-start': 0, center: 1, 'flex-end': 2, 'space-between': 3, 'space-around': 4, 'space-evenly': 5 } as const;
+const ALIGN = {
+	auto: 0,
+	'flex-start': 1,
+	center: 2,
+	'flex-end': 3,
+	stretch: 4,
+	baseline: 5,
+	'space-between': 6,
+	'space-around': 7,
+} as const;
+const JUSTIFY = {
+	'flex-start': 0,
+	center: 1,
+	'flex-end': 2,
+	'space-between': 3,
+	'space-around': 4,
+	'space-evenly': 5,
+} as const;
 const POSITION = { static: 2, relative: 0, absolute: 1 } as const;
-const FLEX_DIRECTION = { column: 0, 'column-reverse': 1, row: 2, 'row-reverse': 3 } as const;
+const FLEX_DIRECTION = {
+	column: 0,
+	'column-reverse': 1,
+	row: 2,
+	'row-reverse': 3,
+} as const;
 const DISPLAY = { flex: 0, none: 1 } as const;
 const WRAP = { 'no-wrap': 0, wrap: 1, 'wrap-reverse': 2 } as const;
 const OVERFLOW = { visible: 0, hidden: 1, scroll: 2 } as const;
@@ -185,18 +221,36 @@ FlexNodeContext.displayName = 'FlexNodeContext';
 
 function setDimension(
 	node: YogaNode,
-	prop: 'width' | 'height' | 'minWidth' | 'maxWidth' | 'minHeight' | 'maxHeight',
+	prop:
+		| 'width'
+		| 'height'
+		| 'minWidth'
+		| 'maxWidth'
+		| 'minHeight'
+		| 'maxHeight',
 	value: number | string | undefined,
 ) {
 	if (value === undefined) return;
 	if (typeof value === 'number') {
 		switch (prop) {
-			case 'width': node.setWidth(value); break;
-			case 'height': node.setHeight(value); break;
-			case 'minWidth': node.setMinWidth(value); break;
-			case 'maxWidth': node.setMaxWidth(value); break;
-			case 'minHeight': node.setMinHeight(value); break;
-			case 'maxHeight': node.setMaxHeight(value); break;
+			case 'width':
+				node.setWidth(value);
+				break;
+			case 'height':
+				node.setHeight(value);
+				break;
+			case 'minWidth':
+				node.setMinWidth(value);
+				break;
+			case 'maxWidth':
+				node.setMaxWidth(value);
+				break;
+			case 'minHeight':
+				node.setMinHeight(value);
+				break;
+			case 'maxHeight':
+				node.setMaxHeight(value);
+				break;
 		}
 	} else {
 		if (value === 'auto') {
@@ -207,12 +261,24 @@ function setDimension(
 		const pct = parseFloat(value);
 		if (!isNaN(pct)) {
 			switch (prop) {
-				case 'width': node.setWidthPercent(pct); break;
-				case 'height': node.setHeightPercent(pct); break;
-				case 'minWidth': node.setMinWidthPercent(pct); break;
-				case 'maxWidth': node.setMaxWidthPercent(pct); break;
-				case 'minHeight': node.setMinHeightPercent(pct); break;
-				case 'maxHeight': node.setMaxHeightPercent(pct); break;
+				case 'width':
+					node.setWidthPercent(pct);
+					break;
+				case 'height':
+					node.setHeightPercent(pct);
+					break;
+				case 'minWidth':
+					node.setMinWidthPercent(pct);
+					break;
+				case 'maxWidth':
+					node.setMaxWidthPercent(pct);
+					break;
+				case 'minHeight':
+					node.setMinHeightPercent(pct);
+					break;
+				case 'maxHeight':
+					node.setMaxHeightPercent(pct);
+					break;
 			}
 		}
 	}
@@ -228,17 +294,36 @@ function setEdge(
 }
 
 function applyYogaProps(node: YogaNode, props: FlexProps) {
-	if (props.flexDirection !== undefined) { const v = FLEX_DIRECTION[props.flexDirection]; if (v !== undefined) node.setFlexDirection(v); }
-	if (props.flexWrap !== undefined) { const v = WRAP[props.flexWrap]; if (v !== undefined) node.setFlexWrap(v); }
-	if (props.justifyContent !== undefined) { const v = JUSTIFY[props.justifyContent]; if (v !== undefined) node.setJustifyContent(v); }
-	if (props.alignItems !== undefined) { const v = ALIGN[props.alignItems]; if (v !== undefined) node.setAlignItems(v); }
-	if (props.alignSelf !== undefined) { const v = ALIGN[props.alignSelf]; if (v !== undefined) node.setAlignSelf(v); }
+	if (props.flexDirection !== undefined) {
+		const v = FLEX_DIRECTION[props.flexDirection];
+		if (v !== undefined) node.setFlexDirection(v);
+	}
+	if (props.flexWrap !== undefined) {
+		const v = WRAP[props.flexWrap];
+		if (v !== undefined) node.setFlexWrap(v);
+	}
+	if (props.justifyContent !== undefined) {
+		const v = JUSTIFY[props.justifyContent];
+		if (v !== undefined) node.setJustifyContent(v);
+	}
+	if (props.alignItems !== undefined) {
+		const v = ALIGN[props.alignItems];
+		if (v !== undefined) node.setAlignItems(v);
+	}
+	if (props.alignSelf !== undefined) {
+		const v = ALIGN[props.alignSelf];
+		if (v !== undefined) node.setAlignSelf(v);
+	}
 	if (typeof props.flex === 'number') node.setFlex(props.flex);
 	if (typeof props.flexGrow === 'number') node.setFlexGrow(props.flexGrow);
-	if (typeof props.flexShrink === 'number') node.setFlexShrink(props.flexShrink);
+	if (typeof props.flexShrink === 'number')
+		node.setFlexShrink(props.flexShrink);
 	if (props.flexBasis !== undefined) {
 		if (typeof props.flexBasis === 'number') node.setFlexBasis(props.flexBasis);
-		else { const pct = parseFloat(props.flexBasis); if (!isNaN(pct)) node.setFlexBasisPercent(pct); }
+		else {
+			const pct = parseFloat(props.flexBasis);
+			if (!isNaN(pct)) node.setFlexBasisPercent(pct);
+		}
 	}
 	setDimension(node, 'width', props.width);
 	setDimension(node, 'height', props.height);
@@ -252,24 +337,40 @@ function applyYogaProps(node: YogaNode, props: FlexProps) {
 	setEdge(node, 'setMargin', EDGE_BOTTOM, props.marginBottom);
 	setEdge(node, 'setMargin', EDGE_LEFT, props.marginLeft);
 	setEdge(node, 'setMargin', EDGE_RIGHT, props.marginRight);
-	if (typeof props.padding === 'number') node.setPadding(EDGE_ALL, props.padding);
+	if (typeof props.padding === 'number')
+		node.setPadding(EDGE_ALL, props.padding);
 	setEdge(node, 'setPadding', EDGE_TOP, props.paddingTop);
 	setEdge(node, 'setPadding', EDGE_BOTTOM, props.paddingBottom);
 	setEdge(node, 'setPadding', EDGE_LEFT, props.paddingLeft);
 	setEdge(node, 'setPadding', EDGE_RIGHT, props.paddingRight);
-	if (props.position !== undefined) { const v = POSITION[props.position]; if (v !== undefined) node.setPositionType(v); }
+	if (props.position !== undefined) {
+		const v = POSITION[props.position];
+		if (v !== undefined) node.setPositionType(v);
+	}
 	setEdge(node, 'setPosition', EDGE_TOP, props.top);
 	setEdge(node, 'setPosition', EDGE_BOTTOM, props.bottom);
 	setEdge(node, 'setPosition', EDGE_LEFT, props.left);
 	setEdge(node, 'setPosition', EDGE_RIGHT, props.right);
-	if (props.display !== undefined) { const v = DISPLAY[props.display]; if (v !== undefined) node.setDisplay(v); }
-	if (props.overflow !== undefined) { const v = OVERFLOW[props.overflow]; if (v !== undefined) node.setOverflow(v); }
-	if (typeof props.aspectRatio === 'number') node.setAspectRatio(props.aspectRatio);
+	if (props.display !== undefined) {
+		const v = DISPLAY[props.display];
+		if (v !== undefined) node.setDisplay(v);
+	}
+	if (props.overflow !== undefined) {
+		const v = OVERFLOW[props.overflow];
+		if (v !== undefined) node.setOverflow(v);
+	}
+	if (typeof props.aspectRatio === 'number')
+		node.setAspectRatio(props.aspectRatio);
 }
 
 function computeAbsoluteLayout(node: YogaNode): Layout {
 	const computed = node.getComputedLayout();
-	if (computed.width == null || computed.height == null || isNaN(computed.width) || isNaN(computed.height)) {
+	if (
+		computed.width == null ||
+		computed.height == null ||
+		isNaN(computed.width) ||
+		isNaN(computed.height)
+	) {
 		return { x: 0, y: 0, width: 0, height: 0 };
 	}
 	let left = computed.left ?? 0;
@@ -284,7 +385,9 @@ function computeAbsoluteLayout(node: YogaNode): Layout {
 }
 
 function layoutsEqual(a: Layout, b: Layout): boolean {
-	return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+	return (
+		a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height
+	);
 }
 
 // ─── Components ───
@@ -310,7 +413,9 @@ function FlexTreeProvider({
 			childNodes,
 			subscribe(cb: () => void) {
 				subscribers.add(cb);
-				return () => { subscribers.delete(cb); };
+				return () => {
+					subscribers.delete(cb);
+				};
 			},
 			recalculate(width: number, height: number) {
 				rootNode.calculateLayout(width, height, DIRECTION_LTR);
@@ -350,14 +455,21 @@ function FlexNode({
 	const parentYogaNode = useContext(FlexNodeContext);
 	const dims = useDimensions();
 	const nodeRef = useRef<YogaNode | null>(null);
-	const [layout, setLayout] = useState<Layout>({ x: 0, y: 0, width: 0, height: 0 });
+	const [layout, setLayout] = useState<Layout>({
+		x: 0,
+		y: 0,
+		width: 0,
+		height: 0,
+	});
 
 	// Lazily initialise the yoga node ref (safe in StrictMode — refs persist
 	// across double-renders and are not reset between effect mount cycles).
 	if (isRoot) {
 		nodeRef.current = treeManager.rootNode;
 	} else if (!nodeRef.current) {
-		const newNode = treeManager.yoga.Node.createWithConfig(treeManager.yogaConfig);
+		const newNode = treeManager.yoga.Node.createWithConfig(
+			treeManager.yogaConfig,
+		);
 		treeManager.childNodes.add(newNode);
 		nodeRef.current = newNode;
 	}
@@ -409,9 +521,7 @@ function FlexNode({
 
 	return (
 		<FlexNodeContext.Provider value={node}>
-			<LayoutContext.Provider value={layout}>
-				{children}
-			</LayoutContext.Provider>
+			<LayoutContext.Provider value={layout}>{children}</LayoutContext.Provider>
 		</FlexNodeContext.Provider>
 	);
 }
@@ -464,7 +574,10 @@ export function createFlex(yogaInstance: any): FlexComponent {
 	const config = y.Config.create();
 	config.setPointScaleFactor(0);
 
-	const FlexImpl = ({ children, ...flexProps }: PropsWithChildren<FlexProps>) => {
+	const FlexImpl = ({
+		children,
+		...flexProps
+	}: PropsWithChildren<FlexProps>) => {
 		const existingTree = useContext(FlexTreeContext);
 		const isRoot = !existingTree;
 
@@ -486,12 +599,33 @@ export function createFlex(yogaInstance: any): FlexComponent {
 	};
 	FlexImpl.displayName = 'Flex';
 
-	const FlexText = ({ children, fontFamily, fontWeight, fontSize, ...rest }: FlexTextProps) => {
-		const text = children == null ? '' : Array.isArray(children) ? children.map(String).join('') : String(children);
-		const metrics = useTextMetrics(text, fontFamily, fontSize, fontWeight ?? '');
+	const FlexText = ({
+		children,
+		fontFamily,
+		fontWeight,
+		fontSize,
+		...rest
+	}: FlexTextProps) => {
+		const text =
+			children == null
+				? ''
+				: Array.isArray(children)
+					? children.map(String).join('')
+					: String(children);
+		const metrics = useTextMetrics(
+			text,
+			fontFamily,
+			fontSize,
+			fontWeight ?? '',
+		);
 		return (
 			<FlexImpl width={metrics.width} height={fontSize ?? 24}>
-				<Text fontFamily={fontFamily} fontWeight={typeof fontWeight === 'string' ? fontWeight : undefined} fontSize={fontSize} {...rest}>
+				<Text
+					fontFamily={fontFamily}
+					fontWeight={typeof fontWeight === 'string' ? fontWeight : undefined}
+					fontSize={fontSize}
+					{...rest}
+				>
 					{text}
 				</Text>
 			</FlexImpl>

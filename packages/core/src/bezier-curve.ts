@@ -60,36 +60,92 @@ export class BezierCurve extends Shape {
 	#y1: number;
 
 	/** The x-coordinate of the start point. */
-	get x0() { return this.#x0; }
-	set x0(v: number) { if (this.#x0 !== v) { this.#x0 = v; this._pathDirty = true; } }
+	get x0() {
+		return this.#x0;
+	}
+	set x0(v: number) {
+		if (this.#x0 !== v) {
+			this.#x0 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The y-coordinate of the start point. */
-	get y0() { return this.#y0; }
-	set y0(v: number) { if (this.#y0 !== v) { this.#y0 = v; this._pathDirty = true; } }
+	get y0() {
+		return this.#y0;
+	}
+	set y0(v: number) {
+		if (this.#y0 !== v) {
+			this.#y0 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The x-coordinate of the first control point. */
-	get cp1x() { return this.#cp1x; }
-	set cp1x(v: number) { if (this.#cp1x !== v) { this.#cp1x = v; this._pathDirty = true; } }
+	get cp1x() {
+		return this.#cp1x;
+	}
+	set cp1x(v: number) {
+		if (this.#cp1x !== v) {
+			this.#cp1x = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The y-coordinate of the first control point. */
-	get cp1y() { return this.#cp1y; }
-	set cp1y(v: number) { if (this.#cp1y !== v) { this.#cp1y = v; this._pathDirty = true; } }
+	get cp1y() {
+		return this.#cp1y;
+	}
+	set cp1y(v: number) {
+		if (this.#cp1y !== v) {
+			this.#cp1y = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The x-coordinate of the second control point. */
-	get cp2x() { return this.#cp2x; }
-	set cp2x(v: number) { if (this.#cp2x !== v) { this.#cp2x = v; this._pathDirty = true; } }
+	get cp2x() {
+		return this.#cp2x;
+	}
+	set cp2x(v: number) {
+		if (this.#cp2x !== v) {
+			this.#cp2x = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The y-coordinate of the second control point. */
-	get cp2y() { return this.#cp2y; }
-	set cp2y(v: number) { if (this.#cp2y !== v) { this.#cp2y = v; this._pathDirty = true; } }
+	get cp2y() {
+		return this.#cp2y;
+	}
+	set cp2y(v: number) {
+		if (this.#cp2y !== v) {
+			this.#cp2y = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The x-coordinate of the end point. */
-	get x1() { return this.#x1; }
-	set x1(v: number) { if (this.#x1 !== v) { this.#x1 = v; this._pathDirty = true; } }
+	get x1() {
+		return this.#x1;
+	}
+	set x1(v: number) {
+		if (this.#x1 !== v) {
+			this.#x1 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The y-coordinate of the end point. */
-	get y1() { return this.#y1; }
-	set y1(v: number) { if (this.#y1 !== v) { this.#y1 = v; this._pathDirty = true; } }
+	get y1() {
+		return this.#y1;
+	}
+	set y1(v: number) {
+		if (this.#y1 !== v) {
+			this.#y1 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	constructor(opts: BezierCurveProps) {
 		const xs = [opts.x0, opts.cp1x, opts.cp2x, opts.x1];

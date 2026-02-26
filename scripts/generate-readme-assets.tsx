@@ -1,3 +1,13 @@
+import { randomUUID } from 'crypto';
+import {
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	readdirSync,
+	unlinkSync,
+	writeFileSync,
+} from 'fs';
+import { createRequire } from 'module';
 /**
  * Generate README asset images for ALL packages in the monorepo.
  *
@@ -11,47 +21,38 @@
  *
  * The code block MUST `export function App()`.
  */
-import { join, dirname, resolve as pathResolve } from "path";
-import { fileURLToPath } from "url";
-import {
-	readdirSync,
-	readFileSync,
-	writeFileSync,
-	mkdirSync,
-	existsSync,
-	unlinkSync,
-} from "fs";
-import { randomUUID } from "crypto";
-import { createRequire } from "module";
+import { dirname, join, resolve as pathResolve } from 'path';
+import { fileURLToPath } from 'url';
 
 // Resolve @napi-rs/canvas — it lives in package-level node_modules
 const require = createRequire(import.meta.url);
-const { GlobalFonts } = require("@napi-rs/canvas");
+const { GlobalFonts } = require('@napi-rs/canvas');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const rootDir = pathResolve(__dirname, "..");
+const rootDir = pathResolve(__dirname, '..');
 
 // ── Register Geist fonts ──────────────────────────────────────────────
-const geistFontsBase = join(rootDir, "node_modules", "geist", "dist", "fonts");
+const geistFontsBase = join(rootDir, 'node_modules', 'geist', 'dist', 'fonts');
 
-const fontFamilies: Array<{ dir: string; names: string[]; weights: string[] }> = [
-	{
-		dir: "geist-sans",
-		names: ["Geist", "Geist Sans"],
-		weights: ["Regular", "Bold", "Medium", "SemiBold", "Light", "Thin"],
-	},
-	{
-		dir: "geist-mono",
-		names: ["Geist Mono"],
-		weights: ["Regular", "Bold", "Medium", "SemiBold", "Light", "Thin"],
-	},
-];
+const fontFamilies: Array<{ dir: string; names: string[]; weights: string[] }> =
+	[
+		{
+			dir: 'geist-sans',
+			names: ['Geist', 'Geist Sans'],
+			weights: ['Regular', 'Bold', 'Medium', 'SemiBold', 'Light', 'Thin'],
+		},
+		{
+			dir: 'geist-mono',
+			names: ['Geist Mono'],
+			weights: ['Regular', 'Bold', 'Medium', 'SemiBold', 'Light', 'Thin'],
+		},
+	];
 
 let fontsRegistered = 0;
 for (const family of fontFamilies) {
 	const dir = join(geistFontsBase, family.dir);
-	const prefix = family.dir === "geist-mono" ? "GeistMono" : "Geist";
+	const prefix = family.dir === 'geist-mono' ? 'GeistMono' : 'Geist';
 	for (const weight of family.weights) {
 		const ttf = join(dir, `${prefix}-${weight}.ttf`);
 		if (existsSync(ttf)) {
@@ -76,7 +77,7 @@ interface AssetBlock {
 }
 
 function parseReadmeAssets(readmePath: string): AssetBlock[] {
-	const content = readFileSync(readmePath, "utf-8");
+	const content = readFileSync(readmePath, 'utf-8');
 	const blocks: AssetBlock[] = [];
 	const regex =
 		/```tsx\s+asset="([^"]+)"\s+width=(\d+)\s+height=(\d+)\s*\n([\s\S]*?)```/g;
@@ -119,7 +120,7 @@ async function generatePackageAssets(
 ): Promise<void> {
 	const blocks = parseReadmeAssets(readmePath);
 	if (blocks.length === 0) {
-		console.log("  No asset blocks found.");
+		console.log('  No asset blocks found.');
 		return;
 	}
 
@@ -129,7 +130,7 @@ async function generatePackageAssets(
 
 	for (const block of blocks) {
 		const tmpFile = join(tmpDir, `.readme-asset-${randomUUID()}.tsx`);
-		writeFileSync(tmpFile, block.code + "\n" + RENDER_SUFFIX);
+		writeFileSync(tmpFile, block.code + '\n' + RENDER_SUFFIX);
 
 		try {
 			const mod = await import(tmpFile);
@@ -147,19 +148,19 @@ async function generatePackageAssets(
 }
 
 // ── Main ──────────────────────────────────────────────────────────────
-const packagesDir = join(rootDir, "packages");
+const packagesDir = join(rootDir, 'packages');
 const packageDirs = readdirSync(packagesDir, { withFileTypes: true })
 	.filter((d) => d.isDirectory())
 	.map((d) => join(packagesDir, d.name))
-	.filter((d) => existsSync(join(d, "README.md")));
+	.filter((d) => existsSync(join(d, 'README.md')));
 
 for (const pkgDir of packageDirs) {
-	const readmePath = join(pkgDir, "README.md");
-	const assetsDir = join(pkgDir, "assets");
-	const pkgName = pkgDir.split("/").pop();
+	const readmePath = join(pkgDir, 'README.md');
+	const assetsDir = join(pkgDir, 'assets');
+	const pkgName = pkgDir.split('/').pop();
 
 	console.log(`\n── ${pkgName} ──`);
 	await generatePackageAssets(readmePath, assetsDir);
 }
 
-console.log("\nDone!");
+console.log('\nDone!');

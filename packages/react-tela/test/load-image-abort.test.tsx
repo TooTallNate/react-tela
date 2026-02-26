@@ -1,7 +1,7 @@
 import { join } from 'path';
-import { test, expect } from 'vitest';
 import config, { Canvas } from '@napi-rs/canvas';
 import { Root } from '@react-tela/core';
+import { expect, test } from 'vitest';
 
 function createRoot() {
 	const canvas = new Canvas(100, 100);
@@ -22,7 +22,9 @@ test('loadImage rejects when signal is already aborted', async () => {
 	const src = join(__dirname, 'pexels-sidorela-shehaj-339534630-19546368.jpg');
 	const controller = new AbortController();
 	controller.abort();
-	await expect(root.loadImage(src, { signal: controller.signal })).rejects.toThrow('aborted');
+	await expect(
+		root.loadImage(src, { signal: controller.signal }),
+	).rejects.toThrow('aborted');
 });
 
 test('loadImage rejects when signal is aborted mid-load', async () => {

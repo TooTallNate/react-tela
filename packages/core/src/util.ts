@@ -1,5 +1,5 @@
-import { Root } from './root.js';
 import type { Entity } from './entity.js';
+import { Root } from './root.js';
 import type { Point } from './types.js';
 
 const MouseEvent = globalThis.MouseEvent || class MouseEvent extends Event {};

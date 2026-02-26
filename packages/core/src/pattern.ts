@@ -1,12 +1,16 @@
 import { Entity } from './entity.js';
-import { Group, GroupRoot, type GroupProps } from './group.js';
+import { Group, type GroupProps, GroupRoot } from './group.js';
 
 /**
  * How a pattern image is repeated when tiling.
  *
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createPattern | MDN createPattern()}
  */
-export type PatternRepetition = 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat';
+export type PatternRepetition =
+	| 'repeat'
+	| 'repeat-x'
+	| 'repeat-y'
+	| 'no-repeat';
 
 /**
  * Props for the {@link Pattern} component.

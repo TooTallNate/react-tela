@@ -1,9 +1,9 @@
+import config, { Canvas } from '@napi-rs/canvas';
 import React, { useState } from 'react';
 import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
 import { LayoutContext, Rect } from '../src';
-import { enableEvents, dispatchEvent } from './helpers/event';
+import { dispatchEvent, enableEvents } from './helpers/event';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 

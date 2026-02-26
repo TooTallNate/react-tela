@@ -1,9 +1,9 @@
 import {
+	type Ref,
 	forwardRef,
 	useEffect,
 	useImperativeHandle,
 	useRef,
-	type Ref,
 } from 'react';
 import { useParent } from 'react-tela';
 import { Terminal as TerminalEntity, type TerminalProps } from './terminal.js';

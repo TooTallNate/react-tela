@@ -53,28 +53,70 @@ export class QuadraticCurve extends Shape {
 	#y1: number;
 
 	/** The x-coordinate of the start point. */
-	get x0() { return this.#x0; }
-	set x0(v: number) { if (this.#x0 !== v) { this.#x0 = v; this._pathDirty = true; } }
+	get x0() {
+		return this.#x0;
+	}
+	set x0(v: number) {
+		if (this.#x0 !== v) {
+			this.#x0 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The y-coordinate of the start point. */
-	get y0() { return this.#y0; }
-	set y0(v: number) { if (this.#y0 !== v) { this.#y0 = v; this._pathDirty = true; } }
+	get y0() {
+		return this.#y0;
+	}
+	set y0(v: number) {
+		if (this.#y0 !== v) {
+			this.#y0 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The x-coordinate of the control point. */
-	get cpx() { return this.#cpx; }
-	set cpx(v: number) { if (this.#cpx !== v) { this.#cpx = v; this._pathDirty = true; } }
+	get cpx() {
+		return this.#cpx;
+	}
+	set cpx(v: number) {
+		if (this.#cpx !== v) {
+			this.#cpx = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The y-coordinate of the control point. */
-	get cpy() { return this.#cpy; }
-	set cpy(v: number) { if (this.#cpy !== v) { this.#cpy = v; this._pathDirty = true; } }
+	get cpy() {
+		return this.#cpy;
+	}
+	set cpy(v: number) {
+		if (this.#cpy !== v) {
+			this.#cpy = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The x-coordinate of the end point. */
-	get x1() { return this.#x1; }
-	set x1(v: number) { if (this.#x1 !== v) { this.#x1 = v; this._pathDirty = true; } }
+	get x1() {
+		return this.#x1;
+	}
+	set x1(v: number) {
+		if (this.#x1 !== v) {
+			this.#x1 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	/** The y-coordinate of the end point. */
-	get y1() { return this.#y1; }
-	set y1(v: number) { if (this.#y1 !== v) { this.#y1 = v; this._pathDirty = true; } }
+	get y1() {
+		return this.#y1;
+	}
+	set y1(v: number) {
+		if (this.#y1 !== v) {
+			this.#y1 = v;
+			this._pathDirty = true;
+		}
+	}
 
 	constructor(opts: QuadraticCurveProps) {
 		const xs = [opts.x0, opts.cpx, opts.x1];

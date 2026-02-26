@@ -1,9 +1,9 @@
-import React from 'react';
 import { join } from 'path';
-import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
+import React from 'react';
+import { expect } from 'vitest';
 import { Rect, usePattern } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -52,7 +52,7 @@ test('usePattern with no-repeat', async (render) => {
 	const src = join(__dirname, 'pexels-small.jpg');
 
 	const root = render(
-		<PatternRect src={src} repetition="no-repeat" />,
+		<PatternRect src={src} repetition='no-repeat' />,
 		canvas,
 		config,
 	);

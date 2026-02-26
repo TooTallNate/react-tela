@@ -1,6 +1,6 @@
+import type { PatternRepetition } from '@react-tela/core';
 import { useEffect, useState } from 'react';
 import { useParent } from './use-parent.js';
-import type { PatternRepetition } from '@react-tela/core';
 
 /**
  * Create a `CanvasPattern` from an image URL.
@@ -30,15 +30,18 @@ export function usePattern(
 	useEffect(() => {
 		const controller = new AbortController();
 		setPattern(null);
-		parent.loadImage(source, { signal: controller.signal }).then((img) => {
-			const p = parent.ctx.createPattern(img, repetition);
-			setPattern(p);
-			parent.queueRender();
-		}).catch((err) => {
-			// Ignore abort errors — they are expected during cleanup
-			if (err instanceof DOMException && err.name === 'AbortError') return;
-			throw err;
-		});
+		parent
+			.loadImage(source, { signal: controller.signal })
+			.then((img) => {
+				const p = parent.ctx.createPattern(img, repetition);
+				setPattern(p);
+				parent.queueRender();
+			})
+			.catch((err) => {
+				// Ignore abort errors — they are expected during cleanup
+				if (err instanceof DOMException && err.name === 'AbortError') return;
+				throw err;
+			});
 		return () => {
 			controller.abort();
 		};

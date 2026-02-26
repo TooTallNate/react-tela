@@ -1,7 +1,7 @@
-import React from 'react';
-import { test as viTest, type TestAPI } from 'vitest';
-import { render as baseRender } from '../../src/render';
 import type { ICanvas } from '@react-tela/core';
+import React from 'react';
+import { type TestAPI, test as viTest } from 'vitest';
+import { render as baseRender } from '../../src/render';
 
 type RenderFn = typeof baseRender;
 type TestFn = (render: RenderFn) => any;
@@ -29,11 +29,7 @@ type TestFn = (render: RenderFn) => any;
  */
 export function createStrictTest() {
 	const strictRender: RenderFn = (app, canvas, opts?) => {
-		return baseRender(
-			<React.StrictMode>{app}</React.StrictMode>,
-			canvas,
-			opts,
-		);
+		return baseRender(<React.StrictMode>{app}</React.StrictMode>, canvas, opts);
 	};
 
 	const test = ((name: string, fn: TestFn, timeout?: number) => {

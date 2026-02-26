@@ -1,4 +1,4 @@
-import { expect } from 'vitest';
 import { toMatchImageSnapshot } from 'jest-image-snapshot';
+import { expect } from 'vitest';
 
 expect.extend({ toMatchImageSnapshot });

@@ -1,5 +1,3 @@
-import { createElement } from 'react';
-import ReactReconciler from 'react-reconciler';
 import {
 	Arc,
 	BezierCurve,
@@ -7,6 +5,7 @@ import {
 	Ellipse,
 	Entity,
 	Group,
+	type ICanvas,
 	Image,
 	Line,
 	Path,
@@ -14,10 +13,11 @@ import {
 	QuadraticCurve,
 	Rect,
 	Root,
-	Text,
-	type ICanvas,
 	type RootParams,
+	Text,
 } from '@react-tela/core';
+import { createElement } from 'react';
+import ReactReconciler from 'react-reconciler';
 import { ParentContext } from './hooks/use-parent.js';
 import type * as C from './index.js';
 

@@ -1,8 +1,8 @@
+import config, { Canvas } from '@napi-rs/canvas';
 import React from 'react';
 import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
-import config, { Canvas } from '@napi-rs/canvas';
 import { QuadraticCurve } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -16,7 +16,7 @@ test('should render a <QuadraticCurve> with stroke', async (render) => {
 			cpy={10}
 			x1={90}
 			y1={80}
-			stroke="red"
+			stroke='red'
 			lineWidth={2}
 		/>,
 		canvas,
@@ -35,7 +35,7 @@ test('should render a <QuadraticCurve> with fill', async (render) => {
 			cpy={10}
 			x1={90}
 			y1={90}
-			fill="rgba(0, 128, 0, 0.5)"
+			fill='rgba(0, 128, 0, 0.5)'
 		/>,
 		canvas,
 		config,
@@ -53,8 +53,8 @@ test('should render a <QuadraticCurve> with fill and stroke', async (render) => 
 			cpy={5}
 			x1={95}
 			y1={95}
-			fill="lavender"
-			stroke="purple"
+			fill='lavender'
+			stroke='purple'
 			lineWidth={3}
 		/>,
 		canvas,

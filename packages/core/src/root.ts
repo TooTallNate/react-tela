@@ -1,13 +1,13 @@
-import { TelaEventTarget } from './event-target.js';
 import type { Entity } from './entity.js';
+import { TelaEventTarget } from './event-target.js';
+import { proxyEvents } from './events.js';
 import type {
-	IDOMMatrix,
 	ICanvas,
+	ICanvasRenderingContext2D,
+	IDOMMatrix,
 	IImage,
 	IPath2D,
-	ICanvasRenderingContext2D,
 } from './types.js';
-import { proxyEvents } from './events.js';
 
 /**
  * Configuration options for creating a {@link Root}.
@@ -96,14 +96,20 @@ export class Root extends TelaEventTarget {
 	async loadImage(src: string, opts?: LoadImageOptions): Promise<IImage> {
 		const signal = opts?.signal;
 		if (signal?.aborted) {
-			throw signal.reason ?? new DOMException('The operation was aborted.', 'AbortError');
+			throw (
+				signal.reason ??
+				new DOMException('The operation was aborted.', 'AbortError')
+			);
 		}
 		return new Promise<IImage>((resolve, reject) => {
 			let settled = false;
 			const onAbort = () => {
 				if (settled) return;
 				settled = true;
-				reject(signal!.reason ?? new DOMException('The operation was aborted.', 'AbortError'));
+				reject(
+					signal!.reason ??
+						new DOMException('The operation was aborted.', 'AbortError'),
+				);
 			};
 			signal?.addEventListener('abort', onAbort, { once: true });
 			this.#loadImageImpl(src).then(

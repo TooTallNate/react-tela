@@ -1,9 +1,9 @@
-import React from 'react';
 import { join } from 'path';
-import { expect } from 'vitest';
-import { createStrictTest } from './helpers/with-strict-mode';
 import config, { Canvas } from '@napi-rs/canvas';
+import React from 'react';
+import { expect } from 'vitest';
 import { Image } from '../src';
+import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
 
@@ -38,7 +38,7 @@ test('should render <Image> with imageSmoothing enabled and high quality', async
 			height={200}
 			src={SRC}
 			imageSmoothing={true}
-			imageSmoothingQuality="high"
+			imageSmoothingQuality='high'
 		/>,
 		canvas,
 		config,
@@ -58,7 +58,7 @@ test('should render <Image> with imageSmoothingQuality medium', async (render) =
 			height={200}
 			src={SRC}
 			imageSmoothing={true}
-			imageSmoothingQuality="medium"
+			imageSmoothingQuality='medium'
 		/>,
 		canvas,
 		config,

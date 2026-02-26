@@ -480,7 +480,14 @@ viTest('should hide cursor when scrolled back', async () => {
 viTest('should accept scrollOffset via props/update', async () => {
 	const canvas = new Canvas(500, 400);
 	const { entity } = await renderAndWrite(
-		{ cols: 40, rows: 5, fontSize: 14, fontFamily: FONT, scrollback: 100, scrollOffset: 0 },
+		{
+			cols: 40,
+			rows: 5,
+			fontSize: 14,
+			fontFamily: FONT,
+			scrollback: 100,
+			scrollOffset: 0,
+		},
 		[],
 		canvas,
 	);

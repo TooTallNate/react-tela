@@ -1,10 +1,10 @@
 import type { Monaco } from '@monaco-editor/react';
 import {
-	reactTelaTypes,
-	reactTelaRenderTypes,
-	reactTelaFlexTypes,
-	reactIndexDts,
 	reactGlobalDts,
+	reactIndexDts,
+	reactTelaFlexTypes,
+	reactTelaRenderTypes,
+	reactTelaTypes,
 } from './generated-types';
 
 /**
@@ -103,10 +103,7 @@ export function configureMonaco(monaco: Monaco) {
 		'file:///node_modules/@types/react/global.d.ts',
 	);
 
-	ts.addExtraLib(
-		reactIndexDts,
-		'file:///node_modules/@types/react/index.d.ts',
-	);
+	ts.addExtraLib(reactIndexDts, 'file:///node_modules/@types/react/index.d.ts');
 
 	// Add react-tela types — auto-generated from source
 	ts.addExtraLib(
