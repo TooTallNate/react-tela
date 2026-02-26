@@ -1,4 +1,4 @@
-import { Entity, EntityProps } from './entity.js';
+import { Entity, type EntityProps } from './entity.js';
 import { proxyEvents } from './events.js';
 import { Root } from './root.js';
 import type { ICanvasRenderingContext2D } from './types.js';
@@ -100,13 +100,14 @@ export class Group extends Entity {
 		const { ctx } = this.root;
 		const borderRadius = this.#borderRadius;
 
-		const cw = this.contentWidth;
-		const ch = this.contentHeight;
+		const isViewport =
+			typeof this.contentWidth === 'number' ||
+			typeof this.contentHeight === 'number';
 
 		// Source coordinates for viewport mode (no clamping — allows overscroll)
 		let sx = 0;
 		let sy = 0;
-		if (cw !== undefined || ch !== undefined) {
+		if (isViewport) {
 			sx = this.scrollLeft;
 			sy = this.scrollTop;
 		}
@@ -128,7 +129,7 @@ export class Group extends Entity {
 				this.height,
 			);
 			ctx.restore();
-		} else if (cw !== undefined || ch !== undefined) {
+		} else if (isViewport) {
 			ctx.drawImage(
 				this.subroot.ctx.canvas,
 				sx,

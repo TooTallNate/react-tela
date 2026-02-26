@@ -1,11 +1,26 @@
 import './helpers/font';
 import config, { Canvas } from '@napi-rs/canvas';
-import React from 'react';
+import React, { useState } from 'react';
 import { expect } from 'vitest';
 import { Group, Rect, Text } from '../src';
 import { createStrictTest } from './helpers/with-strict-mode';
 
 const test = createStrictTest();
+
+/** Wait for the next render event after a state change */
+function waitForRender(root: any): Promise<void> {
+	return new Promise((resolve) => {
+		const renderCount = root.renderCount;
+		const check = () => {
+			if (root.renderCount > renderCount) {
+				resolve();
+			} else {
+				setTimeout(check, 10);
+			}
+		};
+		check();
+	});
+}
 
 test('should render <Group> with contentHeight and scrollTop', async (render) => {
 	const canvas = new Canvas(200, 100);
@@ -217,5 +232,67 @@ test('should work without contentWidth/contentHeight (backward compat)', async (
 		canvas,
 		config,
 	);
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should not use 300x150 default when dimensions are 0', async (render) => {
+	const canvas = new Canvas(200, 100);
+	// A Group with width=0 and height=0 should produce an empty canvas,
+	// not fall back to a 300x150 default size
+	await render(
+		<>
+			<Rect width={200} height={100} fill='white' />
+			<Group x={0} y={0} width={0} height={0}>
+				<Rect width={300} height={150} fill='red' />
+			</Group>
+		</>,
+		canvas,
+		config,
+	);
+	// Should be a fully white canvas — the red rect inside the 0x0 Group should not be visible
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should not use 300x150 default when contentHeight is 0', async (render) => {
+	const canvas = new Canvas(200, 100);
+	// When contentHeight=0, the backing canvas should be 0px tall,
+	// not fall back to the HTML default of 150px
+	await render(
+		<>
+			<Rect width={200} height={100} fill='white' />
+			<Group x={0} y={0} width={200} height={100} contentHeight={0}>
+				<Rect width={200} height={150} fill='red' />
+			</Group>
+		</>,
+		canvas,
+		config,
+	);
+	// Should be a fully white canvas — contentHeight=0 means no content is visible
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+});
+
+test('should render correctly when contentHeight changes from 0 to a real value', async (render) => {
+	const canvas = new Canvas(200, 100);
+	let setHeight: (h: number) => void;
+	function DynamicGroup() {
+		const [contentHeight, _setHeight] = useState(0);
+		setHeight = _setHeight;
+		return (
+			<Group x={0} y={0} width={200} height={100} contentHeight={contentHeight}>
+				<Rect width={200} height={100} fill='red' />
+				<Rect y={100} width={200} height={100} fill='green' />
+			</Group>
+		);
+	}
+	// Initial render with contentHeight=0 — trigger initial render and wait
+	const root = render(<DynamicGroup />, canvas, config);
+	await root;
+	// Initially contentHeight=0, so nothing should be visible
+	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
+
+	// Update contentHeight to show content
+	setHeight!(200);
+	await waitForRender(root);
+	// Now contentHeight=200, scrollTop defaults to 0, so red rect should be visible
 	expect(canvas.toBuffer('image/png')).toMatchImageSnapshot();
 });
