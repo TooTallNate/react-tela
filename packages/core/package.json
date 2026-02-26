@@ -1,6 +1,6 @@
 {
   "name": "@react-tela/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core Canvas2D rendering engine for react-tela",
   "type": "module",
   "main": "dist/index.js",
@@ -13,7 +13,9 @@
     "access": "public",
     "provenance": true
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc",
     "test": "vitest"
