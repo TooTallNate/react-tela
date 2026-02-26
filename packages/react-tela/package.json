@@ -20,10 +20,7 @@
     "build": "rm -rf dist && tsc",
     "dev": "esbuild --watch src/test.tsx --bundle --sourcemap --outfile=test.js",
     "node": "tsx examples/node.tsx",
-    "test": "vitest",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "release": "pnpm build && changeset publish --provenance"
+    "test": "vitest"
   },
   "keywords": [],
   "repository": {
