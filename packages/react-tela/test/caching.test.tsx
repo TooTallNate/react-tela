@@ -1,5 +1,4 @@
 import config, { Canvas } from '@napi-rs/canvas';
-import { Rect as _Rect } from '@react-tela/core';
 import { Arc as _Arc } from '@react-tela/core';
 import { Ellipse as _Ellipse } from '@react-tela/core';
 import { Line as _Line } from '@react-tela/core';

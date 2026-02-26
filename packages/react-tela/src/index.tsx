@@ -11,20 +11,20 @@ import {
 	type PathProps,
 	type QuadraticCurveProps,
 	type RectProps,
-	Arc as _Arc,
-	BezierCurve as _BezierCurve,
-	Canvas as _Canvas,
-	Ellipse as _Ellipse,
-	Group as _Group,
+	type Arc as _Arc,
+	type BezierCurve as _BezierCurve,
+	type Canvas as _Canvas,
+	type Ellipse as _Ellipse,
+	type Group as _Group,
 	type GroupProps as _GroupProps,
-	Image as _Image,
-	Line as _Line,
-	Path as _Path,
-	Pattern as _Pattern,
+	type Image as _Image,
+	type Line as _Line,
+	type Path as _Path,
+	type Pattern as _Pattern,
 	type PatternProps as _PatternProps,
-	QuadraticCurve as _QuadraticCurve,
-	Rect as _Rect,
-	Text as _Text,
+	type QuadraticCurve as _QuadraticCurve,
+	type Rect as _Rect,
+	type Text as _Text,
 	type TextProps as _TextProps,
 } from '@react-tela/core';
 import React, {
@@ -74,7 +74,7 @@ const factory = <Ref, Props extends EntityProps>(type: string) => {
 export type GroupProps = PropsWithChildren<_GroupProps>;
 /** Props for the `<Pattern>` component. Extends {@link GroupProps} with pattern-specific properties. */
 export type PatternProps = PropsWithChildren<_PatternProps>;
-export {
+export type {
 	ArcProps,
 	BezierCurveProps,
 	CanvasProps,
@@ -188,24 +188,26 @@ export const Group = forwardRef<_Group, GroupProps>((props, ref) => {
 	const adjusted = useAdjustedLayout(props);
 	const w = adjusted === props ? (props.width ?? 0) : adjusted.width;
 	const h = adjusted === props ? (props.height ?? 0) : adjusted.height;
-	// When contentWidth/contentHeight are set, the backing canvas uses
-	// those dimensions so children render into the full content area.
-	const canvasW = props.contentWidth ?? w;
-	const canvasH = props.contentHeight ?? h;
+	// When contentWidth/contentHeight are explicitly set, the backing canvas
+	// uses those dimensions so children render into the full content area.
+	const canvasW =
+		typeof props.contentWidth === 'number' ? props.contentWidth : w;
+	const canvasH =
+		typeof props.contentHeight === 'number' ? props.contentHeight : h;
 	if (rootRef.current) {
 		canvas = rootRef.current.ctx.canvas;
 	} else {
-		canvas = new root.Canvas(canvasW || 300, canvasH || 150);
+		canvas = new root.Canvas(canvasW, canvasH);
 		const ctx = canvas.getContext('2d');
 		if (!ctx) {
 			throw new Error('Could not get "2d" canvas context');
 		}
 		rootRef.current = new GroupRoot(ctx, root);
 	}
-	if (canvasW > 0 && canvasW !== canvas.width) {
+	if (canvasW !== canvas.width) {
 		canvas.width = canvasW;
 	}
-	if (canvasH > 0 && canvasH !== canvas.height) {
+	if (canvasH !== canvas.height) {
 		canvas.height = canvasH;
 	}
 	return (
@@ -265,10 +267,10 @@ export const Pattern = forwardRef<_Pattern, PatternProps>((props, ref) => {
 });
 Pattern.displayName = 'Pattern';
 
-export { type ColorStop } from '@react-tela/core';
-export { type FillStrokeStyle, type FillStrokeInput } from '@react-tela/core';
-export { type PatternRepetition } from '@react-tela/core';
-export { type TextOverflow } from '@react-tela/core';
+export type { ColorStop } from '@react-tela/core';
+export type { FillStrokeStyle, FillStrokeInput } from '@react-tela/core';
+export type { PatternRepetition } from '@react-tela/core';
+export type { TextOverflow } from '@react-tela/core';
 export {
 	useLinearGradient,
 	useRadialGradient,
