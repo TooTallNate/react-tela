@@ -96,13 +96,23 @@ export class Group extends Entity {
 
 	render(): void {
 		super.render();
-		this.subroot.render();
-		const { ctx } = this.root;
-		const borderRadius = this.#borderRadius;
 
 		const isViewport =
 			typeof this.contentWidth === 'number' ||
 			typeof this.contentHeight === 'number';
+
+		// Skip rendering when either dimension is 0 — the backing canvas
+		// cannot actually be 0-sized (Canvas implementations use a default
+		// like 300x150), so drawing it would show stale/incorrect content.
+		const effectiveW = this.contentWidth ?? this.width;
+		const effectiveH = this.contentHeight ?? this.height;
+		if (!effectiveW || !effectiveH) {
+			return;
+		}
+
+		this.subroot.render();
+		const { ctx } = this.root;
+		const borderRadius = this.#borderRadius;
 
 		// Source coordinates for viewport mode (no clamping — allows overscroll)
 		let sx = 0;
